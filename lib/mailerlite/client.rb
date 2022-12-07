@@ -12,18 +12,22 @@ Dotenv.require_keys('MAILERLITE_API_TOKEN')
 module MailerLite
   attr_reader :api_token
 
-  # Inits the client.
   class Client
-    def initialize(api_token = ENV['MAILERLITE_API_TOKEN'])
+    HEADERS = {
+      'User-Agent' => "MailerLite-client-ruby/#{MailerLite::VERSION}",
+      'Accept' => 'application/json',
+      'Content-type' => 'application/json'
+    }
+
+    def initialize(api_token = ENV.fetch('MAILERLITE_API_TOKEN', nil))
       @api_token = api_token
     end
 
     def http
       HTTP
         .timeout(connect: 15, read: 30)
-        .auth("Bearer #{@api_token}")
-        .headers('User-Agent' => 'MailerLite-client-ruby/1.0.0',
-                 'Accept' => 'application/json')
+        .auth_bearer(@api_token)
+        .headers(HEADERS)
     end
   end
 end
