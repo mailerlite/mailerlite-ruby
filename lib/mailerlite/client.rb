@@ -4,7 +4,6 @@ require 'http'
 require 'dotenv/load'
 
 API_URL = 'https://connect.mailerlite.com/api'
-API_BASE_HOST = 'connect.mailerlite.com'
 
 Dotenv.require_keys('MAILERLITE_API_TOKEN')
 
