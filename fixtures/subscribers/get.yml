@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://connect.mailerlite.com/api/subscribers
+    body:
+      encoding: UTF-8
+      string: '{"filter[status]":"active"}'
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 07 Dec 2022 22:09:45 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '118'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7760965f3957d1e0-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"id":"73871649530709291","email":"user@example.com","status":"active","source":"api","sent":0,"opens_count":0,"clicks_count":0,"open_rate":0,"click_rate":0,"ip_address":null,"subscribed_at":"2022-12-07
+        21:44:54","unsubscribed_at":null,"created_at":"2022-12-07 21:44:54","updated_at":"2022-12-07
+        22:07:37","fields":{"name":null,"last_name":null,"company":null,"country":null,"city":null,"phone":null,"state":null,"z_i_p":null},"opted_in_at":null,"optin_ip":null},{"id":"72832024158668435","email":"ahsan@mailerlite.com","status":"active","source":"manual","sent":0,"opens_count":0,"clicks_count":0,"open_rate":0,"click_rate":0,"ip_address":null,"subscribed_at":"2022-11-26
+        10:20:30","unsubscribed_at":null,"created_at":"2022-11-26 10:20:30","updated_at":"2022-11-26
+        10:20:30","fields":{"name":"Ahsan Gondal","last_name":null,"company":null,"country":null,"city":null,"phone":null,"state":null,"z_i_p":null},"opted_in_at":null,"optin_ip":null}],"links":{"first":null,"last":null,"prev":null,"next":null},"meta":{"path":"https:\/\/connect.mailerlite.com\/api\/subscribers","per_page":25,"next_cursor":null,"prev_cursor":null}}'
+  recorded_at: Wed, 07 Dec 2022 22:09:45 GMT
+recorded_with: VCR 6.1.0
