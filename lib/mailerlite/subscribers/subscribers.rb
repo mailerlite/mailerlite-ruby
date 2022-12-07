@@ -24,11 +24,7 @@ module MailerLite
       params['limit'] = limit if limit
       params['page'] = page if page
 
-      client.http.get(URI::HTTPS.build(
-                        host: API_BASE_HOST,
-                        path: '/api/subscribers',
-                        query: URI.encode_www_form(params.compact)
-                      ))
+      client.http.get("#{API_URL}/subscribers", json: params.compact)
     end
 
     # Creates a new subscriber with the specified details.
