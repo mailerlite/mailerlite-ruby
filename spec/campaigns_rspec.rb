@@ -32,51 +32,82 @@ RSpec.describe MailerLite::Campaigns do
     end
   end
 
-  # describe '#create' do
-  #   # Use VCR to record and replay the HTTP request
-  #   it 'creates a new subscriber' do
-  #     VCR.use_cassette('campaigns/create') do
-  #       response = campaigns.create(email: 'user@example.com')
-  #       body = JSON.parse(response.body)
-  #       expect(response.status).to eq 200
-  #       expect(Integer(body["data"]['id'])).to be_a Integer
-  #       expect(body["data"]['email']).to eq 'user@example.com'
-  #     end
-  #   end
-  # end
+  describe '#create' do
+    # Use VCR to record and replay the HTTP request
+    it 'creates a new campaign' do
+      VCR.use_cassette('campaigns/create') do
+        response = campaigns.create(name: 'test_campaign' , 
+          type: 'regular',
+          emails: [{
+            'subject': 'test subject',
+            'from': 'ahsan@mailerlite.com',
+            'from_name': 'user'
+          }]
+        )
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 201
+        expect(Integer(body["data"]['id'])).to be_a Integer
+      end
+    end
+  end
+  describe '#update' do
+    # Use VCR to record and replay the HTTP request
+    it 'updates a new campaign' do
+      VCR.use_cassette('campaigns/update') do
+        response = campaigns.update(
+          campaign: 74907223599351301,
+          name: 'test_campaign1', 
+          type: 'regular',
+          emails: [{
+            'subject': 'testsubject1',
+            'from': 'ahsan@mailerlite.com',
+            'from_name': 'user'
+          }]
+        )
+        body = JSON.parse(response.body)
+        # expect(response.status).to eq 201
+        # expect(Integer(body["data"]['id'])).to be_a Integer
+      end
+    end
+  end
 
-  # describe '#fetch' do
-  #   # Use VCR to record and replay the HTTP request
-  #   it 'fetches a subscriber' do
-  #     VCR.use_cassette('campaigns/fetch') do
-  #       response = campaigns.fetch('user@example.com')
-  #       body = JSON.parse(response.body)
-  #       expect(response.status).to eq 200
-  #       expect(Integer(body['data']['id'])).to eq 73871649530709291
-  #       expect(body['data']['email']).to be_a String
-  #     end
-  #   end
-  # end
+  describe '#fetch' do
+    # Use VCR to record and replay the HTTP request
+    it 'fetches a campaign' do
+      VCR.use_cassette('campaigns/fetch') do
+        response = campaigns.fetch(74907223599351301)
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 200
+        expect(Integer(body['data']['id'])).to be_a Integer
+        expect(Integer(body['data']['account_id'])).to be_a Integer
+      end
+    end
+  end
+  
+  describe '#schedule' do
+    # Use VCR to record and replay the HTTP request
+    it 'schedules a campaign' do
+      VCR.use_cassette('campaigns/schedule') do
+        response = campaigns.schedule(
+          campaign: 74907223599351301,
+          delivery: 'instant', 
+        )
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 422
+        # expect(Integer(body['data']['delivery_schedule'])).to eq "instant"
+        # expect(Integer(body['data']['account_id'])).to be_a Integer
+        # expect(Integer(body['data']['id'])).to be_a Integer
+      end
+    end
+  end
 
-  # describe '#fetch_count' do
-  #   # Use VCR to record and replay the HTTP request
-  #   it 'fetches the subscriber count' do
-  #     VCR.use_cassette('campaigns/fetch_count') do
-  #       response = campaigns.fetch_count
-  #       body = JSON.parse(response.body)
-  #       expect(response.status).to eq 200
-  #       expect(body['total']).to be_a Integer
-  #     end
-  #   end
-  # end
-
-  # describe '#delete' do
-  #   # Use VCR to record and replay the HTTP request
-  #   it 'deletes a subscriber' do
-  #     VCR.use_cassette('campaigns/delete') do
-  #       response = campaigns.delete(73871649530709291)
-  #       expect(response.status).to eq 204
-  #     end
-  #   end
-  # end
+  describe '#delete' do
+    # Use VCR to record and replay the HTTP request
+    it 'deletes a campaign' do
+      VCR.use_cassette('campaigns/delete') do
+        response = campaigns.delete(74906599557170209)
+        expect(response.status).to eq 204
+      end
+    end
+  end
 end

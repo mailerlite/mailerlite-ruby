@@ -58,7 +58,7 @@ module MailerLite
     # @param resend_setings[b_value][subject] [String] only if type is resend -  Maximum string length of 255 characters
     # @return [HTTP::Response] the response from the API
     def create(name:, language_id: nil, type:, emails:, groups: nil, segments: nil, ab_settings: nil, resend_settings: nil)
-      params['name'] = name 
+      params = { 'name' => name }
       params['type'] = type 
       params['emails'] = emails 
       params['language_id'] = language_id if language_id
@@ -114,8 +114,8 @@ module MailerLite
     # @param resend_setings[b_value][subject] [String] only if type is resend -  Maximum string length of 255 characters
     # @return [HTTP::Response] the response from the API
     def update(campaign:,name:, language_id: nil, type:, emails:, groups: nil, segments: nil, ab_settings: nil, resend_settings: nil)
-      params['name'] = name 
-      params['emails'] = emails 
+      params = { 'name' => name }
+      params['emails'] = emails  
       params['language_id'] = language_id if language_id
       params['groups'] = groups if groups
       params['segments'] = segments if segments
@@ -137,7 +137,7 @@ module MailerLite
         params['resend_settings[b_value][subject]'] = resend_settings['b_value']['subject']
       end
       
-      client.http.put("#{API_URL}/campaigns#{campaign}", json: params.compact)
+      client.http.put("#{API_URL}/campaigns/#{campaign}", json: params.compact)
     end
     
     # Schedules the specified campaign.
@@ -154,17 +154,21 @@ module MailerLite
     # @param resend[minutes]	[String]	only for campaign of type auto resend	Must be a valid minute in ii format
     # @param resend[timezone_id]	[Integer]	no	Must be a valid timezone id, defaults to the account's timezone id
     # @return [HTTP::Response] the response from the API
-    def schedule(campaign:, delivery:, schedule:, resend:)
+    def schedule(campaign:, delivery:, schedule:nil, resend:nil)
+      params = {}
       params['delivery'] = delivery if delivery
-      params['schedule[date]'] = schedule['date'] if schedule.key?('date')
-      params['schedule[hours]'] = schedule['hours'] if schedule.key?('hours')
-      params['schedule[minutes]'] = schedule['minutes'] if schedule.key?('minutes')
-      params['schedule[timezone_id]'] = schedule['timezone_id'] if schedule.key?('timezone_id')
-      params['resend[delivery]'] = resend['delivery'] if resend.key?('delivery')
-      params['resend[date]'] = resend['date'] if resend.key?('date')
-      params['resend[hours]'] = resend['hours'] if resend.key?('hours')
-      params['resend[minutes]'] = resend['minutes'] if resend.key?('minutes')
-      params['resend[timezone_id]'] = resend['timezone_id'] if resend.key?('timezone_id')
+      if (delivery == "scheduled" || delivery == "timezone_based") and schedule
+        params['schedule[date]'] = schedule['date'] if delivery == "scheduled" and schedule.key?('date')
+        params['schedule[hours]'] = schedule['hours'] if schedule.key?('hours')
+        params['schedule[minutes]'] = schedule['minutes'] if schedule.key?('minutes')
+        params['schedule[timezone_id]'] = schedule['timezone_id'] if schedule.key?('timezone_id')
+      end
+      
+      params['resend[delivery]'] = resend['delivery'] if resend and resend.key?('delivery')
+      params['resend[date]'] = resend['date'] if resend and resend.key?('date')
+      params['resend[hours]'] = resend['hours'] if resend and resend.key?('hours')
+      params['resend[minutes]'] = resend['minutes'] if resend and resend.key?('minutes')
+      params['resend[timezone_id]'] = resend['timezone_id'] if resend and resend.key?('timezone_id')
       client.http.post("#{API_URL}/campaigns/#{campaign}/schedule", json: params.compact)
     end
     

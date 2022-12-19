@@ -1,0 +1,60 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: https://connect.mailerlite.com/api/campaigns/74907223599351301
+    body:
+      encoding: UTF-8
+      string: '{"name":"test_campaign1","emails":[{"subject":"testsubject1","from":"ahsan@mailerlite.com","from_name":"user"}]}'
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 500
+      message: Internal Server Error
+    headers:
+      Date:
+      - Mon, 19 Dec 2022 08:14:11 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77beaee4ebcbde4f-MCT
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+            "message": "Server Error"
+        }
+  recorded_at: Mon, 19 Dec 2022 08:14:09 GMT
+recorded_with: VCR 6.1.0
