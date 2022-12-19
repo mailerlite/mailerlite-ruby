@@ -40,7 +40,7 @@ RSpec.describe MailerLite::Campaigns do
           type: 'regular',
           emails: [{
             'subject': 'test subject',
-            'from': 'ahsan@mailerlite.com',
+            'from': 'sdk@mailerlite.com',
             'from_name': 'user'
           }]
         )
@@ -55,13 +55,19 @@ RSpec.describe MailerLite::Campaigns do
     it 'updates a new campaign' do
       VCR.use_cassette('campaigns/update') do
         response = campaigns.update(
-          campaign: 74907223599351301,
+          campaign: 74917804992628332,
           name: 'test_campaign1', 
           type: 'regular',
           emails: [{
             'subject': 'testsubject1',
-            'from': 'ahsan@mailerlite.com',
-            'from_name': 'user'
+            'from': 'sdk@mailerlite.com',
+            'from_name': 'user',
+            'content': '<!DOCTYPE html>
+            <html>
+                <body>
+                    This is a test email
+                </body>
+            </html>'
           }]
         )
         body = JSON.parse(response.body)
@@ -75,7 +81,7 @@ RSpec.describe MailerLite::Campaigns do
     # Use VCR to record and replay the HTTP request
     it 'fetches a campaign' do
       VCR.use_cassette('campaigns/fetch') do
-        response = campaigns.fetch(74907223599351301)
+        response = campaigns.fetch(74917804992628332)
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_a Integer
@@ -89,14 +95,14 @@ RSpec.describe MailerLite::Campaigns do
     it 'schedules a campaign' do
       VCR.use_cassette('campaigns/schedule') do
         response = campaigns.schedule(
-          campaign: 74907223599351301,
+          campaign: 74917804992628332,
           delivery: 'instant', 
         )
         body = JSON.parse(response.body)
-        expect(response.status).to eq 422
-        # expect(Integer(body['data']['delivery_schedule'])).to eq "instant"
-        # expect(Integer(body['data']['account_id'])).to be_a Integer
-        # expect(Integer(body['data']['id'])).to be_a Integer
+        expect(response.status).to eq 200
+        expect(body['data']['delivery_schedule']).to eq "instant"
+        expect(Integer(body['data']['account_id'])).to be_a Integer
+        expect(Integer(body['data']['id'])).to be_a Integer
       end
     end
   end
@@ -105,7 +111,7 @@ RSpec.describe MailerLite::Campaigns do
     # Use VCR to record and replay the HTTP request
     it 'deletes a campaign' do
       VCR.use_cassette('campaigns/delete') do
-        response = campaigns.delete(74906599557170209)
+        response = campaigns.delete(74917804992628332)
         expect(response.status).to eq 204
       end
     end
