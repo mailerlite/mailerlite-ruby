@@ -13,5 +13,7 @@ jobs:
         ruby-version: 3.0.1
     - name: Install bundle deps
       run: bundle i
+    - name: Set dummy token
+      run: export MAILERLITE_API_TOKEN=dummy_token
     - name: Run tests
       run: bundle exec rspec spec/*rspec.rb
