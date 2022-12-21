@@ -12,5 +12,7 @@ jobs:
       with:
         ruby-version: 3.0.1
         bundler-cache: true
-    - name: Run the default task
-      run: bundle exec rake
+    - name: Install bundle deps
+      run: bundle i
+    - name: Run tests
+      run: bundle exec rspec spec/*rspec.rb
