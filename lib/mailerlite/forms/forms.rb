@@ -18,9 +18,9 @@ module MailerLite
     # @param limit [Integer] the maximum number of Forms to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(filter_name:nil, type:nil, limit: nil, sort: nil)
-      params = { 'filter[name]' => filter_name }
-
+    def list(filter_name:nil, type:, limit: nil, sort: nil, page: nil)
+      params = {}
+      params ['filter[name]'] = filter_name if filter_name 
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
@@ -32,8 +32,8 @@ module MailerLite
     #
     # @param forms [String] the ID of the forms to fetch
     # @return [HTTP::Response] the response from the API
-    def fetch(forms)
-      client.http.get("#{API_URL}/forms/#{forms}")
+    def fetch(form)
+      client.http.get("#{API_URL}/forms/#{form}")
     end
 
     # Update the specified Forms
@@ -41,9 +41,9 @@ module MailerLite
     # @param forms [String] the ID of the forms to fetch
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
-    def update(forms)
+    def update(form:,name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/forms/#{forms}", json: params.compact)
+      client.http.put("#{API_URL}/forms/#{form}", json: params.compact)
     end
 
     # Returns the total number of Forms in the MailerLite account.
@@ -57,8 +57,8 @@ module MailerLite
     #
     # @param forms [String] the ID of the forms to delete
     # @return [HTTP::Response] the response from the API
-    def delete(forms)
-      client.http.delete("#{API_URL}/forms/#{forms}")
+    def delete(form)
+      client.http.delete("#{API_URL}/forms/#{form}")
     end
   end
 end
