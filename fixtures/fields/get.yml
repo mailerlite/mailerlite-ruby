@@ -1,0 +1,60 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://connect.mailerlite.com/api/fields
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Dec 2022 22:01:22 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77d3e5596b22d1d0-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"id":"5","name":"City","key":"city","type":"text","is_default":true,"used_in_automations":true},{"id":"3","name":"Company","key":"company","type":"text","is_default":true,"used_in_automations":false},{"id":"4","name":"Country","key":"country","type":"text","is_default":true,"used_in_automations":false},{"id":"2","name":"Last
+        name","key":"last_name","type":"text","is_default":true,"used_in_automations":false},{"id":"1","name":"Name","key":"name","type":"text","is_default":true,"used_in_automations":false},{"id":"6","name":"Phone","key":"phone","type":"text","is_default":true,"used_in_automations":false},{"id":"7","name":"State","key":"state","type":"text","is_default":true,"used_in_automations":false},{"id":"8","name":"ZIP","key":"z_i_p","type":"text","is_default":true,"used_in_automations":false}],"links":{"first":"https:\/\/connect.mailerlite.com\/api\/fields?page=1","last":"https:\/\/connect.mailerlite.com\/api\/fields?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo;
+        Previous","active":false},{"url":"https:\/\/connect.mailerlite.com\/api\/fields?page=1","label":"1","active":true},{"url":null,"label":"Next
+        &raquo;","active":false}],"path":"https:\/\/connect.mailerlite.com\/api\/fields","per_page":100,"to":8,"total":8}}'
+  recorded_at: Wed, 21 Dec 2022 22:01:20 GMT
+recorded_with: VCR 6.1.0

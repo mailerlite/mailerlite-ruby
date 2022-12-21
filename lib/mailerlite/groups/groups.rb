@@ -18,47 +18,74 @@ module MailerLite
     # @param limit [Integer] the maximum number of Groups to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def list(filter_name:nil, type:, limit: nil, sort: nil, page: nil)
+    def get(filter_name:nil, limit: nil, sort: nil, page: nil)
       params = {}
       params ['filter[name]'] = filter_name if filter_name 
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
 
-      client.http.get("#{API_URL}/groups/#{type}", json: params.compact)
+      client.http.get("#{API_URL}/groups", json: params.compact)
     end
 
-    # Returns the details of the specified Groups
-    #
-    # @param Groups [String] the ID of the Groups to fetch
-    # @return [HTTP::Response] the response from the API
-    def fetch(Groups)
-      client.http.get("#{API_URL}/groups/#{Groups}")
-    end
 
-    # Update the specified Groups
+    # create a Group
     #
-    # @param Groups [String] the ID of the Groups to fetch
+    # @param group [String] the ID of the Groups to create
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
-    def update(Groups:,name:)
+    def create(name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/groups/#{Groups}", json: params.compact)
+      client.http.post("#{API_URL}/groups", json: params.compact)
     end
 
-    # Returns the total number of Groups in the MailerLite account.
+    # Update the specified Group
     #
+    # @param group [String] the ID of the Groups to update
+    # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
-    def fetch_count
-      client.http.get("#{API_URL}/groups/?limit=0")
+    def update(group:,name:)
+      params = { 'name' => name }
+      client.http.put("#{API_URL}/groups/#{group}", json: params.compact)
+    end
+
+    # Get Subscribers assigned to the specified group.
+    # @param group [Integer] The id of existing group belonging to the account
+    # @param filter_status [String] Must be one of the possible statuses: active, unsubscribed, unconfirmed, bounced or junk. Defaults to active.
+    # @param limit [Integer] the maximum number of subscribers to return
+    # @param page [Integer] the page number of the results to return
+    # @return [HTTP::Response] the response from the API
+    def get_subscribers(group:, filter_status:nil, limit:nil, page:nil, sort:nil)
+      params = {}
+      params ['filter[status]'] = filter_status if filter_status 
+      params['limit'] = limit if limit
+      params['sort'] = sort if sort
+      params['page'] = page if page
+      client.http.get("#{API_URL}/groups/#{group}/subscribers", json: params.compact)
+    end
+
+    # Assign Subscriber to the specified group.
+    # @param group [Integer] The id of existing group belonging to the account
+    # @param subscriber [Integer] The id of existing subscriber belonging to the account
+    # @return [HTTP::Response] the response from the API
+    def assign_subscriber(group:, subscriber:)
+      client.http.post("#{API_URL}/subscribers/#{subscriber}/groups/#{group}")
+    end
+
+    # Unassign Subscriber to the specified group.
+    # @param group [Integer] The id of existing group belonging to the account
+    # @param subscriber [Integer] The id of existing subscriber belonging to the account
+    # @return [HTTP::Response] the response from the API
+    def unassign_subscriber(group:, subscriber:)
+      client.http.delete("#{API_URL}/subscribers/#{subscriber}/groups/#{group}")
     end
 
     # Deletes the specified Groups.
     #
-    # @param Groups [String] the ID of the Groups to delete
+    # @param group [String] the ID of the Groups to delete
     # @return [HTTP::Response] the response from the API
-    def delete(Groups)
-      client.http.delete("#{API_URL}/groups/#{Groups}")
+    def delete(group)
+      client.http.delete("#{API_URL}/groups/#{group}")
     end
   end
 end
