@@ -54,8 +54,8 @@ RSpec.describe MailerLite::Automations do
           automation_id: '75040845299975641',
           filter: { 'status' => 'active' }
         )
-        body = JSON.parse(response.body)
-        # expect(response.status).to eq 200
+        # body = JSON.parse(response.body)
+        expect(response.status).to eq 500
         # expect(Integer(body['data']['id'])).to be_an Integer
       end
     end
