@@ -35,13 +35,13 @@ module MailerLite
     #
     # @param automation [String] the ID of the Automation to fetch
     # @return [HTTP::Response] the response from the API
-    def fetch(automation)
-      client.http.get("#{API_URL}/automations/#{automation}")
+    def fetch(automation_id)
+      client.http.get("#{API_URL}/automations/#{automation_id}")
     end
 
     # get_subscriber_activity the subscriber activity for specified Automation
     #
-    # @param automation [Integer] the ID of the Automation to get_subscriber_activity
+    # @param automation_id [Integer] the ID of the Automation to get_subscriber_activity
     # @param filter_status [String] Must be one of the following: completed, active, canceled, failed
     # @param filter_date_from [DateTime] Must be in the format Y-m-d
     # @param filter_date_to [DateTime] Must be in the format Y-m-d
@@ -51,7 +51,7 @@ module MailerLite
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get_subscriber_activity(automation:, filter_status:, filter_date_from: nil, filter_date_to: nil, filter_scheduled_from: nil, filter_scheduled_to: nil, filter_keyword: nil, page: nil, limit: nil)
+    def get_subscriber_activity(automation_id:, filter_status:, filter_date_from: nil, filter_date_to: nil, filter_scheduled_from: nil, filter_scheduled_to: nil, filter_keyword: nil, page: nil, limit: nil)
       params = { 'filter[status]' => filter_status }
       params['filter[date_from]'] = filter_date_from if filter_date_from
       params['filter[date_to]'] = filter_date_to if filter_date_to
@@ -60,7 +60,7 @@ module MailerLite
       params['filter[keyword]'] = filter_keyword if filter_keyword
       params['page'] = page if page
       params['limit'] = limit if limit
-      client.http.get("#{API_URL}/automations/#{automation}/activity", json: params.compact)
+      client.http.get("#{API_URL}/automations/#{automation_id}/activity", json: params.compact)
     end
   end
 end

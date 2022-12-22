@@ -56,7 +56,7 @@ RSpec.describe MailerLite::Campaigns do
     it 'updates a new campaign' do
       VCR.use_cassette('campaigns/update') do
         response = campaigns.update(
-          campaign: 74_917_804_992_628_332,
+          campaign_id: 74_917_804_992_628_332,
           name: 'test_campaign1',
           type: 'regular',
           emails: [{
@@ -72,8 +72,8 @@ RSpec.describe MailerLite::Campaigns do
           }]
         )
         body = JSON.parse(response.body)
-        # expect(response.status).to eq 201
-        # expect(Integer(body["data"]['id'])).to be_a Integer
+        expect(response.status).to eq 200
+        expect(Integer(body['data']['id'])).to be_a Integer
       end
     end
   end
@@ -96,7 +96,7 @@ RSpec.describe MailerLite::Campaigns do
     it 'schedules a campaign' do
       VCR.use_cassette('campaigns/schedule') do
         response = campaigns.schedule(
-          campaign: 74_917_804_992_628_332,
+          campaign_id: 74_917_804_992_628_332,
           delivery: 'instant'
         )
         body = JSON.parse(response.body)

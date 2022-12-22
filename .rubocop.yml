@@ -23,3 +23,6 @@ Metrics/AbcSize:
 
 Naming/FileName:
   Enabled: false
+
+Metrics/BlockLength:
+  AllowedMethods: ['describe', 'context']

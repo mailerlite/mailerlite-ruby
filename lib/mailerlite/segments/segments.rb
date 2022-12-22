@@ -30,9 +30,9 @@ module MailerLite
     # @param Segment [String] the ID of the Segments to update
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
-    def update(segment:, name:)
+    def update(segment_id:, name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/segments/#{segment}", json: params.compact)
+      client.http.put("#{API_URL}/segments/#{segment_id}", json: params.compact)
     end
 
     # Get Subscribers assigned to the specified Segment.
@@ -41,20 +41,20 @@ module MailerLite
     # @param limit [Integer] the maximum number of subscribers to return
     # @param after [Integer] The last subscriber id, available in meta.last
     # @return [HTTP::Response] the response from the API
-    def get_subscribers(segment:, filter_status: nil, limit: nil, after: nil)
+    def get_subscribers(segment_id:, filter_status: nil, limit: nil, after: nil)
       params = {}
       params['filter[status]'] = filter_status if filter_status
       params['limit'] = limit if limit
       params['after'] = after if after
-      client.http.get("#{API_URL}/segments/#{segment}/subscribers", json: params.compact)
+      client.http.get("#{API_URL}/segments/#{segment_id}/subscribers", json: params.compact)
     end
 
     # Deletes the specified Segments.
     #
     # @param Segment [String] the ID of the Segments to delete
     # @return [HTTP::Response] the response from the API
-    def delete(segment)
-      client.http.delete("#{API_URL}/segments/#{segment}")
+    def delete(segment_id)
+      client.http.delete("#{API_URL}/segments/#{segment_id}")
     end
   end
 end

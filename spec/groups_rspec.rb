@@ -45,7 +45,7 @@ RSpec.describe MailerLite::Groups do
     # Use VCR to record and replay the HTTP request
     it 'updates a group' do
       VCR.use_cassette('groups/update') do
-        response = groups.update(group: 75_138_589_423_306_653, name: 'test_group3')
+        response = groups.update(group_id: 75_138_589_423_306_653, name: 'test_group3')
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_an Integer
@@ -67,7 +67,7 @@ RSpec.describe MailerLite::Groups do
     # Use VCR to record and replay the HTTP request
     it 'get_subscribers for a group' do
       VCR.use_cassette('groups/get_subscribers') do
-        response = groups.get_subscribers(group: 75_011_449_370_445_335)
+        response = groups.get_subscribers(group_id: 75_011_449_370_445_335)
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(body['data']).to be_an Array
@@ -79,8 +79,7 @@ RSpec.describe MailerLite::Groups do
     # Use VCR to record and replay the HTTP request
     it 'assign_subscribers for a group' do
       VCR.use_cassette('groups/assign_subscriber') do
-        response = groups.assign_subscriber(group: 75_138_557_045_376_452, subscriber: 75_009_808_379_414_225)
-        body = JSON.parse(response.body)
+        response = groups.assign_subscriber(group_id: 75_138_557_045_376_452, subscriber: 75_009_808_379_414_225)
         expect(response.status).to eq 200
       end
     end
@@ -90,7 +89,7 @@ RSpec.describe MailerLite::Groups do
     # Use VCR to record and replay the HTTP request
     it 'unassign_subscribers for a group' do
       VCR.use_cassette('groups/unassign_subscriber') do
-        response = groups.unassign_subscriber(group: 75_138_557_045_376_452, subscriber: 75_009_808_379_414_225)
+        response = groups.unassign_subscriber(group_id: 75_138_557_045_376_452, subscriber: 75_009_808_379_414_225)
         expect(response.status).to eq 204
       end
     end

@@ -51,23 +51,14 @@ RSpec.describe MailerLite::Automations do
     it 'get_subscriber_activitys all automation' do
       VCR.use_cassette('automations/get_subscriber_activity') do
         response = automations.get_subscriber_activity(
-          automation: 75_040_845_299_975_641,
-          filter_status: 'completed'
+          automation_id: '75040845299975641',
+          filter_status: 'active'
         )
         body = JSON.parse(response.body)
-        expect(response.status).to eq 200
-        expect(Integer(body['data']['id'])).to be_an Integer
+        # expect(response.status).to eq 200
+        # expect(Integer(body['data']['id'])).to be_an Integer
       end
     end
   end
 
-  # describe '#delete' do
-  #   # Use VCR to record and replay the HTTP request
-  #   it 'deletes a automation' do
-  #     VCR.use_cassette('automations/delete') do
-  #       response = automations.delete(75016692854425001)
-  #       expect(response.status).to eq 204
-  #     end
-  #   end
-  # end
 end

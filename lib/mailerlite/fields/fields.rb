@@ -42,20 +42,20 @@ module MailerLite
 
     # Update the specified Field
     #
-    # @param Field [String] the ID of the Field to update
+    # @param field_id [Integer] the field_id to update
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
-    def update(field:, name:)
+    def update(field_id:, name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/fields/#{field}", json: params.compact)
+      client.http.put("#{API_URL}/fields/#{field_id}", json: params.compact)
     end
 
     # Deletes the specified Field.
     #
     # @param Field [String] the ID of the Field to delete
     # @return [HTTP::Response] the response from the API
-    def delete(field)
-      client.http.delete("#{API_URL}/fields/#{field}")
+    def delete(field_id)
+      client.http.delete("#{API_URL}/fields/#{field_id}")
     end
   end
 end

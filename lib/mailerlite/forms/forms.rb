@@ -30,28 +30,28 @@ module MailerLite
 
     # Returns the details of the specified Forms
     #
-    # @param forms [String] the ID of the forms to fetch
+    # @param form_id [String] the ID of the forms to fetch
     # @return [HTTP::Response] the response from the API
-    def fetch(form)
-      client.http.get("#{API_URL}/forms/#{form}")
+    def fetch(form_id)
+      client.http.get("#{API_URL}/forms/#{form_id}")
     end
 
     # Returns the subscribers who signed up to a specific form
     #
-    # @param form [String] the ID of the forms to fetch
+    # @param form_id [String] the ID of the forms to fetch
     # @return [HTTP::Response] the response from the API
-    def fetch_subscribers(form)
-      client.http.get("#{API_URL}/forms/#{form}/subscribers")
+    def fetch_subscribers(form_id)
+      client.http.get("#{API_URL}/forms/#{form_id}/subscribers")
     end
 
     # Update the specified Forms
     #
-    # @param forms [String] the ID of the forms to fetch
+    # @param form_id [String] the ID of the forms to fetch
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
-    def update(form:, name:)
+    def update(form_id:, name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/forms/#{form}", json: params.compact)
+      client.http.put("#{API_URL}/forms/#{form_id}", json: params.compact)
     end
 
     # Returns the total number of Forms in the MailerLite account.
@@ -65,8 +65,8 @@ module MailerLite
     #
     # @param forms [String] the ID of the forms to delete
     # @return [HTTP::Response] the response from the API
-    def delete(form)
-      client.http.delete("#{API_URL}/forms/#{form}")
+    def delete(form_id)
+      client.http.delete("#{API_URL}/forms/#{form_id}")
     end
   end
 end

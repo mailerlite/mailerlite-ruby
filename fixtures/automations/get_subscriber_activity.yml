@@ -5,7 +5,7 @@ http_interactions:
     uri: https://connect.mailerlite.com/api/automations/75040845299975641/activity
     body:
       encoding: UTF-8
-      string: '{"filter[status]":"completed"}'
+      string: '{"filter[status]":"active"}'
     headers:
       Authorization:
       - "<AUTH>"
@@ -25,7 +25,7 @@ http_interactions:
       message: Internal Server Error
     headers:
       Date:
-      - Thu, 22 Dec 2022 21:45:26 GMT
+      - Thu, 22 Dec 2022 23:19:06 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -39,7 +39,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '120'
       X-Ratelimit-Remaining:
-      - '119'
+      - '117'
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -49,12 +49,12 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 77dc0b60bc91d1dc-MCT
+      - 77dc94918a92d1d4-MCT
     body:
       encoding: UTF-8
       string: |-
         {
             "message": "Server Error"
         }
-  recorded_at: Thu, 22 Dec 2022 21:45:25 GMT
+  recorded_at: Thu, 22 Dec 2022 23:19:04 GMT
 recorded_with: VCR 6.1.0

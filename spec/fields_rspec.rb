@@ -50,7 +50,7 @@ RSpec.describe MailerLite::Fields do
     # Use VCR to record and replay the HTTP request
     it 'updates a field' do
       VCR.use_cassette('fields/update') do
-        response = fields.update(field: 91_115, name: 'test_field2')
+        response = fields.update(field_id: 91_115, name: 'test_field2')
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_an Integer

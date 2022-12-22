@@ -58,8 +58,8 @@ module MailerLite
     #
     # @param subscriber [String] the ID of the subscriber to fetch
     # @return [HTTP::Response] the response from the API
-    def fetch(subscriber)
-      client.http.get("#{API_URL}/subscribers/#{subscriber}")
+    def fetch(subscriber_id)
+      client.http.get("#{API_URL}/subscribers/#{subscriber_id}")
     end
 
     # Returns the details of the specified subscribers
@@ -81,8 +81,8 @@ module MailerLite
     #
     # @param subscriber [String] the ID of the subscriber to delete
     # @return [HTTP::Response] the response from the API
-    def delete(subscriber)
-      client.http.delete("#{API_URL}/subscribers/#{subscriber}")
+    def delete(subscriber_id)
+      client.http.delete("#{API_URL}/subscribers/#{subscriber_id}")
     end
   end
 end

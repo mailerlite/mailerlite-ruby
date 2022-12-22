@@ -37,7 +37,7 @@ RSpec.describe MailerLite::Forms do
     # Use VCR to record and replay the HTTP request
     it 'updates a form' do
       VCR.use_cassette('forms/update') do
-        response = forms.update(form: 75_017_795_259_074_408, name: 'test_form2')
+        response = forms.update(form_id: 75_017_795_259_074_408, name: 'test_form2')
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_an Integer

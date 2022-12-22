@@ -38,7 +38,7 @@ RSpec.describe MailerLite::Segments do
     # Use VCR to record and replay the HTTP request
     it 'updates a segment' do
       VCR.use_cassette('segments/update') do
-        response = segments.update(segment: 75_140_256_628_737_109, name: 'test_segment2')
+        response = segments.update(segment_id: 75_140_256_628_737_109, name: 'test_segment2')
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_an Integer
@@ -50,7 +50,7 @@ RSpec.describe MailerLite::Segments do
     # Use VCR to record and replay the HTTP request
     it 'get_subscribers for a segment' do
       VCR.use_cassette('segments/get_subscribers') do
-        response = segments.get_subscribers(segment: 75_140_256_628_737_109)
+        response = segments.get_subscribers(segment_id: 75_140_256_628_737_109)
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(body['data']).to be_an Array

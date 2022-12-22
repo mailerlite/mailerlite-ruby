@@ -35,6 +35,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def create(events:, url:, name: nil)
       params = { 'events' => events, 'url' => url }
+      params['name'] = name if name
       client.http.post("#{API_URL}/webhooks", json: params.compact)
     end
 
