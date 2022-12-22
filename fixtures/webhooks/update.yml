@@ -1,0 +1,58 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: https://connect.mailerlite.com/api/webhooks/75233700096247795
+    body:
+      encoding: UTF-8
+      string: '{"name":"test_webhook2"}'
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 22 Dec 2022 22:35:04 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '117'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77dc54153eb8d1d8-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75233700096247795","name":"test_webhook2","url":"http:\/\/foobar.hook","events":["subscriber.created"],"enabled":true,"secret":"Hym6hUN1bO","created_at":"2022-12-22
+        22:34:07","updated_at":"2022-12-22 22:35:04"}}'
+  recorded_at: Thu, 22 Dec 2022 22:35:03 GMT
+recorded_with: VCR 6.1.0
