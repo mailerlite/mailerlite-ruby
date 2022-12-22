@@ -43,6 +43,7 @@ RSpec.describe MailerLite::Forms do
       end
     end
   end
+  
   describe '#fetch' do
     # Use VCR to record and replay the HTTP request
     it 'fetchs all form' do
@@ -55,6 +56,17 @@ RSpec.describe MailerLite::Forms do
     end
   end
 
+  describe '#fetch_subscribers' do
+    # Use VCR to record and replay the HTTP request
+    it 'fetch_subscribers of a form' do
+      VCR.use_cassette('forms/fetch_subscribers') do
+        response = forms.fetch_subscribers(75231510415803781)
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 200
+        expect(body['data']).to be_an Array
+      end
+    end
+  end
 
   describe '#delete' do
     # Use VCR to record and replay the HTTP request

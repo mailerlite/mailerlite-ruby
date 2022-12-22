@@ -19,13 +19,13 @@ module MailerLite
     # @param limit [Integer] the maximum number of Fields to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(limit: nil, page: nil, filter_keyword:nil, filter_type:nil, sort:nil	)
+    def get(limit: nil, page: nil, filter_keyword: nil, filter_type: nil, sort: nil)
       params = {}
-      params['filter[keyword]'] = filter_keyword if filter_keyword
-      params['filter[type]'] = filter_type if filter_type
-      params['sort'] = sort if sort
-      params['limit'] = limit if limit
-      params['page'] = page if page
+      params["filter[keyword]"] = filter_keyword if filter_keyword
+      params["filter[type]"] = filter_type if filter_type
+      params["sort"] = sort if sort
+      params["limit"] = limit if limit
+      params["page"] = page if page
 
       client.http.get("#{API_URL}/fields", json: params.compact)
     end
@@ -35,8 +35,8 @@ module MailerLite
     # @param name [String] the name of the field to create
     # @param type [String] the type, can be text, number or date
     # @return [HTTP::Response] the response from the API
-    def create(type:,name:)
-      params = { 'name' => name , 'type' => type}
+    def create(type:, name:)
+      params = { "name" => name, "type" => type }
       client.http.post("#{API_URL}/fields", json: params.compact)
     end
 
@@ -45,8 +45,8 @@ module MailerLite
     # @param Field [String] the ID of the Field to update
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
-    def update(field:,name:)
-      params = { 'name' => name }
+    def update(field:, name:)
+      params = { "name" => name }
       client.http.put("#{API_URL}/fields/#{field}", json: params.compact)
     end
 

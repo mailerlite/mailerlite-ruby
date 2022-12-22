@@ -19,10 +19,10 @@ module MailerLite
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
     def get(filter_status:, limit: nil, page: nil)
-      params = { 'filter[status]' => filter_status }
+      params = { "filter[status]" => filter_status }
 
-      params['limit'] = limit if limit
-      params['page'] = page if page
+      params["limit"] = limit if limit
+      params["page"] = page if page
 
       client.http.get("#{API_URL}/subscribers", json: params.compact)
     end
@@ -40,16 +40,16 @@ module MailerLite
     # @param unsubscribed_at [DateTime] the date and time when the subscriber was unsubscribed
     # @return [HTTP::Response] the response from the API
     def create(email:, fields: nil, groups: nil, status: nil, subscribed_at: nil, ip_address: nil, opted_in_at: nil, optin_ip: nil, unsubscribed_at: nil)
-      params = { 'email' => email }
+      params = { "email" => email }
 
-      params['fields'] = fields if fields
-      params['groups'] = groups if groups
-      params['status'] = status if status
-      params['subscribed_at'] = subscribed_at if subscribed_at
-      params['ip_address'] = ip_address if ip_address
-      params['opted_in_at'] = opted_in_at if opted_in_at
-      params['optin_ip'] = optin_ip if optin_ip
-      params['unsubscribed_at'] = unsubscribed_at if unsubscribed_at
+      params["fields"] = fields if fields
+      params["groups"] = groups if groups
+      params["status"] = status if status
+      params["subscribed_at"] = subscribed_at if subscribed_at
+      params["ip_address"] = ip_address if ip_address
+      params["opted_in_at"] = opted_in_at if opted_in_at
+      params["optin_ip"] = optin_ip if optin_ip
+      params["unsubscribed_at"] = unsubscribed_at if unsubscribed_at
 
       client.http.post("#{API_URL}/subscribers", json: params.compact)
     end
@@ -60,6 +60,14 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def fetch(subscriber)
       client.http.get("#{API_URL}/subscribers/#{subscriber}")
+    end
+
+    # Returns the details of the specified subscribers
+    #
+    # @param import_id [String] the ID of the import to fetch report
+    # @return [HTTP::Response] the response from the API
+    def get_single_import(import_id)
+      client.http.get("#{API_URL}/subscribers/import/#{import_id}")
     end
 
     # Returns the total number of subscribers in the MailerLite account.

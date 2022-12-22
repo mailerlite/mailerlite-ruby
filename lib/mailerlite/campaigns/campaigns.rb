@@ -20,11 +20,11 @@ module MailerLite
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
     def get(filter_status:, filter_type: nil, limit: nil, page: nil)
-      params = { 'filter[status]' => filter_status }
+      params = { "filter[status]" => filter_status }
 
-      params['filter[type]'] = filter_type if filter_type 
-      params['limit'] = limit if limit
-      params['page'] = page if page
+      params["filter[type]"] = filter_type if filter_type
+      params["limit"] = limit if limit
+      params["page"] = page if page
 
       client.http.get("#{API_URL}/campaigns", json: params.compact)
     end
@@ -58,30 +58,30 @@ module MailerLite
     # @param resend_setings[b_value][subject] [String] only if type is resend -  Maximum string length of 255 characters
     # @return [HTTP::Response] the response from the API
     def create(name:, language_id: nil, type:, emails:, groups: nil, segments: nil, ab_settings: nil, resend_settings: nil)
-      params = { 'name' => name }
-      params['type'] = type 
-      params['emails'] = emails 
-      params['language_id'] = language_id if language_id
-      params['groups'] = groups if groups
-      params['segments'] = segments if segments
+      params = { "name" => name }
+      params["type"] = type
+      params["emails"] = emails
+      params["language_id"] = language_id if language_id
+      params["groups"] = groups if groups
+      params["segments"] = segments if segments
       if type == "ab"
-        params['ab_settings[test_type]'] = ab_settings['test_type']
-        params['ab_settings[select_winner_by]'] = ab_settings['select_winner_by']
-        params['ab_settings[after_time_amount]'] = ab_settings['after_time_amount']
-        params['ab_settings[after_time_unit]'] = ab_settings['after_time_unit']
-        params['ab_settings[test_split]'] = ab_settings['test_split']
-        if ab_settings['test_type'] == "subject"
-          params['ab_settings[b_value][subject]'] = ab_settings['b_value']['subject']
-        elsif ab_settings['test_type'] == "sender"
-          params['ab_settings[b_value][from_name]'] = ab_settings['b_value']['from_name']
-          params['ab_settings[b_value][from]'] = ab_settings['b_value']['from']
+        params["ab_settings[test_type]"] = ab_settings["test_type"]
+        params["ab_settings[select_winner_by]"] = ab_settings["select_winner_by"]
+        params["ab_settings[after_time_amount]"] = ab_settings["after_time_amount"]
+        params["ab_settings[after_time_unit]"] = ab_settings["after_time_unit"]
+        params["ab_settings[test_split]"] = ab_settings["test_split"]
+        if ab_settings["test_type"] == "subject"
+          params["ab_settings[b_value][subject]"] = ab_settings["b_value"]["subject"]
+        elsif ab_settings["test_type"] == "sender"
+          params["ab_settings[b_value][from_name]"] = ab_settings["b_value"]["from_name"]
+          params["ab_settings[b_value][from]"] = ab_settings["b_value"]["from"]
         end
       elsif type == "resend"
-        params['resend_settings[test_type]'] = resend_settings['test_type']
-        params['resend_settings[select_winner_by]'] = resend_settings['select_winner_by']
-        params['resend_settings[b_value][subject]'] = resend_settings['b_value']['subject']
+        params["resend_settings[test_type]"] = resend_settings["test_type"]
+        params["resend_settings[select_winner_by]"] = resend_settings["select_winner_by"]
+        params["resend_settings[b_value][subject]"] = resend_settings["b_value"]["subject"]
       end
-      
+
       client.http.post("#{API_URL}/campaigns", json: params.compact)
     end
 
@@ -113,33 +113,33 @@ module MailerLite
     # @param resend_settings[b_value] [Array] only if type is resend -  Must contain the items for the auto resend of the campaign
     # @param resend_setings[b_value][subject] [String] only if type is resend -  Maximum string length of 255 characters
     # @return [HTTP::Response] the response from the API
-    def update(campaign:,name:, language_id: nil, type:, emails:, groups: nil, segments: nil, ab_settings: nil, resend_settings: nil)
-      params = { 'name' => name }
-      params['emails'] = emails  
-      params['language_id'] = language_id if language_id
-      params['groups'] = groups if groups
-      params['segments'] = segments if segments
+    def update(campaign:, name:, language_id: nil, type:, emails:, groups: nil, segments: nil, ab_settings: nil, resend_settings: nil)
+      params = { "name" => name }
+      params["emails"] = emails
+      params["language_id"] = language_id if language_id
+      params["groups"] = groups if groups
+      params["segments"] = segments if segments
       if type == "ab"
-        params['ab_settings[test_type]'] = ab_settings['test_type']
-        params['ab_settings[select_winner_by]'] = ab_settings['select_winner_by']
-        params['ab_settings[after_time_amount]'] = ab_settings['after_time_amount']
-        params['ab_settings[after_time_unit]'] = ab_settings['after_time_unit']
-        params['ab_settings[test_split]'] = ab_settings['test_split']
-        if ab_settings['test_type'] == "subject"
-          params['ab_settings[b_value][subject]'] = ab_settings['b_value']['subject']
-        elsif ab_settings['test_type'] == "sender"
-          params['ab_settings[b_value][from_name]'] = ab_settings['b_value']['from_name']
-          params['ab_settings[b_value][from]'] = ab_settings['b_value']['from']
+        params["ab_settings[test_type]"] = ab_settings["test_type"]
+        params["ab_settings[select_winner_by]"] = ab_settings["select_winner_by"]
+        params["ab_settings[after_time_amount]"] = ab_settings["after_time_amount"]
+        params["ab_settings[after_time_unit]"] = ab_settings["after_time_unit"]
+        params["ab_settings[test_split]"] = ab_settings["test_split"]
+        if ab_settings["test_type"] == "subject"
+          params["ab_settings[b_value][subject]"] = ab_settings["b_value"]["subject"]
+        elsif ab_settings["test_type"] == "sender"
+          params["ab_settings[b_value][from_name]"] = ab_settings["b_value"]["from_name"]
+          params["ab_settings[b_value][from]"] = ab_settings["b_value"]["from"]
         end
       elsif type == "resend"
-        params['resend_settings[test_type]'] = resend_settings['test_type']
-        params['resend_settings[select_winner_by]'] = resend_settings['select_winner_by']
-        params['resend_settings[b_value][subject]'] = resend_settings['b_value']['subject']
+        params["resend_settings[test_type]"] = resend_settings["test_type"]
+        params["resend_settings[select_winner_by]"] = resend_settings["select_winner_by"]
+        params["resend_settings[b_value][subject]"] = resend_settings["b_value"]["subject"]
       end
-      
+
       client.http.put("#{API_URL}/campaigns/#{campaign}", json: params.compact)
     end
-    
+
     # Schedules the specified campaign.
     #
     # @param campaign [String] the ID of the campaign to schedule
@@ -154,24 +154,24 @@ module MailerLite
     # @param resend[minutes]	[String]	only for campaign of type auto resend	Must be a valid minute in ii format
     # @param resend[timezone_id]	[Integer]	no	Must be a valid timezone id, defaults to the account's timezone id
     # @return [HTTP::Response] the response from the API
-    def schedule(campaign:, delivery:, schedule:nil, resend:nil)
+    def schedule(campaign:, delivery:, schedule: nil, resend: nil)
       params = {}
-      params['delivery'] = delivery if delivery
+      params["delivery"] = delivery if delivery
       if (delivery == "scheduled" || delivery == "timezone_based") and schedule
-        params['schedule[date]'] = schedule['date'] if delivery == "scheduled" and schedule.key?('date')
-        params['schedule[hours]'] = schedule['hours'] if schedule.key?('hours')
-        params['schedule[minutes]'] = schedule['minutes'] if schedule.key?('minutes')
-        params['schedule[timezone_id]'] = schedule['timezone_id'] if schedule.key?('timezone_id')
+        params["schedule[date]"] = schedule["date"] if delivery == "scheduled" and schedule.key?("date")
+        params["schedule[hours]"] = schedule["hours"] if schedule.key?("hours")
+        params["schedule[minutes]"] = schedule["minutes"] if schedule.key?("minutes")
+        params["schedule[timezone_id]"] = schedule["timezone_id"] if schedule.key?("timezone_id")
       end
-      
-      params['resend[delivery]'] = resend['delivery'] if resend and resend.key?('delivery')
-      params['resend[date]'] = resend['date'] if resend and resend.key?('date')
-      params['resend[hours]'] = resend['hours'] if resend and resend.key?('hours')
-      params['resend[minutes]'] = resend['minutes'] if resend and resend.key?('minutes')
-      params['resend[timezone_id]'] = resend['timezone_id'] if resend and resend.key?('timezone_id')
+
+      params["resend[delivery]"] = resend["delivery"] if resend and resend.key?("delivery")
+      params["resend[date]"] = resend["date"] if resend and resend.key?("date")
+      params["resend[hours]"] = resend["hours"] if resend and resend.key?("hours")
+      params["resend[minutes]"] = resend["minutes"] if resend and resend.key?("minutes")
+      params["resend[timezone_id]"] = resend["timezone_id"] if resend and resend.key?("timezone_id")
       client.http.post("#{API_URL}/campaigns/#{campaign}/schedule", json: params.compact)
     end
-    
+
     # Returns the details of the specified Campaigns
     #
     # @param campaign [String] the ID of the campaign to fetch
@@ -194,6 +194,23 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def delete(campaign)
       client.http.delete("#{API_URL}/campaigns/#{campaign}")
+    end
+
+    # get_subscriber_activity the subscriber activity for specified campaign
+    #
+    # @param campaign [Integer] the ID of the campaign to get_subscriber_activity
+    # @param filter_type [String] Must be one of following: opened, unopened, clicked, unsubscribed, forwarded, hardbounced, softbounced, junk. Defaults to returning all recipients
+    # @param filter_search [String] Must be a subscriber email
+    # @param limit [Integer] the maximum number of campaigns to return
+    # @param page [Integer] the page number of the results to return
+    # @return [HTTP::Response] the response from the API
+    def get_subscriber_activity(campaign:, filter_type: nil, filter_search: nil, page: nil, limit: nil, sort: nil)
+      params = { "filter[type]" => filter_type }
+      params["filter[search]"] = filter_search if filter_search
+      params["page"] = page if page
+      params["limit"] = limit if limit
+      params["sort"] = sort if sort
+      client.http.get("#{API_URL}/campaigns/#{campaign}/reports/subscriber-activity", json: params.compact)
     end
   end
 end
