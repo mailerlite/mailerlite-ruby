@@ -20,11 +20,11 @@ module MailerLite
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(limit: nil, page: nil, filter_status: nil, filter_name: nil, filter_group: nil)
+    def get(limit: nil, page: nil, filter: {})
       params = {}
-      params['filter[status]'] = filter_status if filter_status
-      params['filter[name]'] = filter_name if filter_name
-      params['filter[group]'] = filter_group if filter_group
+      params['filter[status]'] = filter['status'] if filter.key?('status')
+      params['filter[name]'] = filter['name'] if filter.key?('name')
+      params['filter[group]'] = filter['group'] if filter.key?('group')
       params['limit'] = limit if limit
       params['page'] = page if page
 
@@ -51,13 +51,13 @@ module MailerLite
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get_subscriber_activity(automation_id:, filter_status:, filter_date_from: nil, filter_date_to: nil, filter_scheduled_from: nil, filter_scheduled_to: nil, filter_keyword: nil, page: nil, limit: nil)
-      params = { 'filter[status]' => filter_status }
-      params['filter[date_from]'] = filter_date_from if filter_date_from
-      params['filter[date_to]'] = filter_date_to if filter_date_to
-      params['filter[scheduled_from]'] = filter_scheduled_from if filter_scheduled_from
-      params['filter[scheduled_to]'] = filter_scheduled_to if filter_scheduled_to
-      params['filter[keyword]'] = filter_keyword if filter_keyword
+    def get_subscriber_activity(automation_id:, filter: {}, page: nil, limit: nil)
+      params = { 'filter[status]' => filter['status'] }
+      params['filter[date_from]'] = filter['date_from'] if filter.key?('date_from')
+      params['filter[date_to]'] = filter['date_to'] if filter.key?('date_to')
+      params['filter[scheduled_from]'] = filter['scheduled_from'] if filter.key?('scheduled_from')
+      params['filter[scheduled_to]'] = filter['scheduled_to'] if filter.key?('scheduled_to')
+      params['filter[keyword]'] = filter['keyword'] if filter.key?('keyword')
       params['page'] = page if page
       params['limit'] = limit if limit
       client.http.get("#{API_URL}/automations/#{automation_id}/activity", json: params.compact)

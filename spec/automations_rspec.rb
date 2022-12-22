@@ -52,7 +52,7 @@ RSpec.describe MailerLite::Automations do
       VCR.use_cassette('automations/get_subscriber_activity') do
         response = automations.get_subscriber_activity(
           automation_id: '75040845299975641',
-          filter_status: 'active'
+          filter: { 'status' => 'active' }
         )
         body = JSON.parse(response.body)
         # expect(response.status).to eq 200
@@ -60,5 +60,4 @@ RSpec.describe MailerLite::Automations do
       end
     end
   end
-
 end

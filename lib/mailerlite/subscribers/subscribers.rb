@@ -18,8 +18,8 @@ module MailerLite
     # @param limit [Integer] the maximum number of subscribers to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(filter_status:, limit: nil, page: nil)
-      params = { 'filter[status]' => filter_status }
+    def get(filter:, limit: nil, page: nil)
+      params = { 'filter[status]' => filter['status'] }
 
       params['limit'] = limit if limit
       params['page'] = page if page

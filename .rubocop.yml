@@ -26,3 +26,6 @@ Naming/FileName:
 
 Metrics/BlockLength:
   AllowedMethods: ['describe', 'context']
+
+Metrics/CyclomaticComplexity:
+  Max: 15

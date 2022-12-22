@@ -19,10 +19,10 @@ module MailerLite
     # @param limit [Integer] the maximum number of Fields to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(limit: nil, page: nil, filter_keyword: nil, filter_type: nil, sort: nil)
+    def get(limit: nil, page: nil, filter: {}, sort: nil)
       params = {}
-      params['filter[keyword]'] = filter_keyword if filter_keyword
-      params['filter[type]'] = filter_type if filter_type
+      params['filter[keyword]'] = filter['keyword'] if filter.key?('keyword')
+      params['filter[type]'] = filter['type'] if filter.key?('type')
       params['sort'] = sort if sort
       params['limit'] = limit if limit
       params['page'] = page if page

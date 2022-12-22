@@ -37,13 +37,13 @@ module MailerLite
 
     # Get Subscribers assigned to the specified Segment.
     # @param Segment [Integer] The id of existing Segment belonging to the account
-    # @param filter_status [String] Must be one of the possible statuses: active, unsubscribed, unconfirmed, bounced or junk. Defaults to active.
+    # @param filter[status] [String] Must be one of the possible statuses: active, unsubscribed, unconfirmed, bounced or junk. Defaults to active.
     # @param limit [Integer] the maximum number of subscribers to return
     # @param after [Integer] The last subscriber id, available in meta.last
     # @return [HTTP::Response] the response from the API
-    def get_subscribers(segment_id:, filter_status: nil, limit: nil, after: nil)
+    def get_subscribers(segment_id:, filter: {}, limit: nil, after: nil)
       params = {}
-      params['filter[status]'] = filter_status if filter_status
+      params['filter[status]'] = filter['status'] if filter.key?('status')
       params['limit'] = limit if limit
       params['after'] = after if after
       client.http.get("#{API_URL}/segments/#{segment_id}/subscribers", json: params.compact)

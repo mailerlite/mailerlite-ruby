@@ -18,9 +18,9 @@ module MailerLite
     # @param limit [Integer] the maximum number of Groups to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(filter_name: nil, limit: nil, sort: nil, page: nil)
+    def get(filter: {}, limit: nil, sort: nil, page: nil)
       params = {}
-      params['filter[name]'] = filter_name if filter_name
+      params['filter[name]'] = filter['name'] if filter.key?('name')
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
@@ -54,9 +54,9 @@ module MailerLite
     # @param limit [Integer] the maximum number of subscribers to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get_subscribers(group_id:, filter_status: nil, limit: nil, page: nil, sort: nil)
+    def get_subscribers(group_id:, filter: {}, limit: nil, page: nil, sort: nil)
       params = {}
-      params['filter[status]'] = filter_status if filter_status
+      params['filter[status]'] = filter['status'] if filter.key?('status')
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page

@@ -18,9 +18,9 @@ module MailerLite
     # @param limit [Integer] the maximum number of Forms to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def list(type:, filter_name: nil, limit: nil, sort: nil, page: nil)
+    def list(type:, filter: {}, limit: nil, sort: nil, page: nil)
       params = {}
-      params['filter[name]'] = filter_name if filter_name
+      params['filter[name]'] = filter['name'] if filter.key?('name')
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page

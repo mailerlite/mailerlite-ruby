@@ -14,15 +14,15 @@ module MailerLite
 
     # Returns a list of Campaigns that match the specified filter criteria.
     #
-    # @param filter_status [String] the status of the Campaigns to include in the results, must be one of [sent, draft, ready], Defaults to ready
-    # @param filter_type [String] the filter type of the Campaigns to include in the results, must be one of [regular, ab, resend, rss], Defaults to all
+    # @param filter[status] [String] the status of the Campaigns to include in the results, must be one of [sent, draft, ready], Defaults to ready
+    # @param filter[type] [String] the filter type of the Campaigns to include in the results, must be one of [regular, ab, resend, rss], Defaults to all
     # @param limit [Integer] the maximum number of Campaigns to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(filter_status:, filter_type: nil, limit: nil, page: nil)
-      params = { 'filter[status]' => filter_status }
+    def get(filter:, limit: nil, page: nil)
+      params = { 'filter[status]' => filter['status'] }
 
-      params['filter[type]'] = filter_type if filter_type
+      params['filter[type]'] = filter['type'] if filter.key?('type')
       params['limit'] = limit if limit
       params['page'] = page if page
 
@@ -209,9 +209,9 @@ module MailerLite
     # @param limit [Integer] the maximum number of campaigns to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get_subscriber_activity(campaign_id:, filter_type: nil, filter_search: nil, page: nil, limit: nil, sort: nil)
-      params = { 'filter[type]' => filter_type }
-      params['filter[search]'] = filter_search if filter_search
+    def get_subscriber_activity(campaign_id:, filter:, page: nil, limit: nil, sort: nil)
+      params = { 'filter[type]' => filter['type'] }
+      params['filter[search]'] = filter['search'] if filter.key?('search')
       params['page'] = page if page
       params['limit'] = limit if limit
       params['sort'] = sort if sort

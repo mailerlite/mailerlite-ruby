@@ -26,7 +26,7 @@ RSpec.describe MailerLite::Campaigns do
     # Use VCR to record and replay the HTTP request
     it 'returns a list of Campaigns' do
       VCR.use_cassette('campaigns/get') do
-        response = campaigns.get(filter_status: 'active')
+        response = campaigns.get(filter: { status: 'active' })
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(body['data']).to be_an Array
