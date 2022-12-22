@@ -15,7 +15,7 @@ module MailerLite
     # Returns a list of Webhooks
     #
     # @return [HTTP::Response] the response from the API
-    def get()
+    def get
       client.http.get("#{API_URL}/webhooks")
     end
 
@@ -34,7 +34,7 @@ module MailerLite
     # @param url [String] the events, can be text, number or date
     # @return [HTTP::Response] the response from the API
     def create(events:, url:, name: nil)
-      params = { "events" => events, "url" => url }
+      params = { 'events' => events, 'url' => url }
       client.http.post("#{API_URL}/webhooks", json: params.compact)
     end
 
@@ -48,10 +48,10 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def update(webhook_id:, events: nil, name: nil, url: nil, enabled: nil)
       params = {}
-      params["events"] = events if events
-      params["name"] = name if name
-      params["url"] = url if url
-      params["enabled"] = enabled if enabled
+      params['events'] = events if events
+      params['name'] = name if name
+      params['url'] = url if url
+      params['enabled'] = enabled if enabled
       client.http.put("#{API_URL}/webhooks/#{webhook_id}", json: params.compact)
     end
 

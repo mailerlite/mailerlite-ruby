@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Import the RSpec and VCR gems
 require 'spec_helper'
 require 'vcr'
@@ -10,16 +12,15 @@ require 'json'
 VCR.configure do |config|
   config.cassette_library_dir = './fixtures'
   config.hook_into :webmock
-  config.filter_sensitive_data('<AUTH>') { |interaction|
+  config.filter_sensitive_data('<AUTH>') do |interaction|
     interaction.request.headers['Authorization'][0]
-  }
+  end
 end
 
 # Set up the test for the `Automations` class
 RSpec.describe MailerLite::Automations do
   let(:client) { MailerLite::Client.new }
   let(:automations) { described_class.new(client: client) }
-
 
   describe '#get' do
     # Use VCR to record and replay the HTTP request
@@ -32,12 +33,12 @@ RSpec.describe MailerLite::Automations do
       end
     end
   end
-  
+
   describe '#fetch' do
     # Use VCR to record and replay the HTTP request
     it 'fetchs all automation' do
       VCR.use_cassette('automations/fetch') do
-        response = automations.fetch(75040845299975641)
+        response = automations.fetch(75_040_845_299_975_641)
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_an Integer
@@ -50,7 +51,7 @@ RSpec.describe MailerLite::Automations do
     it 'get_subscriber_activitys all automation' do
       VCR.use_cassette('automations/get_subscriber_activity') do
         response = automations.get_subscriber_activity(
-          automation:75040845299975641,
+          automation: 75_040_845_299_975_641,
           filter_status: 'completed'
         )
         body = JSON.parse(response.body)
@@ -59,7 +60,6 @@ RSpec.describe MailerLite::Automations do
       end
     end
   end
-
 
   # describe '#delete' do
   #   # Use VCR to record and replay the HTTP request

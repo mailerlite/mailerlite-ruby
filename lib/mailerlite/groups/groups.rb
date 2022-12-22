@@ -20,10 +20,10 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get(filter_name: nil, limit: nil, sort: nil, page: nil)
       params = {}
-      params["filter[name]"] = filter_name if filter_name
-      params["limit"] = limit if limit
-      params["sort"] = sort if sort
-      params["page"] = page if page
+      params['filter[name]'] = filter_name if filter_name
+      params['limit'] = limit if limit
+      params['sort'] = sort if sort
+      params['page'] = page if page
 
       client.http.get("#{API_URL}/groups", json: params.compact)
     end
@@ -34,7 +34,7 @@ module MailerLite
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
     def create(name:)
-      params = { "name" => name }
+      params = { 'name' => name }
       client.http.post("#{API_URL}/groups", json: params.compact)
     end
 
@@ -44,7 +44,7 @@ module MailerLite
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
     def update(group:, name:)
-      params = { "name" => name }
+      params = { 'name' => name }
       client.http.put("#{API_URL}/groups/#{group}", json: params.compact)
     end
 
@@ -56,10 +56,10 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get_subscribers(group:, filter_status: nil, limit: nil, page: nil, sort: nil)
       params = {}
-      params["filter[status]"] = filter_status if filter_status
-      params["limit"] = limit if limit
-      params["sort"] = sort if sort
-      params["page"] = page if page
+      params['filter[status]'] = filter_status if filter_status
+      params['limit'] = limit if limit
+      params['sort'] = sort if sort
+      params['page'] = page if page
       client.http.get("#{API_URL}/groups/#{group}/subscribers", json: params.compact)
     end
 

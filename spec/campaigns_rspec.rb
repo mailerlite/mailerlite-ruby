@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Import the RSpec and VCR gems
 require 'spec_helper'
 require 'vcr'
@@ -10,9 +12,9 @@ require 'json'
 VCR.configure do |config|
   config.cassette_library_dir = './fixtures'
   config.hook_into :webmock
-  config.filter_sensitive_data('<AUTH>') { |interaction|
+  config.filter_sensitive_data('<AUTH>') do |interaction|
     interaction.request.headers['Authorization'][0]
-  }
+  end
 end
 
 # Set up the test for the `Campaigns` class
@@ -36,17 +38,16 @@ RSpec.describe MailerLite::Campaigns do
     # Use VCR to record and replay the HTTP request
     it 'creates a new campaign' do
       VCR.use_cassette('campaigns/create') do
-        response = campaigns.create(name: 'test_campaign' , 
-          type: 'regular',
-          emails: [{
-            'subject': 'test subject',
-            'from': 'sdk@mailerlite.com',
-            'from_name': 'user'
-          }]
-        )
+        response = campaigns.create(name: 'test_campaign',
+                                    type: 'regular',
+                                    emails: [{
+                                      subject: 'test subject',
+                                      from: 'sdk@mailerlite.com',
+                                      from_name: 'user'
+                                    }])
         body = JSON.parse(response.body)
         expect(response.status).to eq 201
-        expect(Integer(body["data"]['id'])).to be_a Integer
+        expect(Integer(body['data']['id'])).to be_a Integer
       end
     end
   end
@@ -55,14 +56,14 @@ RSpec.describe MailerLite::Campaigns do
     it 'updates a new campaign' do
       VCR.use_cassette('campaigns/update') do
         response = campaigns.update(
-          campaign: 74917804992628332,
-          name: 'test_campaign1', 
+          campaign: 74_917_804_992_628_332,
+          name: 'test_campaign1',
           type: 'regular',
           emails: [{
-            'subject': 'testsubject1',
-            'from': 'sdk@mailerlite.com',
-            'from_name': 'user',
-            'content': '<!DOCTYPE html>
+            subject: 'testsubject1',
+            from: 'sdk@mailerlite.com',
+            from_name: 'user',
+            content: '<!DOCTYPE html>
             <html>
                 <body>
                     This is a test email
@@ -81,7 +82,7 @@ RSpec.describe MailerLite::Campaigns do
     # Use VCR to record and replay the HTTP request
     it 'fetches a campaign' do
       VCR.use_cassette('campaigns/fetch') do
-        response = campaigns.fetch(74917804992628332)
+        response = campaigns.fetch(74_917_804_992_628_332)
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_a Integer
@@ -89,18 +90,18 @@ RSpec.describe MailerLite::Campaigns do
       end
     end
   end
-  
+
   describe '#schedule' do
     # Use VCR to record and replay the HTTP request
     it 'schedules a campaign' do
       VCR.use_cassette('campaigns/schedule') do
         response = campaigns.schedule(
-          campaign: 74917804992628332,
-          delivery: 'instant', 
+          campaign: 74_917_804_992_628_332,
+          delivery: 'instant'
         )
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
-        expect(body['data']['delivery_schedule']).to eq "instant"
+        expect(body['data']['delivery_schedule']).to eq 'instant'
         expect(Integer(body['data']['account_id'])).to be_a Integer
         expect(Integer(body['data']['id'])).to be_a Integer
       end
@@ -111,7 +112,7 @@ RSpec.describe MailerLite::Campaigns do
     # Use VCR to record and replay the HTTP request
     it 'deletes a campaign' do
       VCR.use_cassette('campaigns/delete') do
-        response = campaigns.delete(74917804992628332)
+        response = campaigns.delete(74_917_804_992_628_332)
         expect(response.status).to eq 204
       end
     end

@@ -19,8 +19,8 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get(limit: nil, page: nil)
       params = {}
-      params["limit"] = limit if limit
-      params["page"] = page if page
+      params['limit'] = limit if limit
+      params['page'] = page if page
 
       client.http.get("#{API_URL}/segments", json: params.compact)
     end
@@ -31,7 +31,7 @@ module MailerLite
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
     def update(segment:, name:)
-      params = { "name" => name }
+      params = { 'name' => name }
       client.http.put("#{API_URL}/segments/#{segment}", json: params.compact)
     end
 
@@ -43,9 +43,9 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get_subscribers(segment:, filter_status: nil, limit: nil, after: nil)
       params = {}
-      params["filter[status]"] = filter_status if filter_status
-      params["limit"] = limit if limit
-      params["after"] = after if after
+      params['filter[status]'] = filter_status if filter_status
+      params['limit'] = limit if limit
+      params['after'] = after if after
       client.http.get("#{API_URL}/segments/#{segment}/subscribers", json: params.compact)
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Import the RSpec and VCR gems
 require 'spec_helper'
 require 'vcr'
@@ -10,16 +12,15 @@ require 'json'
 VCR.configure do |config|
   config.cassette_library_dir = './fixtures'
   config.hook_into :webmock
-  config.filter_sensitive_data('<AUTH>') { |interaction|
+  config.filter_sensitive_data('<AUTH>') do |interaction|
     interaction.request.headers['Authorization'][0]
-  }
+  end
 end
 
 # Set up the test for the `Fields` class
 RSpec.describe MailerLite::Fields do
   let(:client) { MailerLite::Client.new }
   let(:fields) { described_class.new(client: client) }
-
 
   describe '#get' do
     # Use VCR to record and replay the HTTP request
@@ -37,7 +38,7 @@ RSpec.describe MailerLite::Fields do
     # Use VCR to record and replay the HTTP request
     it 'creates a field' do
       VCR.use_cassette('fields/create') do
-        response = fields.create(type:'text',name:'test_field_name')
+        response = fields.create(type: 'text', name: 'test_field_name')
         body = JSON.parse(response.body)
         expect(response.status).to eq 201
         expect(Integer(body['data']['id'])).to be_an Integer
@@ -49,7 +50,7 @@ RSpec.describe MailerLite::Fields do
     # Use VCR to record and replay the HTTP request
     it 'updates a field' do
       VCR.use_cassette('fields/update') do
-        response = fields.update(field:91115,name:'test_field2')
+        response = fields.update(field: 91_115, name: 'test_field2')
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_an Integer
@@ -61,10 +62,9 @@ RSpec.describe MailerLite::Fields do
     # Use VCR to record and replay the HTTP request
     it 'deletes a field' do
       VCR.use_cassette('fields/delete') do
-        response = fields.delete(91115)
+        response = fields.delete(91_115)
         expect(response.status).to eq 204
       end
     end
   end
-
 end

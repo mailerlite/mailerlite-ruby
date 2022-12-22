@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "http"
-require "dotenv/load"
+require 'http'
+require 'dotenv/load'
 
-API_URL = "https://connect.mailerlite.com/api"
+API_URL = 'https://connect.mailerlite.com/api'
 
-Dotenv.require_keys("MAILERLITE_API_TOKEN")
+Dotenv.require_keys('MAILERLITE_API_TOKEN')
 
 # mailerlite-ruby is a gem that integrates all endpoints from MailerLite API
 module MailerLite
@@ -13,15 +13,15 @@ module MailerLite
 
   # Inits the client.
   class Client
-    def initialize(api_token = ENV.fetch("MAILERLITE_API_TOKEN", nil))
+    def initialize(api_token = ENV.fetch('MAILERLITE_API_TOKEN', nil))
       @api_token = api_token
     end
 
     def headers
       {
-        "User-Agent" => "MailerLite-client-ruby/#{MailerLite::VERSION}",
-        "Accept" => "application/json",
-        "Content-type" => "application/json",
+        'User-Agent' => "MailerLite-client-ruby/#{MailerLite::VERSION}",
+        'Accept' => 'application/json',
+        'Content-type' => 'application/json'
       }
     end
 

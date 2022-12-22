@@ -18,12 +18,12 @@ module MailerLite
     # @param limit [Integer] the maximum number of Forms to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def list(filter_name: nil, type:, limit: nil, sort: nil, page: nil)
+    def list(type:, filter_name: nil, limit: nil, sort: nil, page: nil)
       params = {}
-      params["filter[name]"] = filter_name if filter_name
-      params["limit"] = limit if limit
-      params["sort"] = sort if sort
-      params["page"] = page if page
+      params['filter[name]'] = filter_name if filter_name
+      params['limit'] = limit if limit
+      params['sort'] = sort if sort
+      params['page'] = page if page
 
       client.http.get("#{API_URL}/forms/#{type}", json: params.compact)
     end
@@ -50,7 +50,7 @@ module MailerLite
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
     def update(form:, name:)
-      params = { "name" => name }
+      params = { 'name' => name }
       client.http.put("#{API_URL}/forms/#{form}", json: params.compact)
     end
 
