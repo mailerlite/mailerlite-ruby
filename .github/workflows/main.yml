@@ -11,6 +11,7 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.0.1
-        bundler-cache: true
-    - name: Run the default task
-      run: bundle exec rake
+    - name: Install bundle deps
+      run: bundle i
+    - name: Run tests
+      run: export MAILERLITE_API_TOKEN=dummy_token && bundle exec rspec spec/*rspec.rb

@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://connect.mailerlite.com/api/batch
+    body:
+      encoding: UTF-8
+      string: '{"requests":[{"method":"GET","path":"api/subscribers/list"},{"method":"GET","path":"api/campaigns/list"}]}'
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 Dec 2022 20:38:06 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '118'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77e3e6206cc0de47-MCT
+    body:
+      encoding: UTF-8
+      string: '{"total":2,"successful":0,"failed":2,"responses":[{"code":404,"body":{"message":"No
+        query results for model [App\\Models\\Subscriber\\Subscriber]."}},{"code":404,"body":{"message":"The
+        route api\/campaigns\/list could not be found."}}]}'
+  recorded_at: Fri, 23 Dec 2022 20:38:06 GMT
+recorded_with: VCR 6.1.0

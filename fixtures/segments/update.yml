@@ -1,0 +1,58 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: https://connect.mailerlite.com/api/segments/75140256628737109
+    body:
+      encoding: UTF-8
+      string: '{"name":"test_segment2"}'
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 Dec 2022 21:53:09 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '116'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77d3d94c7d26de47-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75140256628737109","name":"test_segment2","total":2,"open_rate":{"float":0,"string":"0%"},"click_rate":{"float":0,"string":"0%"},"created_at":"2022-12-21
+        21:48:52"}}'
+  recorded_at: Wed, 21 Dec 2022 21:53:06 GMT
+recorded_with: VCR 6.1.0

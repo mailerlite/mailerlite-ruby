@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: get
-    uri: https://connect.mailerlite.com/api/subscribers
+    uri: https://connect.mailerlite.com/api/subscribers/second@email.com
     body:
       encoding: UTF-8
-      string: '{"filter[status]":"active"}'
+      string: ''
     headers:
       Authorization:
       - "<AUTH>"
@@ -25,7 +25,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Dec 2022 22:09:45 GMT
+      - Fri, 23 Dec 2022 21:05:09 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -34,10 +34,12 @@ http_interactions:
       - close
       Cache-Control:
       - no-cache, private
+      X-Locale:
+      - en
       X-Ratelimit-Limit:
       - '120'
       X-Ratelimit-Remaining:
-      - '118'
+      - '119'
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -47,13 +49,14 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 7760965f3957d1e0-MCT
+      - 77e40dbfed54d1cc-MCT
     body:
       encoding: UTF-8
-      string: '{"data":[{"id":"73871649530709291","email":"user@example.com","status":"active","source":"api","sent":0,"opens_count":0,"clicks_count":0,"open_rate":0,"click_rate":0,"ip_address":null,"subscribed_at":"2022-12-07
-        21:44:54","unsubscribed_at":null,"created_at":"2022-12-07 21:44:54","updated_at":"2022-12-07
-        22:07:37","fields":{"name":null,"last_name":null,"company":null,"country":null,"city":null,"phone":null,"state":null,"z_i_p":null},"opted_in_at":null,"optin_ip":null},{"id":"72832024158668435","email":"ahsan@mailerlite.com","status":"active","source":"manual","sent":0,"opens_count":0,"clicks_count":0,"open_rate":0,"click_rate":0,"ip_address":null,"subscribed_at":"2022-11-26
-        10:20:30","unsubscribed_at":null,"created_at":"2022-11-26 10:20:30","updated_at":"2022-11-26
-        10:20:30","fields":{"name":"Ahsan Gondal","last_name":null,"company":null,"country":null,"city":null,"phone":null,"state":null,"z_i_p":null},"opted_in_at":null,"optin_ip":null}],"links":{"first":null,"last":null,"prev":null,"next":null},"meta":{"path":"https:\/\/connect.mailerlite.com\/api\/subscribers","per_page":25,"next_cursor":null,"prev_cursor":null}}'
-  recorded_at: Wed, 07 Dec 2022 22:09:45 GMT
+      string: '{"data":{"id":"75009808379414225","email":"second@email.com","status":"active","source":"import","sent":0,"opens_count":0,"clicks_count":0,"open_rate":0,"click_rate":0,"ip_address":null,"subscribed_at":"2022-12-20
+        11:15:27","unsubscribed_at":null,"created_at":"2022-12-20 11:15:27","updated_at":"2022-12-21
+        18:32:20","fields":{"name":null,"last_name":null,"company":null,"country":null,"city":"Lajpcig","phone":null,"state":null,"z_i_p":null},"groups":[{"id":"75011449370445335","name":"My
+        Group","active_count":4,"sent_count":3,"opens_count":3,"open_rate":{"float":1,"string":"100%"},"clicks_count":0,"click_rate":{"float":0,"string":"0%"},"unsubscribed_count":0,"unconfirmed_count":2,"bounced_count":0,"junk_count":0,"created_at":"2022-12-20
+        11:41:32"},{"id":"75138838590129612","name":"SMmwGofyQP","active_count":1,"sent_count":1,"opens_count":1,"open_rate":{"float":1,"string":"100%"},"clicks_count":0,"click_rate":{"float":0,"string":"0%"},"unsubscribed_count":0,"unconfirmed_count":0,"bounced_count":0,"junk_count":0,"created_at":"2022-12-21
+        21:26:20"}],"opted_in_at":null,"optin_ip":null}}'
+  recorded_at: Fri, 23 Dec 2022 21:05:08 GMT
 recorded_with: VCR 6.1.0

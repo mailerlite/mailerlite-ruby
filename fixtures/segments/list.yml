@@ -1,0 +1,60 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://connect.mailerlite.com/api/segments
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 Dec 2022 21:16:48 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77e41ecf8b15d1e4-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"id":"75230139503346765","name":"test_segment2","total":4,"open_rate":{"float":1,"string":"100%"},"click_rate":{"float":0,"string":"0%"},"created_at":"2022-12-22
+        21:37:31"}],"links":{"first":"https:\/\/connect.mailerlite.com\/api\/segments?page=1","last":"https:\/\/connect.mailerlite.com\/api\/segments?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo;
+        Previous","active":false},{"url":"https:\/\/connect.mailerlite.com\/api\/segments?page=1","label":"1","active":true},{"url":null,"label":"Next
+        &raquo;","active":false}],"path":"https:\/\/connect.mailerlite.com\/api\/segments","per_page":250,"to":1,"total":1}}'
+  recorded_at: Fri, 23 Dec 2022 21:16:47 GMT
+recorded_with: VCR 6.1.0

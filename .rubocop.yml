@@ -23,3 +23,14 @@ Metrics/AbcSize:
 
 Naming/FileName:
   Enabled: false
+
+Metrics/BlockLength:
+  AllowedMethods: ['describe', 'context']
+
+Metrics/CyclomaticComplexity:
+  Max: 16
+Metrics/PerceivedComplexity:
+  Max: 16
+Metrics/ClassLength:
+  Max: 150
+

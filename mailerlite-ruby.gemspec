@@ -4,11 +4,10 @@ lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'mailerlite/version'
 
-
 Gem::Specification.new do |spec|
   spec.name          = 'mailerlite-ruby'
   spec.version       = MailerLite::VERSION
-  spec.authors       = ['Nikola Milojević']
+  spec.authors       = ['Nikola Milojević', 'Ahsan Gondal']
   spec.email         = ['info@mailerlite.com']
 
   spec.summary       = "MailerLite's official Ruby SDK"
@@ -35,7 +34,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'http', '~> 5.0'
   spec.add_dependency 'json', '~> 2.5'
   spec.add_dependency 'uri', '~> 0.10.1'
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'vcr'
   spec.add_development_dependency 'webmock'
 end
