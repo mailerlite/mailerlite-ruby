@@ -22,11 +22,11 @@ RSpec.describe MailerLite::Subscribers do
   let(:client) { MailerLite::Client.new }
   let(:subscribers) { described_class.new(client: client) }
 
-  describe '#get' do
+  describe '#fetch' do
     # Use VCR to record and replay the HTTP request
     it 'returns a list of subscribers' do
-      VCR.use_cassette('subscribers/get') do
-        response = subscribers.get(filter: { status: 'active' })
+      VCR.use_cassette('subscribers/fetch') do
+        response = subscribers.fetch(filter: { status: 'active' })
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(body['data']).to be_an Array
@@ -47,14 +47,14 @@ RSpec.describe MailerLite::Subscribers do
     end
   end
 
-  describe '#fetch' do
+  describe '#get' do
     # Use VCR to record and replay the HTTP request
-    it 'fetches a subscriber' do
-      VCR.use_cassette('subscribers/fetch') do
-        response = subscribers.fetch('user@example.com')
+    it 'gets a subscriber' do
+      VCR.use_cassette('subscribers/get') do
+        response = subscribers.get('second@email.com')
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
-        expect(Integer(body['data']['id'])).to eq 73_871_649_530_709_291
+        expect(Integer(body['data']['id'])).to eq 75_009_808_379_414_225
         expect(body['data']['email']).to be_a String
       end
     end

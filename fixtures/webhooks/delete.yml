@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: delete
-    uri: https://connect.mailerlite.com/api/webhooks/75233700096247795
+    uri: https://connect.mailerlite.com/api/webhooks/75321640600209302
     body:
       encoding: UTF-8
       string: ''
@@ -25,7 +25,7 @@ http_interactions:
       message: No Content
     headers:
       Date:
-      - Thu, 22 Dec 2022 22:35:50 GMT
+      - Fri, 23 Dec 2022 21:52:46 GMT
       Connection:
       - close
       Cache-Control:
@@ -35,7 +35,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '120'
       X-Ratelimit-Remaining:
-      - '118'
+      - '119'
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -45,9 +45,9 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 77dc55379c96de5b-MCT
+      - 77e453821df6de47-MCT
     body:
       encoding: ASCII-8BIT
       string: ''
-  recorded_at: Thu, 22 Dec 2022 22:35:49 GMT
+  recorded_at: Fri, 23 Dec 2022 21:52:45 GMT
 recorded_with: VCR 6.1.0

@@ -113,6 +113,30 @@ RSpec.describe MailerLite::Campaigns do
     end
   end
 
+  describe '#activity' do
+    # Use VCR to record and replay the HTTP request
+    it 'gets subscriber activity of a campaign' do
+      VCR.use_cassette('campaigns/activity') do
+        response = campaigns.activity(campaign_id: 75_037_917_434_611_569)
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 200
+        expect(body['data']).to be_a Array
+      end
+    end
+  end
+
+  describe '#languages' do
+    # Use VCR to record and replay the HTTP request
+    it 'gets subscriber languages of a campaign' do
+      VCR.use_cassette('campaigns/languages') do
+        response = campaigns.languages
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 200
+        expect(body['data']).to be_a Array
+      end
+    end
+  end
+
   describe '#delete' do
     # Use VCR to record and replay the HTTP request
     it 'deletes a campaign' do

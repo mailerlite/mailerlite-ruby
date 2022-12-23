@@ -22,11 +22,11 @@ RSpec.describe MailerLite::Segments do
   let(:client) { MailerLite::Client.new }
   let(:segments) { described_class.new(client: client) }
 
-  describe '#get' do
+  describe '#list' do
     # Use VCR to record and replay the HTTP request
     it 'returns a list of Segments' do
-      VCR.use_cassette('segments/get') do
-        response = segments.get
+      VCR.use_cassette('segments/list') do
+        response = segments.list
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(body['data']).to be_an Array

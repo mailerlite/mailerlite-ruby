@@ -15,7 +15,7 @@ module MailerLite
     # Returns a list of Webhooks
     #
     # @return [HTTP::Response] the response from the API
-    def get
+    def list
       client.http.get("#{API_URL}/webhooks")
     end
 
@@ -23,7 +23,7 @@ module MailerLite
     #
     # @param webhooks [String] the ID of the webhooks to fetch
     # @return [HTTP::Response] the response from the API
-    def fetch(webhook_id)
+    def get(webhook_id)
       client.http.get("#{API_URL}/webhooks/#{webhook_id}")
     end
 

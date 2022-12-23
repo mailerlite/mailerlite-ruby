@@ -17,7 +17,7 @@ module MailerLite
     # @param limit [Integer] the maximum number of Segments to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get(limit: nil, page: nil)
+    def list(limit: nil, page: nil)
       params = {}
       params['limit'] = limit if limit
       params['page'] = page if page

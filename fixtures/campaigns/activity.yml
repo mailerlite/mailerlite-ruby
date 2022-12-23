@@ -1,0 +1,64 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://connect.mailerlite.com/api/campaigns/75037917434611569/reports/subscriber-activity
+    body:
+      encoding: UTF-8
+      string: "{}"
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 Dec 2022 21:33:23 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77e437198fd4d1e4-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"id":"75038031542749150","opens_count":1,"clicks_count":0,"subscriber":{"id":"73931277474989872","email":"sdk@mailerlite.com","status":"active","source":"manual","sent":2,"opens_count":2,"clicks_count":0,"open_rate":100,"click_rate":0,"ip_address":null,"subscribed_at":"2022-12-08
+        13:32:40","unsubscribed_at":null,"created_at":"2022-12-08 13:32:40","updated_at":"2022-12-20
+        18:45:03","fields":{"name":"SDK","last_name":null,"company":null,"country":null,"city":"Lajpcig","phone":null,"state":null,"z_i_p":null},"opted_in_at":null,"optin_ip":null}},{"id":"75038031600420839","opens_count":2,"clicks_count":0,"subscriber":{"id":"75030636641911843","email":"igor@hrcek.rs","status":"active","source":"webform","sent":1,"opens_count":1,"clicks_count":0,"open_rate":100,"click_rate":0,"ip_address":"89.216.27.147","subscribed_at":"2022-12-20
+        16:46:31","unsubscribed_at":null,"created_at":"2022-12-20 16:46:31","updated_at":"2022-12-21
+        07:45:50","fields":{"name":null,"last_name":null,"company":null,"country":null,"city":null,"phone":null,"state":null,"z_i_p":null},"opted_in_at":"2022-12-20
+        16:46:42","optin_ip":"89.216.27.147"}}],"links":{"first":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity?page=1","last":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo;
+        Previous","active":false},{"url":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity?page=1","label":"1","active":true},{"url":null,"label":"Next
+        &raquo;","active":false}],"path":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity","per_page":50,"to":2,"total":2,"counts":{"all":2,"opened":2,"unopened":0,"clicked":0,"unsubscribed":0,"forwarded":0,"hardbounced":0,"softbounced":0,"junk":0}}}'
+  recorded_at: Fri, 23 Dec 2022 21:33:22 GMT
+recorded_with: VCR 6.1.0

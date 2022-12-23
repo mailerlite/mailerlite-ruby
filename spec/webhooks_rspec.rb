@@ -38,11 +38,11 @@ RSpec.describe MailerLite::Webhooks do
     end
   end
 
-  describe '#get' do
+  describe '#list' do
     # Use VCR to record and replay the HTTP request
-    it 'gets all webhooks' do
-      VCR.use_cassette('webhooks/get') do
-        response = webhooks.get
+    it 'lists all webhooks' do
+      VCR.use_cassette('webhooks/list') do
+        response = webhooks.list
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(body['data']).to be_an Array
@@ -62,11 +62,11 @@ RSpec.describe MailerLite::Webhooks do
     end
   end
 
-  describe '#fetch' do
+  describe '#get' do
     # Use VCR to record and replay the HTTP request
-    it 'fetchs all webhook' do
-      VCR.use_cassette('webhooks/fetch') do
-        response = webhooks.fetch(75_233_700_096_247_795)
+    it 'gets all webhook' do
+      VCR.use_cassette('webhooks/get') do
+        response = webhooks.get(75_321_551_702_984_317)
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(Integer(body['data']['id'])).to be_an Integer
@@ -78,7 +78,7 @@ RSpec.describe MailerLite::Webhooks do
     # Use VCR to record and replay the HTTP request
     it 'deletes a webhook' do
       VCR.use_cassette('webhooks/delete') do
-        response = webhooks.delete(75_233_700_096_247_795)
+        response = webhooks.delete(75_321_640_600_209_302)
         expect(response.status).to eq 204
       end
     end

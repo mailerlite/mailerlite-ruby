@@ -7,7 +7,7 @@ require 'mailerlite/version'
 Gem::Specification.new do |spec|
   spec.name          = 'mailerlite-ruby'
   spec.version       = MailerLite::VERSION
-  spec.authors       = ['Nikola Milojević']
+  spec.authors       = ['Nikola Milojević', 'Ahsan Gondal']
   spec.email         = ['info@mailerlite.com']
 
   spec.summary       = "MailerLite's official Ruby SDK"
