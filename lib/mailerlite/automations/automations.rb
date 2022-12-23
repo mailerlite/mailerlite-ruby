@@ -14,9 +14,9 @@ module MailerLite
 
     # Returns a list of Automations that match the specified filter criteria.
     #
-    # @param filter_status [Boolean] Must be one of the following: true (for active) and false (for inactive). Defaults to return all automations
-    # @param filter_name [String] must be a text
-    # @param filter_group [String] Must be a valid group id. Returns all automations that use the group in their trigger configuration
+    # @param filter[status] [Boolean] Must be one of the following: true (for active) and false (for inactive). Defaults to return all automations
+    # @param filter[name] [String] must be a text
+    # @param filter[group] [String] Must be a valid group id. Returns all automations that use the group in their trigger configuration
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
@@ -42,12 +42,12 @@ module MailerLite
     # get_subscriber_activity the subscriber activity for specified Automation
     #
     # @param automation_id [Integer] the ID of the Automation to get_subscriber_activity
-    # @param filter_status [String] Must be one of the following: completed, active, canceled, failed
-    # @param filter_date_from [DateTime] Must be in the format Y-m-d
-    # @param filter_date_to [DateTime] Must be in the format Y-m-d
-    # @param filter_scheduled_from [DateTime] Must be in the format Y-m-d
-    # @param filter_scheduled_to [DateTime] Must be in the format Y-m-d
-    # @param filter_keyword [String] Must be a subscriber email
+    # @param filter[status] [String] Must be one of the following: completed, active, canceled, failed
+    # @param filter[date_from] [DateTime] Must be in the format Y-m-d
+    # @param filter[date_to] [DateTime] Must be in the format Y-m-d
+    # @param filter[scheduled_from] [DateTime] Must be in the format Y-m-d
+    # @param filter[scheduled_to] [DateTime] Must be in the format Y-m-d
+    # @param filter[keyword] [String] Must be a subscriber email
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
