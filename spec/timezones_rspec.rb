@@ -22,7 +22,6 @@ RSpec.describe MailerLite::Timezones do
   let(:client) { MailerLite::Client.new }
   let(:timezones) { described_class.new(client: client) }
 
-
   describe '#list' do
     # Use VCR to record and replay the HTTP request
     it 'lists all Timezones' do
@@ -34,5 +33,4 @@ RSpec.describe MailerLite::Timezones do
       end
     end
   end
-
 end

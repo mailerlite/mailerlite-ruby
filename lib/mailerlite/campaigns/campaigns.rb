@@ -66,22 +66,33 @@ module MailerLite
       params['segments'] = segments if segments
       case type
       when 'ab'
-        params['ab_settings']['test_type'] = ab_settings[:test_type]
-        params['ab_settings']['select_winner_by'] = ab_settings[:select_winner_by]
-        params['ab_settings']['after_time_amount'] = ab_settings[:after_time_amount]
-        params['ab_settings']['after_time_unit'] = ab_settings[:after_time_unit]
-        params['ab_settings']['test_split'] = ab_settings[:test_split]
+        params['ab_settings'] = {
+          test_type: ab_settings[:test_type],
+          select_winner_by: ab_settings[:select_winner_by],
+          after_time_amount: ab_settings[:after_time_amount],
+          after_time_unit: ab_settings[:after_time_unit],
+          test_split: ab_settings[:test_split]
+        }
         case ab_settings[:test_type]
         when 'subject'
-          params['ab_settings']['b_value']['subject'] = ab_settings[:b_value][:subject]
+          params['ab_settings']['b_value'] = {
+            subject: ab_settings[:b_value][:subject]
+          }
+
         when 'sender'
-          params['ab_settings']['b_value']['from_name'] = ab_settings[:b_value][:from_name]
-          params['ab_settings']['b_value']['from'] = ab_settings[:b_value][:from]
+          params['ab_settings']['b_value'] = {
+            from_name: ab_settings[:b_value][:from_name],
+            from: ab_settings[:b_value][:from]
+          }
         end
       when 'resend'
-        params['resend_settings']['test_type'] = resend_settings[:test_type]
-        params['resend_settings']['select_winner_by'] = resend_settings[:select_winner_by]
-        params['resend_settings']['b_value']['subject'] = resend_settings[:b_value][:subject]
+        params['resend_settings'] = {
+          test_type: resend_settings[:test_type],
+          select_winner_by: resend_settings[:select_winner_by],
+          b_value: {
+            subject: resend_settings[:b_value][:subject]
+          }
+        }
       end
 
       client.http.post("#{API_URL}/campaigns", body: params.compact.to_json)
@@ -124,22 +135,35 @@ module MailerLite
       params['segments'] = segments if segments
       case type
       when 'ab'
-        params['ab_settings']['test_type'] = ab_settings[:test_type]
-        params['ab_settings']['select_winner_by'] = ab_settings[:select_winner_by]
-        params['ab_settings']['after_time_amount'] = ab_settings[:after_time_amount]
-        params['ab_settings']['after_time_unit'] = ab_settings[:after_time_unit]
-        params['ab_settings']['test_split'] = ab_settings[:test_split]
+        params['ab_settings'] = {
+          test_type: ab_settings[:test_type],
+          select_winner_by: ab_settings[:select_winner_by],
+          after_time_amount: ab_settings[:after_time_amount],
+          after_time_unit: ab_settings[:after_time_unit],
+          test_split: ab_settings[:test_split]
+        }
         case ab_settings[:test_type]
         when 'subject'
-          params['ab_settings']['b_value']['subject'] = ab_settings[:b_value][:subject]
+          params['ab_settings']['b_value'] = {
+            subject: ab_settings[:b_value][:subject]
+          }
+
         when 'sender'
-          params['ab_settings']['b_value']['from_name'] = ab_settings[:b_value][:from_name]
-          params['ab_settings']['b_value']['from'] = ab_settings[:b_value][:from]
+          params['ab_settings']['b_value'] = {
+            from_name: ab_settings[:b_value][:from_name],
+            from: ab_settings[:b_value][:from]
+          }
+
         end
       when 'resend'
-        params['resend_settings']['test_type'] = resend_settings[:test_type]
-        params['resend_settings']['select_winner_by'] = resend_settings[:select_winner_by]
-        params['resend_settings']['b_value']['subject'] = resend_settings[:b_value][:subject]
+        params['resend_settings'] = {
+          test_type: resend_settings[:test_type],
+          select_winner_by: resend_settings[:select_winner_by],
+          b_value: {
+            subject: resend_settings[:b_value][:subject]
+          }
+        }
+
       end
 
       client.http.put("#{API_URL}/campaigns/#{campaign_id}", body: params.compact.to_json)
@@ -163,11 +187,13 @@ module MailerLite
       params = {}
       params['delivery'] = delivery if delivery
       if %w[scheduled timezone_based].include?(delivery) && schedule
+        params['schedule'] = {}
         params['schedule']['date'] = schedule[:date] if (delivery == 'scheduled') && schedule.key?(:date)
         params['schedule']['hours'] = schedule[:hours] if schedule.key?(:hours)
         params['schedule']['minutes'] = schedule[:minutes] if schedule.key?(:minutes)
         params['schedule']['timezone_id'] = schedule[:timezone_id] if schedule.key?(:timezone_id)
       end
+      params['resend'] = {} if resend
       params['resend']['delivery'] = resend[:delivery] if resend&.key?(:delivery)
       params['resend']['date'] = resend[:date] if resend&.key?(:date)
       params['resend']['hours'] = resend[:hours] if resend&.key?(:hours)
@@ -209,8 +235,9 @@ module MailerLite
     # @param limit [Integer] the maximum number of campaigns to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def activity(campaign_id:, filter: {}, page: nil, limit: nil, sort: nil)
+    def activity(campaign_id:, filter: nil, page: nil, limit: nil, sort: nil)
       params = {}
+      params['filter'] = {} if filter
       params['filter']['type'] = filter[:type] if filter.key?(:type)
       params['filter']['search'] = filter[:search] if filter.key?(:search)
       params['page'] = page if page

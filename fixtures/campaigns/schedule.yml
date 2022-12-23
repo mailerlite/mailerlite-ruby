@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: https://connect.mailerlite.com/api/campaigns/74917804992628332/schedule
+    uri: https://connect.mailerlite.com/api/campaigns/75323121649846116/schedule
     body:
       encoding: UTF-8
-      string: '{"delivery":"instant"}'
+      string: '{"delivery":"scheduled","schedule":{"date":"2022-12-31","hours":"22","minutes":"00"}}'
     headers:
       Authorization:
       - "<AUTH>"
@@ -25,7 +25,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 19 Dec 2022 10:58:40 GMT
+      - Fri, 23 Dec 2022 22:18:04 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -39,7 +39,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '120'
       X-Ratelimit-Remaining:
-      - '118'
+      - '119'
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -49,19 +49,21 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 77bf9fd82e68d1e0-MCT
+      - 77e4788f5f71d1e8-MCT
     body:
       encoding: UTF-8
-      string: '{"data":{"id":"74917804992628332","account_id":"252151","name":"test_campaign1","type":"regular","status":"ready","missing_data":[],"settings":[],"filter":[],"filter_for_humans":[],"delivery_schedule":"instant","language_id":"4","created_at":"2022-12-19
-        10:53:06","updated_at":"2022-12-19 10:58:40","scheduled_for":"2022-12-19 10:59:40","queued_at":null,"started_at":null,"finished_at":null,"stopped_at":null,"default_email_id":"74917805026182765","emails":[{"id":"74917805026182765","account_id":"252151","emailable_id":"74917804992628332","emailable_type":"campaigns","type":"builder_rich_text","from":"sdk@mailerlite.com","from_name":"user","name":null,"subject":"testsubject1","content":"<!DOCTYPE
-        html PUBLIC \"-\/\/W3C\/\/DTD HTML 3.2\/\/EN\">\n<html>\n  <head>\n    <!--{$head_top}-->\n    <!--[if
+      string: '{"data":{"id":"75323121649846116","account_id":"252151","name":"Test
+        Campaign 2","type":"regular","status":"ready","missing_data":[],"settings":{"track_opens":"1","use_google_analytics":"0","ecommerce_tracking":"0"},"filter":[],"filter_for_humans":[],"delivery_schedule":"scheduled","language_id":"4","created_at":"2022-12-23
+        22:15:26","updated_at":"2022-12-23 22:18:04","scheduled_for":"2022-12-31 22:00:00","queued_at":null,"started_at":null,"finished_at":null,"stopped_at":null,"default_email_id":"75323121669769061","emails":[{"id":"75323121669769061","account_id":"252151","emailable_id":"75323121649846116","emailable_type":"campaigns","type":"builder_rich_text","from":"sdk@mailerlite.com","from_name":"SDK
+        account","name":null,"subject":"Test Campaign 2","content":"<!DOCTYPE html
+        PUBLIC \"-\/\/W3C\/\/DTD HTML 3.2\/\/EN\">\n<html>\n  <head>\n    <!--{$head_top}-->\n    <!--[if
         gte mso 9]>\n\t\t<xml>\n\t\t\t<o:OfficeDocumentsettings>\n\t\t\t<o:AllowPNG\/>\n\t\t\t<o:PixelsPerInch>96<\/o:PixelsPerInch>\n\t\t\t<\/o:OfficeDocumentsettings>\n\t\t<\/xml>\n\t<![endif]-->\n    <meta
         http-equiv=\"Content-Type\" content=\"text\/html; charset=utf-8\">\n    <meta
         name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta
         http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"format-detection\"
         content=\"address=no\">\n    <meta name=\"format-detection\" content=\"telephone=no\">\n    <meta
         name=\"format-detection\" content=\"email=no\">\n    <meta name=\"x-apple-disable-message-reformatting\"><!--[if
-        !mso]><!-->\n\n    <style type=\"text\/css\">\n    @import url(\"https:\/\/assets.mlcdn.com\/fonts.css?version=1670578\");\n    <\/style><!--<![endif]-->\n\n    <style
+        !mso]><!-->\n\n    <style type=\"text\/css\">\n    @import url(\"https:\/\/assets.mlcdn.com\/fonts.css?version=1671538\");\n    <\/style><!--<![endif]-->\n\n    <style
         type=\"text\/css\">\n    .ReadMsgBody { width: 100%; }\n    .ExternalClass{
         width: 100%; }\n    .ExternalClass * { line-height: 100%; }\n    .ExternalClass,
         .ExternalClass p, .ExternalClass td, .ExternalClass div, .ExternalClass span,
@@ -110,7 +112,8 @@ http_interactions:
         cellspacing=\"\" width=\"100%\" class=\"mlMainContent\">\n            <tr>\n              <td>\n                <!--  -->\n                <div
         class=\"ml-rte-text\">\n                  <p style=\n                  \"font-family:
         Arial, Helvetica, sans-serif; color: #000000; font-size: 14px; line-height:
-        125%; margin: 0px 0px 20px 0px;\">\n                    This is a test email\n                  <\/p>\n                <\/div><!--  -->\n              <\/td>\n            <\/tr>\n          <\/table>\n          <table
+        125%; margin: 0px 0px 20px 0px;\">\n                    Start writing your
+        text\n                  <\/p>\n                <\/div><!--  -->\n              <\/td>\n            <\/tr>\n          <\/table>\n          <table
         align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"
         class=\n          \"mlMainContent\" style=\n          \"border-top: 1px solid
         #d1d3d3; width: 100%; border-collapse: initial;\"><\/table>\n          <table
@@ -151,7 +154,7 @@ http_interactions:
         have received a newsletter from {$account}.\n\nHowever, your email software
         can''t display HTML emails. You can view the newsletter by clicking here:\n\n{$url}\n\n\n\nYou''re
         receiving this newsletter because you have shown interest in {$account}.\nNot
-        interested anymore? Click here to unsubscribe:\n{$unsubscribe}\n","screenshot_url":"https:\/\/storage.googleapis.com\/mailerlite-screenshots-prod\/screenshot\/emails\/74917805026182765\/1284x736.png","preview_url":"https:\/\/preview.mailerlite.io\/preview\/252151\/emails\/74917805026182765","created_at":"2022-12-19
-        10:53:06","updated_at":"2022-12-19 10:58:28","is_designed":true,"language_id":4,"language":{"id":"4","shortcode":"en","iso639":"en-US","name":"English","direction":"ltr"},"is_winner":false,"stats":{"sent":0,"opens_count":0,"unique_opens_count":0,"open_rate":{"float":0,"string":"0%"},"clicks_count":0,"unique_clicks_count":0,"click_rate":{"float":0,"string":"0%"},"unsubscribes_count":0,"unsubscribe_rate":{"float":0,"string":"0%"},"spam_count":0,"spam_rate":{"float":0,"string":"0%"},"hard_bounces_count":0,"hard_bounce_rate":{"float":0,"string":"0%"},"soft_bounces_count":0,"soft_bounce_rate":{"float":0,"string":"0%"},"forwards_count":0},"send_after":null,"track_opens":true,"uses_quiz":false}],"used_in_automations":false,"type_for_humans":"Regular","is_stopped":false,"has_winner":null,"winner_version_for_human":null,"winner_sending_time_for_humans":null,"winner_selected_manually_at":null,"can":{"update":true,"delete":true,"send":true,"copy":true,"resend":false},"uses_ecommerce":false,"uses_survey":false,"can_be_scheduled":false,"warnings":[],"is_currently_sending_out":false}}'
-  recorded_at: Mon, 19 Dec 2022 10:58:40 GMT
+        interested anymore? Click here to unsubscribe:\n{$unsubscribe}\n","screenshot_url":"https:\/\/storage.googleapis.com\/mailerlite-screenshots-prod\/screenshot\/emails\/75323121669769061\/1284x736.png","preview_url":"https:\/\/preview.mailerlite.io\/preview\/252151\/emails\/75323121669769061","created_at":"2022-12-23
+        22:15:26","updated_at":"2022-12-23 22:15:51","is_designed":true,"language_id":4,"language":{"id":"4","shortcode":"en","iso639":"en-US","name":"English","direction":"ltr"},"is_winner":false,"stats":{"sent":0,"opens_count":0,"unique_opens_count":0,"open_rate":{"float":0,"string":"0%"},"clicks_count":0,"unique_clicks_count":0,"click_rate":{"float":0,"string":"0%"},"unsubscribes_count":0,"unsubscribe_rate":{"float":0,"string":"0%"},"spam_count":0,"spam_rate":{"float":0,"string":"0%"},"hard_bounces_count":0,"hard_bounce_rate":{"float":0,"string":"0%"},"soft_bounces_count":0,"soft_bounce_rate":{"float":0,"string":"0%"},"forwards_count":0},"send_after":null,"track_opens":true,"uses_quiz":false}],"used_in_automations":false,"type_for_humans":"Regular","is_stopped":false,"has_winner":null,"winner_version_for_human":null,"winner_sending_time_for_humans":null,"winner_selected_manually_at":null,"can":{"update":true,"delete":true,"send":true,"copy":true,"resend":false},"uses_ecommerce":false,"uses_survey":false,"can_be_scheduled":false,"warnings":[],"is_currently_sending_out":false}}'
+  recorded_at: Fri, 23 Dec 2022 22:18:03 GMT
 recorded_with: VCR 6.1.0

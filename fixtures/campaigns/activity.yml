@@ -5,7 +5,7 @@ http_interactions:
     uri: https://connect.mailerlite.com/api/campaigns/75037917434611569/reports/subscriber-activity
     body:
       encoding: UTF-8
-      string: "{}"
+      string: '{"filter":{"type":"opened"}}'
     headers:
       Authorization:
       - "<AUTH>"
@@ -25,7 +25,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 23 Dec 2022 21:33:23 GMT
+      - Fri, 23 Dec 2022 22:22:59 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -49,7 +49,7 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 77e437198fd4d1e4-MCT
+      - 77e47fc539c7de43-MCT
     body:
       encoding: UTF-8
       string: '{"data":[{"id":"75038031542749150","opens_count":1,"clicks_count":0,"subscriber":{"id":"73931277474989872","email":"sdk@mailerlite.com","status":"active","source":"manual","sent":2,"opens_count":2,"clicks_count":0,"open_rate":100,"click_rate":0,"ip_address":null,"subscribed_at":"2022-12-08
@@ -60,5 +60,5 @@ http_interactions:
         16:46:42","optin_ip":"89.216.27.147"}}],"links":{"first":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity?page=1","last":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo;
         Previous","active":false},{"url":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity?page=1","label":"1","active":true},{"url":null,"label":"Next
         &raquo;","active":false}],"path":"https:\/\/connect.mailerlite.com\/api\/campaigns\/75037917434611569\/reports\/subscriber-activity","per_page":50,"to":2,"total":2,"counts":{"all":2,"opened":2,"unopened":0,"clicked":0,"unsubscribed":0,"forwarded":0,"hardbounced":0,"softbounced":0,"junk":0}}}'
-  recorded_at: Fri, 23 Dec 2022 21:33:22 GMT
+  recorded_at: Fri, 23 Dec 2022 22:22:58 GMT
 recorded_with: VCR 6.1.0

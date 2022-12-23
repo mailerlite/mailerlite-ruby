@@ -101,12 +101,13 @@ RSpec.describe MailerLite::Campaigns do
     it 'schedules a campaign' do
       VCR.use_cassette('campaigns/schedule') do
         response = campaigns.schedule(
-          campaign_id: 74_917_804_992_628_332,
-          delivery: 'instant'
+          campaign_id: 75_323_121_649_846_116,
+          delivery: 'scheduled',
+          schedule: { date: '2022-12-31', hours: '22', minutes: '00' }
         )
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
-        expect(body['data']['delivery_schedule']).to eq 'instant'
+        expect(body['data']['status']).to eq 'ready'
         expect(Integer(body['data']['account_id'])).to be_a Integer
         expect(Integer(body['data']['id'])).to be_a Integer
       end
@@ -117,7 +118,12 @@ RSpec.describe MailerLite::Campaigns do
     # Use VCR to record and replay the HTTP request
     it 'gets subscriber activity of a campaign' do
       VCR.use_cassette('campaigns/activity') do
-        response = campaigns.activity(campaign_id: 75_037_917_434_611_569)
+        response = campaigns.activity(
+          campaign_id: 75_037_917_434_611_569,
+          filter: {
+            type: 'opened'
+          }
+        )
         body = JSON.parse(response.body)
         expect(response.status).to eq 200
         expect(body['data']).to be_a Array
