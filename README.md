@@ -118,7 +118,7 @@ require "mailerlite-ruby"
 # Intialize the class
 subscribers = Mailerlite::Subscribers.new
 
-response = subscribers.create(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address='1.2.3.4', optin_ip='1.2.3.4')
+response = subscribers.create(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
 ```
 
 ### Update a subscriber
@@ -131,7 +131,7 @@ require "mailerlite-ruby"
 # Intialize the class
 subscribers = Mailerlite::Subscribers.new
 
-response = subscribers.update(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address='1.2.3.4', optin_ip='1.2.3.4')
+response = subscribers.update(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
 ```
 
 ### Get a subscriber
@@ -330,7 +330,7 @@ require "mailerlite-ruby"
 # Intialize the class
 fields = Mailerlite::Fields.new
 
-response = fields.list(limit=10, page=1, sort='name', filter={'keyword': 'abc', 'type': 'text'})
+response = fields.list(limit:10, page:1, sort:'name', filter:{'keyword': 'abc', 'type': 'text'})
 ```
 
 ### Create a field
@@ -575,7 +575,7 @@ require "mailerlite-ruby"
 # Intialize the class
 forms = Mailerlite::Forms.new
 
-response = forms.list(limit=10, page=1, sort='name', filter={'name': 'form name'})
+response = forms.list(limit:10, page:1, sort:'name', filter:{'name': 'form name'})
 ```
 
 ### Get a form
