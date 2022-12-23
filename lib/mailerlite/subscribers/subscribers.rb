@@ -19,12 +19,13 @@ module MailerLite
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
     def get(filter:, limit: nil, page: nil)
-      params = { 'filter[status]' => filter['status'] }
+      params = { 'filter[status]' => filter[:status] }
 
       params['limit'] = limit if limit
       params['page'] = page if page
-
-      client.http.get("#{API_URL}/subscribers", json: params.compact)
+      uri = URI("#{API_URL}/subscribers")
+      uri.query = URI.encode_www_form(params.compact)
+      client.http.get(uri)
     end
 
     # Creates a new subscriber with the specified details.

@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: get
-    uri: https://connect.mailerlite.com/api/automations/75040845299975641/activity
+    uri: https://connect.mailerlite.com/api/automations/75040845299975641/activity?filter%5Bstatus%5D=completed
     body:
       encoding: UTF-8
-      string: '{"filter[status]":"active"}'
+      string: ''
     headers:
       Authorization:
       - "<AUTH>"
@@ -21,11 +21,11 @@ http_interactions:
       - connect.mailerlite.com
   response:
     status:
-      code: 500
-      message: Internal Server Error
+      code: 200
+      message: OK
     headers:
       Date:
-      - Thu, 22 Dec 2022 23:19:06 GMT
+      - Fri, 23 Dec 2022 12:29:52 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -39,7 +39,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '120'
       X-Ratelimit-Remaining:
-      - '117'
+      - '119'
       Access-Control-Allow-Origin:
       - "*"
       Strict-Transport-Security:
@@ -49,12 +49,23 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 77dc94918a92d1d4-MCT
+      - 77e11aee5eabd1e8-MCT
     body:
       encoding: UTF-8
-      string: |-
-        {
-            "message": "Server Error"
-        }
-  recorded_at: Thu, 22 Dec 2022 23:19:04 GMT
+      string: '{"data":[{"id":"75230485820736830","status":"Completed","date":"2022-12-22
+        21:43:02","reason":null,"reason_description":"","subscriber":{"id":"73931277474989872","email":"sdk@mailerlite.com"},"stepRuns":[{"id":"75230485910914375","step_id":"75040874340287587","description":"Update
+        custom field to \"Lajpcig\"","scheduled_for":null}],"currentStep":{"id":"75040874340287587","type":"action","parent_id":null,"complete":true,"broken":false,"created_at":"2022-12-20
+        19:29:14","updated_at":"2022-12-20 19:29:31","action_type":"update_custom_field","field_id":"5","field":{"id":"5","name":"City","key":"city","type":"text"},"date_operation":null,"value":"Lajpcig","description":"Update
+        custom field to \"Lajpcig\""}},{"id":"75230486001091919","status":"Completed","date":"2022-12-22
+        21:43:02","reason":null,"reason_description":"","subscriber":{"id":"75009808377317072","email":"first@email.com"},"stepRuns":[{"id":"75230486081832277","step_id":"75040874340287587","description":"Update
+        custom field to \"Lajpcig\"","scheduled_for":null}],"currentStep":{"id":"75040874340287587","type":"action","parent_id":null,"complete":true,"broken":false,"created_at":"2022-12-20
+        19:29:14","updated_at":"2022-12-20 19:29:31","action_type":"update_custom_field","field_id":"5","field":{"id":"5","name":"City","key":"city","type":"text"},"date_operation":null,"value":"Lajpcig","description":"Update
+        custom field to \"Lajpcig\""}},{"id":"75230485991654734","status":"Completed","date":"2022-12-22
+        21:43:02","reason":null,"reason_description":"","subscriber":{"id":"75009808379414225","email":"second@email.com"},"stepRuns":[{"id":"75230486076589396","step_id":"75040874340287587","description":"Update
+        custom field to \"Lajpcig\"","scheduled_for":null}],"currentStep":{"id":"75040874340287587","type":"action","parent_id":null,"complete":true,"broken":false,"created_at":"2022-12-20
+        19:29:14","updated_at":"2022-12-20 19:29:31","action_type":"update_custom_field","field_id":"5","field":{"id":"5","name":"City","key":"city","type":"text"},"date_operation":null,"value":"Lajpcig","description":"Update
+        custom field to \"Lajpcig\""}}],"links":{"first":"https:\/\/connect.mailerlite.com\/api\/automations\/75040845299975641\/activity?page=1","last":"https:\/\/connect.mailerlite.com\/api\/automations\/75040845299975641\/activity?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo;
+        Previous","active":false},{"url":"https:\/\/connect.mailerlite.com\/api\/automations\/75040845299975641\/activity?page=1","label":"1","active":true},{"url":null,"label":"Next
+        &raquo;","active":false}],"path":"https:\/\/connect.mailerlite.com\/api\/automations\/75040845299975641\/activity","per_page":10,"to":3,"total":3}}'
+  recorded_at: Fri, 23 Dec 2022 12:29:49 GMT
 recorded_with: VCR 6.1.0

@@ -20,12 +20,13 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def list(type:, filter: {}, limit: nil, sort: nil, page: nil)
       params = {}
-      params['filter[name]'] = filter['name'] if filter.key?('name')
+      params['filter[name]'] = filter[:name] if filter.key?(:name)
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
-
-      client.http.get("#{API_URL}/forms/#{type}", json: params.compact)
+      uri = URI("#{API_URL}/forms/#{type}")
+      uri.query = URI.encode_www_form(params.compact)
+      client.http.get(uri)
     end
 
     # Returns the details of the specified Forms

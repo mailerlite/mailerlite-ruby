@@ -20,12 +20,13 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get(filter: {}, limit: nil, sort: nil, page: nil)
       params = {}
-      params['filter[name]'] = filter['name'] if filter.key?('name')
+      params['filter[name]'] = filter[:name] if filter.key?(:name)
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
-
-      client.http.get("#{API_URL}/groups", json: params.compact)
+      uri = URI("#{API_URL}/groups")
+      uri.query = URI.encode_www_form(params.compact)
+      client.http.get(uri)
     end
 
     # create a Group
@@ -56,7 +57,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get_subscribers(group_id:, filter: {}, limit: nil, page: nil, sort: nil)
       params = {}
-      params['filter[status]'] = filter['status'] if filter.key?('status')
+      params['filter[status]'] = filter[:status] if filter.key?(:status)
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page

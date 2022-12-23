@@ -43,10 +43,12 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get_subscribers(segment_id:, filter: {}, limit: nil, after: nil)
       params = {}
-      params['filter[status]'] = filter['status'] if filter.key?('status')
+      params['filter[status]'] = filter[:status] if filter.key?(:status)
       params['limit'] = limit if limit
       params['after'] = after if after
-      client.http.get("#{API_URL}/segments/#{segment_id}/subscribers", json: params.compact)
+      uri = URI("#{API_URL}/segments/#{segment_id}/subscribers")
+      uri.query = URI.encode_www_form(params.compact)
+      client.http.get(uri)
     end
 
     # Deletes the specified Segments.

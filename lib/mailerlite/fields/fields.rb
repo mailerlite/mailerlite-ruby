@@ -21,13 +21,14 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get(limit: nil, page: nil, filter: {}, sort: nil)
       params = {}
-      params['filter[keyword]'] = filter['keyword'] if filter.key?('keyword')
-      params['filter[type]'] = filter['type'] if filter.key?('type')
+      params['filter[keyword]'] = filter[:keyword] if filter.key?(:keyword)
+      params['filter[type]'] = filter[:type] if filter.key?(:type)
       params['sort'] = sort if sort
       params['limit'] = limit if limit
       params['page'] = page if page
-
-      client.http.get("#{API_URL}/fields", json: params.compact)
+      uri = URI("#{API_URL}/fields")
+      uri.query = URI.encode_www_form(params.compact)
+      client.http.get(uri)
     end
 
     # Update the specified Field
