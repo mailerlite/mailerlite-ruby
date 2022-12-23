@@ -89,7 +89,7 @@ You will have to initalize it in your Ruby file with `require "mailerlite-ruby"`
 
 # Usage
 
-This SDK requires that you either have `.env` file with `MAILERSEND_API_TOKEN` env variable or that your variable is enabled system wide (useful for Docker/Kubernetes). The example of how `MAILERSEND_API_TOKEN` should look like is in `.env.example`.
+This SDK requires that you either have `.env` file with `MAILERLITE_API_TOKEN` env variable or that your variable is enabled system wide (useful for Docker/Kubernetes). The example of how `MAILERLITE_API_TOKEN` should look like is in `.env.example`.
 
 ## Subscribers
 
@@ -759,9 +759,9 @@ response = webhooks.delete(webhook_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-timezone = Mailerlite::Timezone.new
+timezones = Mailerlite::Timezones.new
 
-response = timezone.list()
+response = timezones.list()
 ```
 
 ## Campaign languages
