@@ -27,7 +27,7 @@ module MailerLite
 
     # Update the specified Segment
     #
-    # @param Segment [String] the ID of the Segments to update
+    # @param segment_id [String] the ID of the Segments to update
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
     def update(segment_id:, name:)
@@ -36,7 +36,7 @@ module MailerLite
     end
 
     # Get Subscribers assigned to the specified Segment.
-    # @param Segment [Integer] The id of existing Segment belonging to the account
+    # @param segment_id [Integer] The id of existing Segment belonging to the account
     # @param filter[status] [String] Must be one of the possible statuses: active, unsubscribed, unconfirmed, bounced or junk. Defaults to active.
     # @param limit [Integer] the maximum number of subscribers to return
     # @param after [Integer] The last subscriber id, available in meta.last
@@ -53,7 +53,7 @@ module MailerLite
 
     # Deletes the specified Segments.
     #
-    # @param Segment [String] the ID of the Segments to delete
+    # @param segment_id [String] the ID of the Segments to delete
     # @return [HTTP::Response] the response from the API
     def delete(segment_id)
       client.http.delete("#{API_URL}/segments/#{segment_id}")

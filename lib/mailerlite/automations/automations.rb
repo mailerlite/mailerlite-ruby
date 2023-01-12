@@ -14,9 +14,7 @@ module MailerLite
 
     # Returns a list of Automations that match the specified filter criteria.
     #
-    # @param filter[status] [Boolean] Must be one of the following: true (for active) and false (for inactive). Defaults to return all automations
-    # @param filter[name] [String] must be a text
-    # @param filter[group] [String] Must be a valid group id. Returns all automations that use the group in their trigger configuration
+    # @param filter[:status,:name,:group] [Array] filters for automation
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
@@ -34,7 +32,7 @@ module MailerLite
 
     # fetch the specified Automation
     #
-    # @param automation [String] the ID of the Automation to fetch
+    # @param automation_id [String] the ID of the Automation to fetch
     # @return [HTTP::Response] the response from the API
     def fetch(automation_id)
       client.http.get("#{API_URL}/automations/#{automation_id}")
@@ -43,12 +41,7 @@ module MailerLite
     # get_subscriber_activity the subscriber activity for specified Automation
     #
     # @param automation_id [Integer] the ID of the Automation to get_subscriber_activity
-    # @param filter[status] [String] Must be one of the following: completed, active, canceled, failed
-    # @param filter[date_from] [DateTime] Must be in the format Y-m-d
-    # @param filter[date_to] [DateTime] Must be in the format Y-m-d
-    # @param filter[scheduled_from] [DateTime] Must be in the format Y-m-d
-    # @param filter[scheduled_to] [DateTime] Must be in the format Y-m-d
-    # @param filter[keyword] [String] Must be a subscriber email
+    # @param filter[:status,:date_from,:date_to,:scheduled_from,:scheduled_to,:keyword] [Array] Must be one of the following: completed, active, canceled, failed
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API

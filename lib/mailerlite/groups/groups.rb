@@ -14,7 +14,7 @@ module MailerLite
 
     # Returns a list of Groups that match the specified filter criteria.
     #
-    # @param filter_name [String] the name of the Groups to include in the results
+    # @param filter[:name] the name of the Groups to include in the results
     # @param limit [Integer] the maximum number of Groups to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
@@ -31,7 +31,6 @@ module MailerLite
 
     # create a Group
     #
-    # @param group [String] the ID of the Groups to create
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
     def create(name:)
@@ -41,7 +40,7 @@ module MailerLite
 
     # Update the specified Group
     #
-    # @param group [String] the ID of the Groups to update
+    # @param group_id [String] the ID of the Groups to update
     # @param name [String] the name to update
     # @return [HTTP::Response] the response from the API
     def update(group_id:, name:)
@@ -50,8 +49,8 @@ module MailerLite
     end
 
     # Get Subscribers assigned to the specified group.
-    # @param group [Integer] The id of existing group belonging to the account
-    # @param filter_status [String] Must be one of the possible statuses: active, unsubscribed, unconfirmed, bounced or junk. Defaults to active.
+    # @param group_id [Integer] The id of existing group belonging to the account
+    # @param filter[:status] [String] Must be one of the possible statuses: active, unsubscribed, unconfirmed, bounced or junk. Defaults to active.
     # @param limit [Integer] the maximum number of subscribers to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
@@ -65,7 +64,7 @@ module MailerLite
     end
 
     # Assign Subscriber to the specified group.
-    # @param group [Integer] The id of existing group belonging to the account
+    # @param group_id [Integer] The id of existing group belonging to the account
     # @param subscriber [Integer] The id of existing subscriber belonging to the account
     # @return [HTTP::Response] the response from the API
     def assign_subscriber(group_id:, subscriber:)
@@ -73,7 +72,7 @@ module MailerLite
     end
 
     # Unassign Subscriber to the specified group.
-    # @param group [Integer] The id of existing group belonging to the account
+    # @param group_id [Integer] The id of existing group belonging to the account
     # @param subscriber [Integer] The id of existing subscriber belonging to the account
     # @return [HTTP::Response] the response from the API
     def unassign_subscriber(group_id:, subscriber:)
@@ -82,7 +81,7 @@ module MailerLite
 
     # Deletes the specified Groups.
     #
-    # @param group [String] the ID of the Groups to delete
+    # @param group_id [String] the ID of the Groups to delete
     # @return [HTTP::Response] the response from the API
     def delete(group_id)
       client.http.delete("#{API_URL}/groups/#{group_id}")

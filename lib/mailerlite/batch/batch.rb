@@ -12,11 +12,9 @@ module MailerLite
       @client = client
     end
 
-    # Create a Webhook
+    # Create a Batch Request
     #
-    # @param name [String] the name of the Webhook to create
-    # @param events [Array] the events, must one from the list of supported events
-    # @param url [String] the events, can be text, number or date
+    # @param requests [Array] Array of objects containing required method and path properties and optional body
     # @return [HTTP::Response] the response from the API
     def request(requests:)
       params = { requests: requests }

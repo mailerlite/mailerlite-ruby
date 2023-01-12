@@ -790,3 +790,12 @@ bundle exec rspec spec/*rspec.rb
 
 To run tests you would need to install gems using bundle and then run rspec via bundle to run all tests.
 The fixtures for the test have been recorded using vcr and are available in the ./fixtures directory
+
+# Generate Docs
+
+```bash
+bundle i 
+bundle exec yardoc 'lib/**/*.rb'
+```
+
+This will generate html docs in the doc directory which can be opened up in any browser. Navigate to index.html and open it up.
