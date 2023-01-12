@@ -14,7 +14,7 @@ module MailerLite
 
     # Returns a list of subscribers that match the specified filter criteria.
     #
-    # @param filter_status [String] the status of the subscribers to include in the results
+    # @param filter[:status] [Array] the status of the subscribers to include in the results
     # @param limit [Integer] the maximum number of subscribers to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
@@ -84,7 +84,7 @@ module MailerLite
 
     # Returns the details of the specified subscribers
     #
-    # @param subscriber [String] the ID of the subscriber to get
+    # @param subscriber_id [String] the ID of the subscriber to get
     # @return [HTTP::Response] the response from the API
     def get(subscriber_id)
       client.http.get("#{API_URL}/subscribers/#{subscriber_id}")
@@ -107,7 +107,7 @@ module MailerLite
 
     # Deletes the specified subscriber.
     #
-    # @param subscriber [String] the ID of the subscriber to delete
+    # @param subscriber_id [String] the ID of the subscriber to delete
     # @return [HTTP::Response] the response from the API
     def delete(subscriber_id)
       client.http.delete("#{API_URL}/subscribers/#{subscriber_id}")

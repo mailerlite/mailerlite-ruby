@@ -21,7 +21,7 @@ module MailerLite
 
     # Returns the details of the specified webhooks
     #
-    # @param webhooks [String] the ID of the webhooks to fetch
+    # @param webhook_id [String] the ID of the webhooks to fetch
     # @return [HTTP::Response] the response from the API
     def get(webhook_id)
       client.http.get("#{API_URL}/webhooks/#{webhook_id}")
@@ -41,7 +41,7 @@ module MailerLite
 
     # Update the specified Webhook
     #
-    # @param Webhook [String] the ID of the Webhook to update
+    # @param webhook_id [String] the ID of the Webhook to update
     # @param name [String] the name to update
     # @param events [Array] the events to update
     # @param url [String] the url to update
@@ -58,7 +58,7 @@ module MailerLite
 
     # Deletes the specified Webhook.
     #
-    # @param Webhook [String] the ID of the Webhook to delete
+    # @param webhook_id [String] the ID of the Webhook to delete
     # @return [HTTP::Response] the response from the API
     def delete(webhook_id)
       client.http.delete("#{API_URL}/webhooks/#{webhook_id}")

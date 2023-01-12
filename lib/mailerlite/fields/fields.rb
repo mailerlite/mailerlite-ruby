@@ -14,8 +14,7 @@ module MailerLite
 
     # Returns a list of Fields that match the specified filter criteria.
     #
-    # @param filter_keyword [String] Returns partial matches for fields
-    # @param filter_type [String] Can be one of the following: text, number or date
+    # @param filter [:keyword, :type] Returns partial matches for fields
     # @param limit [Integer] the maximum number of Fields to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
@@ -53,7 +52,7 @@ module MailerLite
 
     # Deletes the specified Field.
     #
-    # @param Field [String] the ID of the Field to delete
+    # @param field_id [String] the ID of the Field to delete
     # @return [HTTP::Response] the response from the API
     def delete(field_id)
       client.http.delete("#{API_URL}/fields/#{field_id}")

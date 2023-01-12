@@ -14,7 +14,7 @@ module MailerLite
 
     # Returns a list of Forms that match the specified filter criteria.
     #
-    # @param filter_name [String] the name of the Forms to include in the results
+    # @param filter [#name] the name of the Forms to include in the results
     # @param limit [Integer] the maximum number of Forms to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
@@ -64,7 +64,7 @@ module MailerLite
 
     # Deletes the specified forms.
     #
-    # @param forms [String] the ID of the forms to delete
+    # @param form_id [String] the ID of the forms to delete
     # @return [HTTP::Response] the response from the API
     def delete(form_id)
       client.http.delete("#{API_URL}/forms/#{form_id}")
