@@ -1,0 +1,60 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://connect.mailerlite.com/api/forms/75016692854425001
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 20 Dec 2022 13:19:57 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77c8ac2c3d40d1e8-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":{"id":"75016692854425001","type":"popup","slug":"ikMxMV","name":"test
+        form","created_at":"2022-12-20 13:04:53","conversions_count":0,"opens_count":0,"conversion_rate":{"float":0,"string":"0%"},"conversions_count_including_children":0,"opens_count_including_children":0,"conversion_rate_including_children":{"float":0,"string":"0%"},"settings":{"double_optin":true,"groot_id":2684442,"form_type":"popup","triggers":["timeout"],"timeout_seconds":5,"scroll_percentage":50,"frequency":1,"frequency_unit":"months","visibility":"always","url_list":[],"url_list_strict":null,"hide_on":[],"schedule":"no"},"last_registration_at":null,"active":false,"is_broken":false,"warning_messages":[],"has_content":true,"can":{"update":true},"used_in_automations":false,"warnings":[],"double_optin":true,"screenshot_url":"https:\/\/storage.googleapis.com\/mailerlite-screenshots-prod\/screenshot\/forms\/75016692854425001\/1284x1284.png","has_missing_groups":false,"groups":[{"id":"75011449370445335","name":"My
+        Group","active_count":0,"sent_count":1,"opens_count":1,"open_rate":{"float":1,"string":"100%"},"clicks_count":0,"click_rate":{"float":0,"string":"0%"},"unsubscribed_count":0,"unconfirmed_count":0,"bounced_count":0,"junk_count":0,"created_at":"2022-12-20
+        11:41:32"}],"has_split_tests":false,"split_test_finished":false,"split_test_enabled":false,"split_percentage":0,"is_split_test_winner":false,"children":[],"parent_id":null,"original_name":null,"analytics_reset_at":null}}'
+  recorded_at: Tue, 20 Dec 2022 13:19:57 GMT
+recorded_with: VCR 6.1.0

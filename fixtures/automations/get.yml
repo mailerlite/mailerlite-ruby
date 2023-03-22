@@ -1,0 +1,68 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://connect.mailerlite.com/api/automations
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Authorization:
+      - "<AUTH>"
+      User-Agent:
+      - MailerLite-client-ruby/0.1.1
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Connection:
+      - close
+      Host:
+      - connect.mailerlite.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 Dec 2022 12:28:38 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - close
+      Cache-Control:
+      - no-cache, private
+      X-Locale:
+      - en
+      X-Ratelimit-Limit:
+      - '120'
+      X-Ratelimit-Remaining:
+      - '119'
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      Cf-Cache-Status:
+      - DYNAMIC
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 77e1191ea97dde43-MCT
+    body:
+      encoding: UTF-8
+      string: '{"data":[{"id":"75040845299975641","name":"Test Automation","enabled":true,"trigger_data":{"track_ecommerce":false,"repeatable":false,"valid":true},"steps":[{"id":"75040874340287587","type":"action","parent_id":null,"complete":true,"broken":false,"created_at":"2022-12-20
+        19:29:14","updated_at":"2022-12-20 19:29:31","action_type":"update_custom_field","field_id":"5","field":{"id":"5","name":"City","key":"city","type":"text"},"date_operation":null,"value":"Lajpcig","description":"Update
+        custom field to \"Lajpcig\""}],"triggers":[{"id":"75040865662273074","type":"subscriber_joins_group","group_id":"75011449370445335","group":{"id":"75011449370445335","name":"My
+        Group","url":"https:\/\/dashboard.mailerlite.com\/subscribers?rules=W1t7Im9wZXJhdG9yIjoiaW5fYW55IiwiY29uZGl0aW9uIjoiZ3JvdXBzIiwiYXJncyI6WyJncm91cHMiLFsiNzUwMTE0NDkzNzA0NDUzMzUiXV19XV0%3D"},"exclude_group_ids":[],"excluded_groups":[],"broken":false}],"complete":true,"broken":false,"warnings":[],"emails_count":0,"first_email_screenshot_url":null,"stats":{"completed_subscribers_count":3,"subscribers_in_queue_count":0,"bounce_rate":{"float":0,"string":"0%"},"click_to_open_rate":{"float":0,"string":"0%"},"sent":0,"opens_count":0,"unique_opens_count":null,"open_rate":{"float":0,"string":"0%"},"clicks_count":0,"unique_clicks_count":null,"click_rate":{"float":0,"string":"0%"},"unsubscribes_count":0,"unsubscribe_rate":{"float":0,"string":"0%"},"spam_count":0,"spam_rate":{"float":0,"string":"0%"},"hard_bounces_count":0,"hard_bounce_rate":{"float":0,"string":"0%"},"soft_bounces_count":0,"soft_bounce_rate":{"float":0,"string":"0%"}},"created_at":"2022-12-20
+        19:28:46","has_banned_content":false,"qualified_subscribers_count":1},{"id":"75230383331869729","name":"test
+        automation 2","enabled":true,"trigger_data":{"track_ecommerce":false,"repeatable":true,"valid":true},"steps":[{"id":"75230414735672857","type":"action","parent_id":null,"complete":true,"broken":false,"created_at":"2022-12-22
+        21:41:54","updated_at":"2022-12-22 21:42:06","action_type":"copy_to_group","group_id":"75138838590129612","group_name":"SMmwGofyQP","description":"Copy
+        to a group"}],"triggers":[{"id":"75230409252668552","type":"subscriber_joins_group","group_id":"75011449370445335","group":{"id":"75011449370445335","name":"My
+        Group","url":"https:\/\/dashboard.mailerlite.com\/subscribers?rules=W1t7Im9wZXJhdG9yIjoiaW5fYW55IiwiY29uZGl0aW9uIjoiZ3JvdXBzIiwiYXJncyI6WyJncm91cHMiLFsiNzUwMTE0NDkzNzA0NDUzMzUiXV19XV0%3D"},"exclude_group_ids":[],"excluded_groups":[],"broken":false}],"complete":true,"broken":false,"warnings":[],"emails_count":0,"first_email_screenshot_url":null,"stats":{"completed_subscribers_count":4,"subscribers_in_queue_count":0,"bounce_rate":{"float":0,"string":"0%"},"click_to_open_rate":{"float":0,"string":"0%"},"sent":0,"opens_count":0,"unique_opens_count":null,"open_rate":{"float":0,"string":"0%"},"clicks_count":0,"unique_clicks_count":null,"click_rate":{"float":0,"string":"0%"},"unsubscribes_count":0,"unsubscribe_rate":{"float":0,"string":"0%"},"spam_count":0,"spam_rate":{"float":0,"string":"0%"},"hard_bounces_count":0,"hard_bounce_rate":{"float":0,"string":"0%"},"soft_bounces_count":0,"soft_bounce_rate":{"float":0,"string":"0%"}},"created_at":"2022-12-22
+        21:41:24","has_banned_content":false,"qualified_subscribers_count":0}],"links":{"first":"https:\/\/connect.mailerlite.com\/api\/automations?page=1","last":"https:\/\/connect.mailerlite.com\/api\/automations?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo;
+        Previous","active":false},{"url":"https:\/\/connect.mailerlite.com\/api\/automations?page=1","label":"1","active":true},{"url":null,"label":"Next
+        &raquo;","active":false}],"path":"https:\/\/connect.mailerlite.com\/api\/automations","per_page":10,"to":2,"total":2,"total_unfiltered":2}}'
+  recorded_at: Fri, 23 Dec 2022 12:28:35 GMT
+recorded_with: VCR 6.1.0

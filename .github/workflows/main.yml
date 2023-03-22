@@ -1,0 +1,17 @@
+name: Ruby
+
+on: [push,pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.0
+    - name: Install bundle deps
+      run: bundle i
+    - name: Run tests
+      run: export MAILERLITE_API_TOKEN=dummy_token && bundle exec rspec spec/*rspec.rb
