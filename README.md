@@ -103,9 +103,9 @@ This SDK requires that you either have `.env` file with `MAILERLITE_API_TOKEN` e
 require "mailerlite-ruby"
 
 # Intialize the class
-subscribers = Mailerlite::Subscribers.new
+subscribers = MailerLite::Subscribers.new
 
-response = subscribers.list(filter: { status: 'active' })
+subscribers.fetch(filter: { status: 'active' })
 ```
 
 ### Create a subscriber
@@ -116,9 +116,9 @@ response = subscribers.list(filter: { status: 'active' })
 require "mailerlite-ruby"
 
 # Intialize the class
-subscribers = Mailerlite::Subscribers.new
+subscribers = MailerLite::Subscribers.new
 
-response = subscribers.create(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
+subscribers.create(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
 ```
 
 ### Update a subscriber
@@ -129,9 +129,9 @@ response = subscribers.create(email:'some@email.com', fields: {'name': 'John', '
 require "mailerlite-ruby"
 
 # Intialize the class
-subscribers = Mailerlite::Subscribers.new
+subscribers = MailerLite::Subscribers.new
 
-response = subscribers.update(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
+subscribers.update(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
 ```
 
 ### Get a subscriber
@@ -142,9 +142,9 @@ response = subscribers.update(email:'some@email.com', fields: {'name': 'John', '
 require "mailerlite-ruby"
 
 # Intialize the class
-subscribers = Mailerlite::Subscribers.new
+subscribers = MailerLite::Subscribers.new
 
-response = subscribers.get('some@email.com')
+subscribers.get('some@email.com')
 ```
 
 ### Delete a subscriber
@@ -155,11 +155,11 @@ response = subscribers.get('some@email.com')
 require "mailerlite-ruby"
 
 # Intialize the class
-subscribers = Mailerlite::Subscribers.new
+subscribers = MailerLite::Subscribers.new
 
 subscriber_id = 1234567890
 
-response = subscribers.delete(subscriber_id)
+subscribers.delete(subscriber_id)
 ```
 
 ## Groups
@@ -174,9 +174,9 @@ response = subscribers.delete(subscriber_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-groups = Mailerlite::Groups.new
+groups = MailerLite::Groups.new
 
-response = groups.list(limit:10, page:1, filter:{'name': 'My'}, sort:'name')
+groups.list(limit:10, page:1, filter:{'name': 'My'}, sort:'name')
 ```
 
 ### Create a group
@@ -187,9 +187,9 @@ response = groups.list(limit:10, page:1, filter:{'name': 'My'}, sort:'name')
 require "mailerlite-ruby"
 
 # Intialize the class
-groups = Mailerlite::Groups.new
+groups = MailerLite::Groups.new
 
-response = groups.create(name:'Group Name')
+groups.create(name:'Group Name')
 ```
 
 ### Update a group
@@ -200,9 +200,9 @@ response = groups.create(name:'Group Name')
 require "mailerlite-ruby"
 
 # Intialize the class
-groups = Mailerlite::Groups.new
+groups = MailerLite::Groups.new
 
-response = groups.update(group_id:1234567, name:'My New Group')
+groups.update(group_id:1234567, name:'My New Group')
 ```
 
 ### Delete a group
@@ -213,11 +213,11 @@ response = groups.update(group_id:1234567, name:'My New Group')
 require "mailerlite-ruby"
 
 # Intialize the class
-groups = Mailerlite::Groups.new
+groups = MailerLite::Groups.new
 
 group_id = 1234567
 
-response = groups.delete(group_id)
+groups.delete(group_id)
 ```
 
 ### Get subscribers belonging to a group
@@ -228,9 +228,9 @@ response = groups.delete(group_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-groups = Mailerlite::Groups.new
+groups = MailerLite::Groups.new
 
-response = groups.get_subscribers(group_id:1234567, page:1, limit:10, filter:{'status': 'active'})
+groups.get_subscribers(group_id:1234567, page:1, limit:10, filter:{'status': 'active'})
 ```
 
 ### Assign subscriber to a group
@@ -241,9 +241,9 @@ response = groups.get_subscribers(group_id:1234567, page:1, limit:10, filter:{'s
 require "mailerlite-ruby"
 
 # Intialize the class
-groups = Mailerlite::Groups.new
+groups = MailerLite::Groups.new
 
-response = subscribers.assign_subscriber(subscriber_id:111222, group_id:1234567)
+subscribers.assign_subscriber(subscriber_id:111222, group_id:1234567)
 ```
 
 ### Unassign subscriber from a group
@@ -254,9 +254,9 @@ response = subscribers.assign_subscriber(subscriber_id:111222, group_id:1234567)
 require "mailerlite-ruby"
 
 # Intialize the class
-groups = Mailerlite::Groups.new
+groups = MailerLite::Groups.new
 
-response = subscribers.unassign_subscriber(subscriber_id:111222, group_id:1234567)
+subscribers.unassign_subscriber(subscriber_id:111222, group_id:1234567)
 ```
 
 ## Segments
@@ -271,9 +271,9 @@ response = subscribers.unassign_subscriber(subscriber_id:111222, group_id:123456
 require "mailerlite-ruby"
 
 # Intialize the class
-segments = Mailerlite::Segments.new
+segments = MailerLite::Segments.new
 
-response = segments.list(limit:10, page:1)
+segments.list(limit:10, page:1)
 ```
 
 ### Update a segment
@@ -284,9 +284,9 @@ response = segments.list(limit:10, page:1)
 require "mailerlite-ruby"
 
 # Intialize the class
-segments = Mailerlite::Segments.new
+segments = MailerLite::Segments.new
 
-response = segments.update(segment_id: 123456, name:'My New Segment Name')
+segments.update(segment_id: 123456, name:'My New Segment Name')
 ```
 
 ### Delete a segment
@@ -297,10 +297,10 @@ response = segments.update(segment_id: 123456, name:'My New Segment Name')
 require "mailerlite-ruby"
 
 # Intialize the class
-segments = Mailerlite::Segments.new
+segments = MailerLite::Segments.new
 segment_id = 123456
 
-response = segments.delete(segment_id)
+segments.delete(segment_id)
 ```
 
 ### Get subscribers belonging to a segment
@@ -311,9 +311,9 @@ response = segments.delete(segment_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-segments = Mailerlite::Segments.new
+segments = MailerLite::Segments.new
 
-response = segments.get_subscribers(segment_id:123456, limit:10, filter:{'status': 'active'})
+segments.get_subscribers(segment_id:123456, limit:10, filter:{'status': 'active'})
 ```
 
 ## Fields
@@ -328,9 +328,9 @@ response = segments.get_subscribers(segment_id:123456, limit:10, filter:{'status
 require "mailerlite-ruby"
 
 # Intialize the class
-fields = Mailerlite::Fields.new
+fields = MailerLite::Fields.new
 
-response = fields.list(limit:10, page:1, sort:'name', filter:{'keyword': 'abc', 'type': 'text'})
+fields.get(limit:10, page:1, sort:'name', filter:{'keyword': 'abc', 'type': 'text'})
 ```
 
 ### Create a field
@@ -341,9 +341,9 @@ response = fields.list(limit:10, page:1, sort:'name', filter:{'keyword': 'abc', 
 require "mailerlite-ruby"
 
 # Intialize the class
-fields = Mailerlite::Fields.new
+fields = MailerLite::Fields.new
 
-response = fields.create(name:'My Field', type:'text')
+fields.create(name:'My Field', type:'text')
 ```
 
 ### Update a field
@@ -354,9 +354,9 @@ response = fields.create(name:'My Field', type:'text')
 require "mailerlite-ruby"
 
 # Intialize the class
-fields = Mailerlite::Fields.new
+fields = MailerLite::Fields.new
 
-response = fields.update(field_id:123345, name:'My New Field')
+fields.update(field_id:123345, name:'My New Field')
 ```
 
 ### Delete a field
@@ -367,11 +367,11 @@ response = fields.update(field_id:123345, name:'My New Field')
 require "mailerlite-ruby"
 
 # Intialize the class
-fields = Mailerlite::Fields.new
+fields = MailerLite::Fields.new
 
 field_id = 123456
 
-response = fields.delete(field_id)
+fields.delete(field_id)
 ```
 
 ## Automations
@@ -386,9 +386,9 @@ response = fields.delete(field_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-automations = Mailerlite::Automations.new
+automations = MailerLite::Automations.new
 
-response = automations.list(limit:10, page:1, filter:{'status': true, 'name': 'some name', 'group': 123456})
+automations.get(limit:10, page:1, filter:{'status': true, 'name': 'some name', 'group': 123456})
 ```
 
 ### Get an automation
@@ -399,11 +399,11 @@ response = automations.list(limit:10, page:1, filter:{'status': true, 'name': 's
 require "mailerlite-ruby"
 
 # Intialize the class
-automations = Mailerlite::Automations.new
+automations = MailerLite::Automations.new
 
 automation_id = 123456
 
-response = automations.get(automation_id)
+automations.fetch(automation_id)
 ```
 
 ### Get subscribers activity for an automation
@@ -414,9 +414,9 @@ response = automations.get(automation_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-automations = Mailerlite::Automations.new
+automations = MailerLite::Automations.new
 
-response = automations.activity(automation_id:123456, page:1, limit:10, filter:{'status': 'active', 'date_from': '2022-12-20', 'date_to': '2022-12-31'})
+automations.get_subscriber_activity(automation_id:123456, page:1, limit:10, filter:{'status': 'active', 'date_from': '2022-12-20', 'date_to': '2022-12-31'})
 ```
 
 ## Campaigns
@@ -431,9 +431,9 @@ response = automations.activity(automation_id:123456, page:1, limit:10, filter:{
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
-response = campaigns.list(limit:10, page:1, filter:{'status': 'ready', 'type': 'regular'})
+campaigns.get(limit:10, page:1, filter:{'status': 'ready', 'type': 'regular'})
 ```
 
 ### Get a campaign
@@ -444,9 +444,9 @@ response = campaigns.list(limit:10, page:1, filter:{'status': 'ready', 'type': '
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
-response = campaigns.get(campaign_id:123456)
+campaigns.fetch(campaign_id:123456)
 ```
 
 ### Create a campaign
@@ -457,9 +457,9 @@ response = campaigns.get(campaign_id:123456)
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
-response = campaigns.create(
+campaigns.create(
     name: "Test Campaign",
     language_id: 1,
     type: "regular",
@@ -480,9 +480,9 @@ response = campaigns.create(
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
-response = campaigns.update(
+campaigns.update(
   campaign_id: 1233455, 
   name: "New Campaign Name",
   language_id: 2,
@@ -503,9 +503,9 @@ response = campaigns.update(
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
-response = campaigns.schedule(
+campaigns.schedule(
   campaign_id: 123456,
   delivery: "scheduled",
   schedule: {
@@ -524,11 +524,11 @@ response = campaigns.schedule(
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
 campaign_id = 123456
 
-response = campaigns.cancel(campaign_id)
+campaigns.cancel(campaign_id)
 ```
 
 ### Delete a campaign
@@ -539,11 +539,11 @@ response = campaigns.cancel(campaign_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
 campaign_id = 123456
 
-response = campaigns.delete(campaign_id)
+campaigns.delete(campaign_id)
 ```
 
 ### Get subscribers activity for a campaign
@@ -554,11 +554,11 @@ response = campaigns.delete(campaign_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
 campaign_id = 123456
 
-response = campaigns.activity(campaign_id)
+campaigns.activity(campaign_id)
 ```
 
 ## Forms
@@ -573,9 +573,9 @@ response = campaigns.activity(campaign_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-forms = Mailerlite::Forms.new
+forms = MailerLite::Forms.new
 
-response = forms.list(limit:10, page:1, sort:'name', filter:{'name': 'form name'})
+forms.list(limit:10, page:1, sort:'name', filter:{'name': 'form name'})
 ```
 
 ### Get a form
@@ -586,11 +586,11 @@ response = forms.list(limit:10, page:1, sort:'name', filter:{'name': 'form name'
 require "mailerlite-ruby"
 
 # Intialize the class
-forms = Mailerlite::Forms.new
+forms = MailerLite::Forms.new
 
 form_id = 123456
 
-response = forms.get(form_id)
+forms.fetch(form_id)
 ```
 
 ### Update a form
@@ -601,9 +601,9 @@ response = forms.get(form_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-forms = Mailerlite::Forms.new
+forms = MailerLite::Forms.new
 
-response = forms.update(form_id:123456, name: 'My form Name')
+forms.update(form_id:123456, name: 'My form Name')
 ```
 
 ### Delete a form
@@ -614,11 +614,11 @@ response = forms.update(form_id:123456, name: 'My form Name')
 require "mailerlite-ruby"
 
 # Intialize the class
-forms = Mailerlite::Forms.new
+forms = MailerLite::Forms.new
 
 form_id = 123456
 
-response = forms.delete(form_id)
+forms.delete(form_id)
 ```
 
 ### Get subscribers who signed up to a specific form
@@ -629,9 +629,9 @@ response = forms.delete(form_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-forms = Mailerlite::Forms.new
+forms = MailerLite::Forms.new
 
-response = forms.get_subscribers(form_id:123345, page:1, limit:10, filter:{'status': 'active'})
+forms.fetch_subscribers(form_id:123345, page:1, limit:10, filter:{'status': 'active'})
 ```
 
 ## Batching
@@ -646,9 +646,9 @@ response = forms.get_subscribers(form_id:123345, page:1, limit:10, filter:{'stat
 require "mailerlite-ruby"
 
 # Intialize the class
-batch = Mailerlite::Batch.new
+batch = MailerLite::Batch.new
 
-response = batch.request(
+batch.request(
           requests: [
             { method: 'GET', path: 'api/subscribers/list' },
             { method: 'GET', path: 'api/campaigns/list' }
@@ -668,9 +668,9 @@ response = batch.request(
 require "mailerlite-ruby"
 
 # Intialize the class
-subscribers = Mailerlite::Subscribers.new
+subscribers = MailerLite::Subscribers.new
 
-response = webhooks.list()
+webhooks.list()
 ```
 
 ### Get a webhook
@@ -681,11 +681,11 @@ response = webhooks.list()
 require "mailerlite-ruby"
 
 # Intialize the class
-subscribers = Mailerlite::Subscribers.new
+subscribers = MailerLite::Subscribers.new
 
 webhook_id = 123456
 
-response = webhooks.get(webhook_id)
+webhooks.get(webhook_id)
 ```
 
 ### Create a webhook
@@ -696,9 +696,9 @@ response = webhooks.get(webhook_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-webhooks = Mailerlite::Webhooks.new
+webhooks = MailerLite::Webhooks.new
 
-response = webhooks.create(
+webhooks.create(
   events:[
     'subscriber.created',
     'subscriber.updated',
@@ -717,9 +717,9 @@ response = webhooks.create(
 require "mailerlite-ruby"
 
 # Intialize the class
-webhooks = Mailerlite::Webhooks.new
+webhooks = MailerLite::Webhooks.new
 
-response = webhooks.update(
+webhooks.update(
   webhook_id: 123456, 
   events:[
     'subscriber.created',
@@ -740,11 +740,11 @@ response = webhooks.update(
 require "mailerlite-ruby"
 
 # Intialize the class
-webhooks = Mailerlite::Webhooks.new
+webhooks = MailerLite::Webhooks.new
 
 webhook_id = 123456
 
-response = webhooks.delete(webhook_id)
+webhooks.delete(webhook_id)
 ```
 
 ## Timezones
@@ -759,9 +759,9 @@ response = webhooks.delete(webhook_id)
 require "mailerlite-ruby"
 
 # Intialize the class
-timezones = Mailerlite::Timezones.new
+timezones = MailerLite::Timezones.new
 
-response = timezones.list()
+timezones.list()
 ```
 
 ## Campaign languages
@@ -776,9 +776,9 @@ response = timezones.list()
 require "mailerlite-ruby"
 
 # Intialize the class
-campaigns = Mailerlite::Campaigns.new
+campaigns = MailerLite::Campaigns.new
 
-response = campaigns.languages()
+campaigns.languages()
 ```
 
 # Testing
