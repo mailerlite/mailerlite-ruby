@@ -243,7 +243,7 @@ require "mailerlite-ruby"
 # Intialize the class
 groups = MailerLite::Groups.new
 
-subscribers.assign_subscriber(subscriber_id:111222, group_id:1234567)
+groups.assign_subscriber(subscriber:111222, group_id:1234567)
 ```
 
 ### Unassign subscriber from a group
@@ -256,7 +256,7 @@ require "mailerlite-ruby"
 # Intialize the class
 groups = MailerLite::Groups.new
 
-subscribers.unassign_subscriber(subscriber_id:111222, group_id:1234567)
+groups.unassign_subscriber(subscriber:111222, group_id:1234567)
 ```
 
 ## Segments
