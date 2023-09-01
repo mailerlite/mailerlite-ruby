@@ -72,6 +72,18 @@ RSpec.describe MailerLite::Subscribers do
     end
   end
 
+  describe '#update' do
+    # Use VCR to record and replay the HTTP request
+    it 'updates a subscriber' do
+      VCR.use_cassette('subscribers/update') do
+        response = subscribers.update(98_112_484_192_290_662, email: 'updated@email.com')
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 200
+        expect(body['data']['email']).to eq 'updated@email.com'
+      end
+    end
+  end
+
   describe '#delete' do
     # Use VCR to record and replay the HTTP request
     it 'deletes a subscriber' do

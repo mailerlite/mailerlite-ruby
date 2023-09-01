@@ -68,7 +68,7 @@ module MailerLite
     # @param optin_ip [String] the IP address of the subscriber when they confirmed their subscription
     # @param unsubscribed_at [DateTime] the date and time when the subscriber was unsubscribed
     # @return [HTTP::Response] the response from the API
-    def update(subscriber_id:, email: nil, fields: nil, groups: nil, status: nil, subscribed_at: nil, ip_address: nil, opted_in_at: nil, optin_ip: nil, unsubscribed_at: nil)
+    def update(subscriber_id, email: nil, fields: nil, groups: nil, status: nil, subscribed_at: nil, ip_address: nil, opted_in_at: nil, optin_ip: nil, unsubscribed_at: nil)
       params = {}
 
       params['email'] = email if email
