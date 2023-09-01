@@ -112,5 +112,13 @@ module MailerLite
     def delete(subscriber_id)
       client.http.delete("#{API_URL}/subscribers/#{subscriber_id}")
     end
+
+    # Forgets the specified subscriber.
+    #
+    # @param subscriber_id [String] the ID of the subscriber to forget
+    # @return [HTTP::Response] the response from the API
+    def forget(subscriber_id)
+      client.http.post("#{API_URL}/subscribers/#{subscriber_id}/forget")
+    end
   end
 end
