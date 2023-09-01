@@ -55,8 +55,9 @@ module MailerLite
       client.http.post("#{API_URL}/subscribers", json: params.compact)
     end
 
-    # Creates a new subscriber with the specified details.
+    # Updates an existing subscriber with the specified details.
     #
+    # @param subscriber_id [String] the ID of the subscriber to update
     # @param email [String] the email address of the new subscriber
     # @param fields [Hash] a hash of custom fields and their values for the subscriber
     # @param groups [Array] an array of group IDs to add the subscriber to
@@ -67,9 +68,10 @@ module MailerLite
     # @param optin_ip [String] the IP address of the subscriber when they confirmed their subscription
     # @param unsubscribed_at [DateTime] the date and time when the subscriber was unsubscribed
     # @return [HTTP::Response] the response from the API
-    def update(email:, fields: nil, groups: nil, status: nil, subscribed_at: nil, ip_address: nil, opted_in_at: nil, optin_ip: nil, unsubscribed_at: nil)
-      params = { 'email' => email }
+    def update(subscriber_id:, email: nil, fields: nil, groups: nil, status: nil, subscribed_at: nil, ip_address: nil, opted_in_at: nil, optin_ip: nil, unsubscribed_at: nil)
+      params = {}
 
+      params['email'] = email if email
       params['fields'] = fields if fields
       params['groups'] = groups if groups
       params['status'] = status if status
@@ -79,7 +81,7 @@ module MailerLite
       params['optin_ip'] = optin_ip if optin_ip
       params['unsubscribed_at'] = unsubscribed_at if unsubscribed_at
 
-      client.http.post("#{API_URL}/subscribers", json: params.compact)
+      client.http.put("#{API_URL}/subscribers/#{subscriber_id}", json: params.compact)
     end
 
     # Returns the details of the specified subscribers
