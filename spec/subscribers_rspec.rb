@@ -81,4 +81,16 @@ RSpec.describe MailerLite::Subscribers do
       end
     end
   end
+
+  describe '#forget' do
+    # Use VCR to record and replay the HTTP request
+    it 'forgets a subscriber' do
+      VCR.use_cassette('subscribers/forget') do
+        response = subscribers.forget(98_121_614_828_242_796)
+        body = JSON.parse(response.body)
+        expect(response.status).to eq 200
+        expect(body['message']).to eq 'Subscriber data will be completely deleted and forgotten within 30 days.'
+      end
+    end
+  end
 end
