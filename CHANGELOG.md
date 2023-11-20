@@ -1,3 +1,7 @@
+## [1.0.4] - 2023-11-20
+- Update subscribers update
+- Add forget subscriber method
+
 ## [1.0.3] - 2023-06-02
 - Documentation update
 - mailerlite.rb missing version
