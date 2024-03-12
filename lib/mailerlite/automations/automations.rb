@@ -25,7 +25,7 @@ module MailerLite
       params['filter[group]'] = filter[:group] if filter.key?(:group)
       params['limit'] = limit if limit
       params['page'] = page if page
-      uri = URI("#{API_URL}/automations")
+      uri = URI("#{MAILERLITE_API_URL}/automations")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
@@ -35,7 +35,7 @@ module MailerLite
     # @param automation_id [String] the ID of the Automation to fetch
     # @return [HTTP::Response] the response from the API
     def fetch(automation_id)
-      client.http.get("#{API_URL}/automations/#{automation_id}")
+      client.http.get("#{MAILERLITE_API_URL}/automations/#{automation_id}")
     end
 
     # get_subscriber_activity the subscriber activity for specified Automation
@@ -54,7 +54,7 @@ module MailerLite
       params['filter[keyword]'] = filter[:keyword] if filter.key?(:keyword)
       params['page'] = page if page
       params['limit'] = limit if limit
-      uri = URI("#{API_URL}/automations/#{automation_id}/activity")
+      uri = URI("#{MAILERLITE_API_URL}/automations/#{automation_id}/activity")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end

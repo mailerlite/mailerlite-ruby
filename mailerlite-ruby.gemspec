@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'dotenv', '~> 2.7'
   spec.add_dependency 'http', '~> 5.0'
   spec.add_dependency 'json', '~> 2.5'
-  spec.add_dependency 'uri', '~> 0.12.0'
+  spec.add_dependency 'uri', '~> 0.13.0'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'vcr'

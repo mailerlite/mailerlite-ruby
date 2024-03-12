@@ -24,7 +24,7 @@ module MailerLite
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
-      uri = URI("#{API_URL}/groups")
+      uri = URI("#{MAILERLITE_API_URL}/groups")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
@@ -35,7 +35,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def create(name:)
       params = { 'name' => name }
-      client.http.post("#{API_URL}/groups", json: params.compact)
+      client.http.post("#{MAILERLITE_API_URL}/groups", json: params.compact)
     end
 
     # Update the specified Group
@@ -45,7 +45,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def update(group_id:, name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/groups/#{group_id}", json: params.compact)
+      client.http.put("#{MAILERLITE_API_URL}/groups/#{group_id}", json: params.compact)
     end
 
     # Get Subscribers assigned to the specified group.
@@ -60,7 +60,7 @@ module MailerLite
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
-      client.http.get("#{API_URL}/groups/#{group_id}/subscribers", json: params.compact)
+      client.http.get("#{MAILERLITE_API_URL}/groups/#{group_id}/subscribers", json: params.compact)
     end
 
     # Assign Subscriber to the specified group.
@@ -68,7 +68,7 @@ module MailerLite
     # @param subscriber [Integer] The id of existing subscriber belonging to the account
     # @return [HTTP::Response] the response from the API
     def assign_subscriber(group_id:, subscriber:)
-      client.http.post("#{API_URL}/subscribers/#{subscriber}/groups/#{group_id}")
+      client.http.post("#{MAILERLITE_API_URL}/subscribers/#{subscriber}/groups/#{group_id}")
     end
 
     # Unassign Subscriber to the specified group.
@@ -76,7 +76,7 @@ module MailerLite
     # @param subscriber [Integer] The id of existing subscriber belonging to the account
     # @return [HTTP::Response] the response from the API
     def unassign_subscriber(group_id:, subscriber:)
-      client.http.delete("#{API_URL}/subscribers/#{subscriber}/groups/#{group_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/subscribers/#{subscriber}/groups/#{group_id}")
     end
 
     # Deletes the specified Groups.
@@ -84,7 +84,7 @@ module MailerLite
     # @param group_id [String] the ID of the Groups to delete
     # @return [HTTP::Response] the response from the API
     def delete(group_id)
-      client.http.delete("#{API_URL}/groups/#{group_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/groups/#{group_id}")
     end
   end
 end

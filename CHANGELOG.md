@@ -1,3 +1,6 @@
+## [1.0.5] - 2024-03-12
+- Update constant name
+
 ## [1.0.4] - 2023-11-20
 - Update subscribers update
 - Add forget subscriber method

@@ -16,7 +16,7 @@ module MailerLite
     #
     # @return [HTTP::Response] the response from the API
     def list
-      client.http.get("#{API_URL}/webhooks")
+      client.http.get("#{MAILERLITE_API_URL}/webhooks")
     end
 
     # Returns the details of the specified webhooks
@@ -24,7 +24,7 @@ module MailerLite
     # @param webhook_id [String] the ID of the webhooks to fetch
     # @return [HTTP::Response] the response from the API
     def get(webhook_id)
-      client.http.get("#{API_URL}/webhooks/#{webhook_id}")
+      client.http.get("#{MAILERLITE_API_URL}/webhooks/#{webhook_id}")
     end
 
     # Create a Webhook
@@ -36,7 +36,7 @@ module MailerLite
     def create(events:, url:, name: nil)
       params = { 'events' => events, 'url' => url }
       params['name'] = name if name
-      client.http.post("#{API_URL}/webhooks", json: params.compact)
+      client.http.post("#{MAILERLITE_API_URL}/webhooks", json: params.compact)
     end
 
     # Update the specified Webhook
@@ -53,7 +53,7 @@ module MailerLite
       params['name'] = name if name
       params['url'] = url if url
       params['enabled'] = enabled if enabled
-      client.http.put("#{API_URL}/webhooks/#{webhook_id}", json: params.compact)
+      client.http.put("#{MAILERLITE_API_URL}/webhooks/#{webhook_id}", json: params.compact)
     end
 
     # Deletes the specified Webhook.
@@ -61,7 +61,7 @@ module MailerLite
     # @param webhook_id [String] the ID of the Webhook to delete
     # @return [HTTP::Response] the response from the API
     def delete(webhook_id)
-      client.http.delete("#{API_URL}/webhooks/#{webhook_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/webhooks/#{webhook_id}")
     end
   end
 end

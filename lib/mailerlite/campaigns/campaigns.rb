@@ -24,7 +24,7 @@ module MailerLite
       params['filter[type]'] = filter[:type] if filter.key?(:type)
       params['limit'] = limit if limit
       params['page'] = page if page
-      uri = URI("#{API_URL}/campaigns")
+      uri = URI("#{MAILERLITE_API_URL}/campaigns")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
@@ -78,7 +78,7 @@ module MailerLite
         }
       end
 
-      client.http.post("#{API_URL}/campaigns", body: params.compact.to_json)
+      client.http.post("#{MAILERLITE_API_URL}/campaigns", body: params.compact.to_json)
     end
 
     # Update a new campaign with the specified details.
@@ -132,7 +132,7 @@ module MailerLite
 
       end
 
-      client.http.put("#{API_URL}/campaigns/#{campaign_id}", body: params.compact.to_json)
+      client.http.put("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}", body: params.compact.to_json)
     end
 
     # Schedules the specified campaign.
@@ -160,7 +160,7 @@ module MailerLite
       params['resend']['minutes'] = resend[:minutes] if resend&.key?(:minutes)
       params['resend']['timezone_id'] = resend[:timezone_id] if resend&.key?(:timezone_id)
 
-      client.http.post("#{API_URL}/campaigns/#{campaign_id}/schedule", body: params.compact.to_json)
+      client.http.post("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}/schedule", body: params.compact.to_json)
     end
 
     # Returns the details of the specified Campaigns
@@ -168,7 +168,7 @@ module MailerLite
     # @param campaign_id [String] the ID of the campaign to fetch
     # @return [HTTP::Response] the response from the API
     def fetch(campaign_id)
-      client.http.get("#{API_URL}/campaigns/#{campaign_id}")
+      client.http.get("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}")
     end
 
     # Cancels the specified campaign.
@@ -176,7 +176,7 @@ module MailerLite
     # @param campaign_id [String] the ID of the campaign to delete
     # @return [HTTP::Response] the response from the API
     def cancel(campaign_id)
-      client.http.post("#{API_URL}/campaigns/#{campaign_id}/cancel")
+      client.http.post("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}/cancel")
     end
 
     # Deletes the specified campaign.
@@ -184,7 +184,7 @@ module MailerLite
     # @param campaign_id [String] the ID of the campaign to delete
     # @return [HTTP::Response] the response from the API
     def delete(campaign_id)
-      client.http.delete("#{API_URL}/campaigns/#{campaign_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}")
     end
 
     # activity the subscriber activity for specified campaign
@@ -203,14 +203,14 @@ module MailerLite
       params['page'] = page if page
       params['limit'] = limit if limit
       params['sort'] = sort if sort
-      client.http.post("#{API_URL}/campaigns/#{campaign_id}/reports/subscriber-activity", body: params.compact.to_json)
+      client.http.post("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}/reports/subscriber-activity", body: params.compact.to_json)
     end
 
     # Get a list of all campaign languages available
     #
     # @return [HTTP::Response] the response from the API
     def languages
-      client.http.get("#{API_URL}/campaigns/languages")
+      client.http.get("#{MAILERLITE_API_URL}/campaigns/languages")
     end
   end
 end
