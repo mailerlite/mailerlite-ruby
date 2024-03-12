@@ -22,7 +22,7 @@ module MailerLite
       params['limit'] = limit if limit
       params['page'] = page if page
 
-      client.http.get("#{API_URL}/segments", json: params.compact)
+      client.http.get("#{MAILERLITE_API_URL}/segments", json: params.compact)
     end
 
     # Update the specified Segment
@@ -32,7 +32,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def update(segment_id:, name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/segments/#{segment_id}", json: params.compact)
+      client.http.put("#{MAILERLITE_API_URL}/segments/#{segment_id}", json: params.compact)
     end
 
     # Get Subscribers assigned to the specified Segment.
@@ -46,7 +46,7 @@ module MailerLite
       params['filter[status]'] = filter[:status] if filter.key?(:status)
       params['limit'] = limit if limit
       params['after'] = after if after
-      uri = URI("#{API_URL}/segments/#{segment_id}/subscribers")
+      uri = URI("#{MAILERLITE_API_URL}/segments/#{segment_id}/subscribers")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
@@ -56,7 +56,7 @@ module MailerLite
     # @param segment_id [String] the ID of the Segments to delete
     # @return [HTTP::Response] the response from the API
     def delete(segment_id)
-      client.http.delete("#{API_URL}/segments/#{segment_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/segments/#{segment_id}")
     end
   end
 end

@@ -23,7 +23,7 @@ module MailerLite
 
       params['limit'] = limit if limit
       params['page'] = page if page
-      uri = URI("#{API_URL}/subscribers")
+      uri = URI("#{MAILERLITE_API_URL}/subscribers")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
@@ -52,7 +52,7 @@ module MailerLite
       params['optin_ip'] = optin_ip if optin_ip
       params['unsubscribed_at'] = unsubscribed_at if unsubscribed_at
 
-      client.http.post("#{API_URL}/subscribers", json: params.compact)
+      client.http.post("#{MAILERLITE_API_URL}/subscribers", json: params.compact)
     end
 
     # Updates an existing subscriber with the specified details.
@@ -81,7 +81,7 @@ module MailerLite
       params['optin_ip'] = optin_ip if optin_ip
       params['unsubscribed_at'] = unsubscribed_at if unsubscribed_at
 
-      client.http.put("#{API_URL}/subscribers/#{subscriber_id}", json: params.compact)
+      client.http.put("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}", json: params.compact)
     end
 
     # Returns the details of the specified subscribers
@@ -89,7 +89,7 @@ module MailerLite
     # @param subscriber_id [String] the ID of the subscriber to get
     # @return [HTTP::Response] the response from the API
     def get(subscriber_id)
-      client.http.get("#{API_URL}/subscribers/#{subscriber_id}")
+      client.http.get("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}")
     end
 
     # Returns the details of the specified subscribers
@@ -97,14 +97,14 @@ module MailerLite
     # @param import_id [String] the ID of the import to fetch report
     # @return [HTTP::Response] the response from the API
     def get_single_import(import_id)
-      client.http.get("#{API_URL}/subscribers/import/#{import_id}")
+      client.http.get("#{MAILERLITE_API_URL}/subscribers/import/#{import_id}")
     end
 
     # Returns the total number of subscribers in the MailerLite account.
     #
     # @return [HTTP::Response] the response from the API
     def fetch_count
-      client.http.get("#{API_URL}/subscribers/?limit=0")
+      client.http.get("#{MAILERLITE_API_URL}/subscribers/?limit=0")
     end
 
     # Deletes the specified subscriber.
@@ -112,7 +112,7 @@ module MailerLite
     # @param subscriber_id [String] the ID of the subscriber to delete
     # @return [HTTP::Response] the response from the API
     def delete(subscriber_id)
-      client.http.delete("#{API_URL}/subscribers/#{subscriber_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}")
     end
 
     # Forgets the specified subscriber.
@@ -120,7 +120,7 @@ module MailerLite
     # @param subscriber_id [String] the ID of the subscriber to forget
     # @return [HTTP::Response] the response from the API
     def forget(subscriber_id)
-      client.http.post("#{API_URL}/subscribers/#{subscriber_id}/forget")
+      client.http.post("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}/forget")
     end
   end
 end

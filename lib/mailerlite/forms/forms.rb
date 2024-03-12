@@ -24,7 +24,7 @@ module MailerLite
       params['limit'] = limit if limit
       params['sort'] = sort if sort
       params['page'] = page if page
-      uri = URI("#{API_URL}/forms/#{type}")
+      uri = URI("#{MAILERLITE_API_URL}/forms/#{type}")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
@@ -34,7 +34,7 @@ module MailerLite
     # @param form_id [String] the ID of the forms to fetch
     # @return [HTTP::Response] the response from the API
     def fetch(form_id)
-      client.http.get("#{API_URL}/forms/#{form_id}")
+      client.http.get("#{MAILERLITE_API_URL}/forms/#{form_id}")
     end
 
     # Returns the subscribers who signed up to a specific form
@@ -42,7 +42,7 @@ module MailerLite
     # @param form_id [String] the ID of the forms to fetch
     # @return [HTTP::Response] the response from the API
     def fetch_subscribers(form_id)
-      client.http.get("#{API_URL}/forms/#{form_id}/subscribers")
+      client.http.get("#{MAILERLITE_API_URL}/forms/#{form_id}/subscribers")
     end
 
     # Update the specified Forms
@@ -52,14 +52,14 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def update(form_id:, name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/forms/#{form_id}", json: params.compact)
+      client.http.put("#{MAILERLITE_API_URL}/forms/#{form_id}", json: params.compact)
     end
 
     # Returns the total number of Forms in the MailerLite account.
     #
     # @return [HTTP::Response] the response from the API
     def fetch_count
-      client.http.get("#{API_URL}/forms/?limit=0")
+      client.http.get("#{MAILERLITE_API_URL}/forms/?limit=0")
     end
 
     # Deletes the specified forms.
@@ -67,7 +67,7 @@ module MailerLite
     # @param form_id [String] the ID of the forms to delete
     # @return [HTTP::Response] the response from the API
     def delete(form_id)
-      client.http.delete("#{API_URL}/forms/#{form_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/forms/#{form_id}")
     end
   end
 end

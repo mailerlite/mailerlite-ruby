@@ -18,7 +18,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def request(requests:)
       params = { requests: requests }
-      client.http.post("#{API_URL}/batch", body: params.to_json)
+      client.http.post("#{MAILERLITE_API_URL}/batch", body: params.to_json)
     end
   end
 end

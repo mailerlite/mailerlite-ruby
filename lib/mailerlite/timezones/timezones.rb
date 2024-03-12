@@ -16,7 +16,7 @@ module MailerLite
     #
     # @return [HTTP::Response] the response from the API
     def list
-      client.http.get("#{API_URL}/timezones")
+      client.http.get("#{MAILERLITE_API_URL}/timezones")
     end
   end
 end

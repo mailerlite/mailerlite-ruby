@@ -25,7 +25,7 @@ module MailerLite
       params['sort'] = sort if sort
       params['limit'] = limit if limit
       params['page'] = page if page
-      uri = URI("#{API_URL}/fields")
+      uri = URI("#{MAILERLITE_API_URL}/fields")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
@@ -37,7 +37,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def create(type:, name:)
       params = { 'name' => name, 'type' => type }
-      client.http.post("#{API_URL}/fields", json: params.compact)
+      client.http.post("#{MAILERLITE_API_URL}/fields", json: params.compact)
     end
 
     # Update the specified Field
@@ -47,7 +47,7 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def update(field_id:, name:)
       params = { 'name' => name }
-      client.http.put("#{API_URL}/fields/#{field_id}", json: params.compact)
+      client.http.put("#{MAILERLITE_API_URL}/fields/#{field_id}", json: params.compact)
     end
 
     # Deletes the specified Field.
@@ -55,7 +55,7 @@ module MailerLite
     # @param field_id [String] the ID of the Field to delete
     # @return [HTTP::Response] the response from the API
     def delete(field_id)
-      client.http.delete("#{API_URL}/fields/#{field_id}")
+      client.http.delete("#{MAILERLITE_API_URL}/fields/#{field_id}")
     end
   end
 end
