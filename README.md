@@ -176,7 +176,7 @@ require "mailerlite-ruby"
 # Intialize the class
 groups = MailerLite::Groups.new
 
-groups.list(limit:10, page:1, filter:{'name': 'My'}, sort:'name')
+groups.get(limit:10, page:1, filter:{'name': 'My'}, sort:'name')
 ```
 
 ### Create a group
@@ -483,7 +483,7 @@ require "mailerlite-ruby"
 campaigns = MailerLite::Campaigns.new
 
 campaigns.update(
-  campaign_id: 1233455, 
+  campaign_id: 1233455,
   name: "New Campaign Name",
   language_id: 2,
   emails: [{
@@ -703,7 +703,7 @@ webhooks.create(
     'subscriber.created',
     'subscriber.updated',
     'subscriber.unsubscribed'
-  ], 
+  ],
   url:'https://my-url.com',
   name: 'Webhook name'
 )
@@ -720,12 +720,12 @@ require "mailerlite-ruby"
 webhooks = MailerLite::Webhooks.new
 
 webhooks.update(
-  webhook_id: 123456, 
+  webhook_id: 123456,
   events:[
     'subscriber.created',
     'subscriber.updated',
     'subscriber.unsubscribed'
-  ], 
+  ],
   url:'https://my-url.com',
   name: 'Webhook name',
   enabled: false
@@ -784,7 +784,7 @@ campaigns.languages()
 # Testing
 
 ```bash
-bundle i 
+bundle i
 bundle exec rspec spec/*rspec.rb
 ```
 
@@ -794,7 +794,7 @@ The fixtures for the test have been recorded using vcr and are available in the 
 # Generate Docs
 
 ```bash
-bundle i 
+bundle i
 bundle exec yardoc 'lib/**/*.rb'
 ```
 
