@@ -105,7 +105,7 @@ require "mailerlite-ruby"
 # Intialize the class
 subscribers = MailerLite::Subscribers.new
 
-subscribers.fetch(filter: { status: 'active' })
+subscribers.fetch(filter: { status: 'active' }, cursor: 'cursor')
 ```
 
 ### Create a subscriber
@@ -131,7 +131,7 @@ require "mailerlite-ruby"
 # Intialize the class
 subscribers = MailerLite::Subscribers.new
 
-subscribers.update(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
+subscribers.update('some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
 ```
 
 ### Get a subscriber
@@ -227,10 +227,10 @@ groups.delete(group_id)
 ```ruby
 require "mailerlite-ruby"
 
-# Intialize the class
+# Initialize the class
 groups = MailerLite::Groups.new
 
-groups.get_subscribers(group_id:1234567, page:1, limit:10, filter:{'status': 'active'})
+groups.get_subscribers(group_id: 1234567, cursor: 'cursor', limit: 10, filter: { 'status': 'active' })
 ```
 
 ### Assign subscriber to a group
