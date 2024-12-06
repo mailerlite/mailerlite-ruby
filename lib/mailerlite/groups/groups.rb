@@ -54,12 +54,12 @@ module MailerLite
     # @param limit [Integer] the maximum number of subscribers to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def get_subscribers(group_id:, filter: {}, limit: nil, page: nil, sort: nil)
+    def get_subscribers(group_id:, filter: {}, limit: nil, cursor: nil, sort: nil)
       params = {}
       params['filter[status]'] = filter[:status] if filter.key?(:status)
       params['limit'] = limit if limit
       params['sort'] = sort if sort
-      params['page'] = page if page
+      params['cursor'] = cursor if cursor
       client.http.get("#{MAILERLITE_API_URL}/groups/#{group_id}/subscribers", json: params.compact)
     end
 

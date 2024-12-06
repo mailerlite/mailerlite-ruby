@@ -18,11 +18,11 @@ module MailerLite
     # @param limit [Integer] the maximum number of subscribers to return
     # @param page [Integer] the page number of the results to return
     # @return [HTTP::Response] the response from the API
-    def fetch(filter:, limit: nil, page: nil)
+    def fetch(filter:, limit: nil, cursor: nil)
       params = { 'filter[status]' => filter[:status] }
 
       params['limit'] = limit if limit
-      params['page'] = page if page
+      params['cursor'] = cursor if cursor
       uri = URI("#{MAILERLITE_API_URL}/subscribers")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)

@@ -1,3 +1,6 @@
+## [1.0.6] - 2024-12-06
+- Page parameter to cursor pagination fix
+
 ## [1.0.5] - 2024-03-12
 - Update constant name
 
