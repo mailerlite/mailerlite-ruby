@@ -131,7 +131,7 @@ require "mailerlite-ruby"
 # Intialize the class
 subscribers = MailerLite::Subscribers.new
 
-subscribers.update(email:'some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
+subscribers.update('some@email.com', fields: {'name': 'John', 'last_name': 'Doe'}, ip_address:'1.2.3.4', optin_ip:'1.2.3.4')
 ```
 
 ### Get a subscriber
