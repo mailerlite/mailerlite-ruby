@@ -1,3 +1,6 @@
+## [2.0.0] - 2024-12-11
+- *BREAKING CHANGE* - Please check the README file, dotenv is now optional
+
 ## [1.0.6] - 2024-12-06
 - Page parameter to cursor pagination fix
 

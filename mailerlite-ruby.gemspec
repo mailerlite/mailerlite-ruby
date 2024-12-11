@@ -27,13 +27,13 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 2.4.1'
-  spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rubocop', '~> 1.7'
+  spec.add_development_dependency 'bundler', '~> 2.5'
+  spec.add_development_dependency 'rake', '~> 13.2'
+  spec.add_development_dependency 'rubocop', '~> 1.69'
   spec.add_dependency 'dotenv', '~> 2.7'
-  spec.add_dependency 'http', '~> 5.0'
-  spec.add_dependency 'json', '~> 2.5'
-  spec.add_dependency 'uri', '~> 0.13.0'
+  spec.add_dependency 'http', '~> 5.2'
+  spec.add_dependency 'json', '~> 2.9'
+  spec.add_dependency 'uri', '~> 1.0'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'vcr'
