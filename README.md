@@ -89,7 +89,15 @@ You will have to initalize it in your Ruby file with `require "mailerlite-ruby"`
 
 # Usage
 
-This SDK requires that you either have `.env` file with `MAILERLITE_API_TOKEN` env variable or that your variable is enabled system wide (useful for Docker/Kubernetes). The example of how `MAILERLITE_API_TOKEN` should look like is in `.env.example`.
+This SDK requires that you have the `MAILERLITE_API_TOKEN` environment variable set. You can set this variable in a `.env` file or enable it system-wide (useful for Docker/Kubernetes). The example of how `MAILERLITE_API_TOKEN` should look like is in `.env.example`.
+
+If you want to use `dotenv` to manage your environment variables, you can configure the `mailerlite` gem to load `dotenv`:
+
+```ruby
+MailerLite.configure do |config|
+  config.use_dotenv = true
+end
+```
 
 ## Subscribers
 
