@@ -122,5 +122,27 @@ module MailerLite
     def forget(subscriber_id)
       client.http.post("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}/forget")
     end
+
+    # Returns a subscriber's lifetime orders and revenue in one shop
+    #
+    # @param subscriber_id [String] the ID of the subscriber
+    # @param shop_id [String] the ID of the shop
+    # @return [HTTP::Response] the response from the API
+    def ecommerce_stats(subscriber_id:, shop_id:)
+      uri = URI("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}/reports/ecommerce")
+      uri.query = URI.encode_www_form('shop_id' => shop_id)
+      client.http.get(uri)
+    end
+
+    # Returns a subscriber's orders in one shop
+    #
+    # @param subscriber_id [String] the ID of the subscriber
+    # @param shop_id [String] the ID of the shop
+    # @return [HTTP::Response] the response from the API
+    def ecommerce_orders(subscriber_id:, shop_id:, page: nil, limit: nil)
+      uri = URI("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}/reports/ecommerce/orders")
+      uri.query = URI.encode_www_form({ 'shop_id' => shop_id, 'page' => page, 'limit' => limit }.compact)
+      client.http.get(uri)
+    end
   end
 end
