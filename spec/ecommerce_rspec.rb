@@ -101,12 +101,22 @@ RSpec.describe MailerLite::Ecommerce do
     expect_request(:delete, "#{shop}/carts/4/items/8") { items.delete(shop_id: '1', cart_id: '4', item_id: '8') }
   end
 
+  it 'creates an order with its customer and cart' do
+    order = { customer: { email: 'a@b.test' }, cart: { items: [{ ecommerce_product_id: '7' }] } }
+
+    expect_request(:post, "#{shop}/orders", body: order) do
+      MailerLite::Ecommerce::Orders.new(client: client).create(shop_id: '1', params: order)
+    end
+  end
+
   it 'calls the import and settings endpoints' do
     imports = MailerLite::Ecommerce::Imports.new(client: client)
 
     expect_request(:post, "#{shop}/products/import", body: [{ name: 'Hat' }]) { imports.products(shop_id: '1', products: [{ name: 'Hat' }]) }
     expect_request(:post, "#{shop}/categories/import", body: [{ name: 'Hats' }]) { imports.categories(shop_id: '1', categories: [{ name: 'Hats' }]) }
     expect_request(:post, "#{shop}/customers/import", body: [{ email: 'a@b.test' }]) { imports.customers(shop_id: '1', customers: [{ email: 'a@b.test' }]) }
+    order = { customer: { email: 'a@b.test' }, cart: { items: [{ ecommerce_product_id: '7' }] } }
+    expect_request(:post, "#{shop}/orders/import", body: { orders: [order] }) { imports.orders(shop_id: '1', orders: [order]) }
     expect_request(:get, "#{api}/ecommerce/settings") { MailerLite::Ecommerce::Settings.new(client: client).get }
   end
 
@@ -124,5 +134,8 @@ RSpec.describe MailerLite::Ecommerce do
       automations.email_ecommerce_stats(automation_id: '8', email_id: '9', shop_id: '1')
     end
     expect_request(:get, "#{api}/automations/8/order-activity?time_frame=all_time") { automations.ecommerce_orders(automation_id: '8', time_frame: 'all_time') }
+    expect_request(:get, "#{api}/automations/8/order-activity?time_frame=custom&time_frame_start=2026-10-01&time_frame_end=2026-10-31&ecommerce_shop_id=1&page=2&limit=5") do
+      automations.ecommerce_orders(automation_id: '8', time_frame: 'custom', time_frame_start: '2026-10-01', time_frame_end: '2026-10-31', shop_id: '1', page: 2, limit: 5)
+    end
   end
 end
