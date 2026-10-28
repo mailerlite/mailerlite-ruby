@@ -58,5 +58,51 @@ module MailerLite
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)
     end
+
+    # Returns the orders and revenue an automation earned
+    #
+    # @param automation_id [String] the ID of the Automation
+    # @param shop_id [String] report on one shop only
+    # @param start_date [String] the first day, together with end_date
+    # @param end_date [String] the last day, included
+    # @return [HTTP::Response] the response from the API
+    def ecommerce_stats(automation_id:, shop_id: nil, start_date: nil, end_date: nil)
+      uri = URI("#{MAILERLITE_API_URL}/automations/#{automation_id}/monthly-totals/ecommerce")
+      query = { 'shop_id' => shop_id, 'start_date' => start_date, 'end_date' => end_date }.compact
+      uri.query = URI.encode_www_form(query) unless query.empty?
+      client.http.get(uri)
+    end
+
+    # Returns the orders and revenue one automation email earned
+    #
+    # @param automation_id [String] the ID of the Automation
+    # @param email_id [String] the ID of the email in the Automation
+    # @return [HTTP::Response] the response from the API
+    def email_ecommerce_stats(automation_id:, email_id:, shop_id: nil, start_date: nil, end_date: nil)
+      uri = URI("#{MAILERLITE_API_URL}/automations/#{automation_id}/emails/#{email_id}/ecommerce-overview-stats")
+      query = { 'shop_id' => shop_id, 'start_date' => start_date, 'end_date' => end_date }.compact
+      uri.query = URI.encode_www_form(query) unless query.empty?
+      client.http.get(uri)
+    end
+
+    # Returns the orders attributed to an automation
+    #
+    # @param automation_id [String] the ID of the Automation
+    # @param time_frame [String] week, month, two_months, three_months, six_months, year, last_year, all_time or custom
+    # @param time_frame_start [String] the first day, when time_frame is custom
+    # @param time_frame_end [String] the last day, when time_frame is custom
+    # @return [HTTP::Response] the response from the API
+    def ecommerce_orders(automation_id:, time_frame:, time_frame_start: nil, time_frame_end: nil, shop_id: nil, page: nil, limit: nil)
+      uri = URI("#{MAILERLITE_API_URL}/automations/#{automation_id}/order-activity")
+      uri.query = URI.encode_www_form({
+        'time_frame' => time_frame,
+        'time_frame_start' => time_frame_start,
+        'time_frame_end' => time_frame_end,
+        'ecommerce_shop_id' => shop_id,
+        'page' => page,
+        'limit' => limit
+      }.compact)
+      client.http.get(uri)
+    end
   end
 end

@@ -78,6 +78,13 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Get a list of timezones](#get-a-list-of-timezones)
   - [Campaign languages](#campaign-languages)
     - [Get a list of languages](#get-a-list-of-languages)
+  - [E-commerce](#e-commerce)
+    - [Shops](#shops)
+    - [Products and variants](#products-and-variants)
+    - [Categories](#categories)
+    - [Customers, orders and carts](#customers-orders-and-carts)
+    - [Imports](#imports)
+    - [Revenue reports and settings](#revenue-reports-and-settings)
 
 ## Setup
 
@@ -787,6 +794,120 @@ require "mailerlite-ruby"
 campaigns = MailerLite::Campaigns.new
 
 campaigns.languages()
+```
+
+## E-commerce
+
+<a name="e-commerce"></a>
+
+### Shops
+
+```ruby
+require "mailerlite-ruby"
+
+shops = MailerLite::Ecommerce::Shops.new
+
+shops.list(limit: 25)
+shops.get('shop_id')
+shops.create({ name: 'My shop', url: 'https://shop.example.com', currency: 'EUR' })
+shops.update(shop_id: 'shop_id', params: { name: 'New name' })
+shops.delete('shop_id')
+```
+
+### Products and variants
+
+```ruby
+products = MailerLite::Ecommerce::Products.new
+
+products.list(shop_id: 'shop_id', filter: { enabled: true }, sort: '-created_at')
+products.get(shop_id: 'shop_id', product_id: 'product_id')
+products.create(shop_id: 'shop_id', params: { name: 'Red T-shirt', price: 19.99 })
+products.update(shop_id: 'shop_id', product_id: 'product_id', params: { price: 24.99 })
+products.delete(shop_id: 'shop_id', product_id: 'product_id')
+products.change_status(shop_id: 'shop_id', product_id: 'product_id', enabled: false)
+products.assign_categories(shop_id: 'shop_id', product_id: 'product_id', category_ids: ['category_id'], replace: true)
+
+variants = MailerLite::Ecommerce::ProductVariants.new
+
+variants.list(shop_id: 'shop_id', product_id: 'product_id')
+variants.sync(shop_id: 'shop_id', product_id: 'product_id', variants: [{ name: 'Large', attributes: { size: 'L' }, resource_id: 'variant-l' }])
+variants.update(shop_id: 'shop_id', product_id: 'product_id', variant_id: 'variant_id', params: { name: 'Extra large', attributes: { size: 'XL' } })
+variants.delete(shop_id: 'shop_id', product_id: 'product_id', variant_id: 'variant_id')
+```
+
+### Categories
+
+```ruby
+categories = MailerLite::Ecommerce::Categories.new
+
+categories.list(shop_id: 'shop_id')
+categories.get(shop_id: 'shop_id', category_id: 'category_id')
+categories.create(shop_id: 'shop_id', params: { name: 'Hats' })
+categories.update(shop_id: 'shop_id', category_id: 'category_id', params: { name: 'Caps' })
+categories.delete(shop_id: 'shop_id', category_id: 'category_id')
+categories.products(shop_id: 'shop_id', category_id: 'category_id')
+categories.assign_product(shop_id: 'shop_id', category_id: 'category_id', product_id: 'product_id')
+categories.unassign_product(shop_id: 'shop_id', category_id: 'category_id', product_id: 'product_id')
+```
+
+### Customers, orders and carts
+
+```ruby
+customers = MailerLite::Ecommerce::Customers.new
+customers.list(shop_id: 'shop_id', filter: { email: 'customer@example.com' })
+customers.create(shop_id: 'shop_id', params: { email: 'customer@example.com', create_subscriber: true })
+customers.update(shop_id: 'shop_id', customer_id: 'customer_id', params: { name: 'Jane' })
+customers.delete(shop_id: 'shop_id', customer_id: 'customer_id')
+
+orders = MailerLite::Ecommerce::Orders.new
+orders.list(shop_id: 'shop_id', filter: { attributed: true, email_id: 'email_id' })
+orders.create(shop_id: 'shop_id', params: {
+  customer: { email: 'customer@example.com' },
+  cart: { items: [{ ecommerce_product_id: 'product_id', quantity: 1, price: 19.99 }] },
+  status: 'complete'
+})
+orders.update(shop_id: 'shop_id', order_id: 'order_id', params: { status: 'complete' })
+orders.delete(shop_id: 'shop_id', order_id: 'order_id')
+
+carts = MailerLite::Ecommerce::Carts.new
+carts.list(shop_id: 'shop_id')
+carts.update(shop_id: 'shop_id', cart_id: 'cart_id', params: { checkout_url: 'https://shop.example.com/cart' })
+
+cart_items = MailerLite::Ecommerce::CartItems.new
+cart_items.list(shop_id: 'shop_id', cart_id: 'cart_id')
+cart_items.update(shop_id: 'shop_id', cart_id: 'cart_id', item_id: 'item_id', params: { quantity: 2 })
+cart_items.delete(shop_id: 'shop_id', cart_id: 'cart_id', item_id: 'item_id')
+```
+
+### Imports
+
+```ruby
+imports = MailerLite::Ecommerce::Imports.new
+
+imports.products(shop_id: 'shop_id', products: [{ name: 'Red T-shirt', price: 19.99 }])
+imports.categories(shop_id: 'shop_id', categories: [{ name: 'Hats' }])
+imports.customers(shop_id: 'shop_id', customers: [{ email: 'customer@example.com' }])
+```
+
+### Revenue reports and settings
+
+```ruby
+MailerLite::Ecommerce::Shops.new.stats(shop_id: 'shop_id', start_date: '2026-10-01', end_date: '2026-10-31')
+
+campaigns = MailerLite::Campaigns.new
+campaigns.ecommerce_stats(campaign_id: 'campaign_id', shop_id: 'shop_id')
+campaigns.ecommerce_orders(campaign_id: 'campaign_id', shop_id: 'shop_id')
+
+subscribers = MailerLite::Subscribers.new
+subscribers.ecommerce_stats(subscriber_id: 'subscriber_id', shop_id: 'shop_id')
+subscribers.ecommerce_orders(subscriber_id: 'subscriber_id', shop_id: 'shop_id')
+
+automations = MailerLite::Automations.new
+automations.ecommerce_stats(automation_id: 'automation_id')
+automations.email_ecommerce_stats(automation_id: 'automation_id', email_id: 'email_id')
+automations.ecommerce_orders(automation_id: 'automation_id', time_frame: 'all_time')
+
+MailerLite::Ecommerce::Settings.new.get
 ```
 
 # Testing
