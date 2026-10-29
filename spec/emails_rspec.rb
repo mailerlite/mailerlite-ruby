@@ -11,12 +11,12 @@ RSpec.describe MailerLite::Emails do
 
   # Stubs one request. The stub matches only the exact raw body, the Authorization header,
   # and the Idempotency-Key header (or no such header when `key` is nil).
-  def stub_api(method, path, body: '', response: {}, status: 200, query: nil, key: nil)
+  def stub_api(method, path, body: '', response: {}, status: 200, query: nil, key: nil, headers: {})
     pattern = { headers: { 'Authorization' => 'Bearer dummy_token' } }
     pattern[:query] = query if query
     stub_request(method, "#{MAILERLITE_API_URL}#{path}")
       .with(**pattern) { |req| req.body == body && req.headers['Idempotency-Key'] == key }
-      .to_return(status: status, body: response.to_json, headers: { 'Content-Type' => 'application/json' })
+      .to_return(status: status, body: response.to_json, headers: { 'Content-Type' => 'application/json' }.merge(headers))
   end
 
   def decoded(response)
@@ -508,6 +508,80 @@ RSpec.describe MailerLite::Emails do
       expect_invalid_ids('version_id') { |id| emails.restore_version(email_id: '123', version_id: id, etag: '47') }
       expect { emails.restore_version(email_id: '123', version_id: '901', etag: '') }.to raise_error(MailerLite::EmptyEtagError)
       expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
+
+  describe 'idempotency keys' do
+    # The 8 writes that accept a key: the method, the path, the raw body, and a call with the key.
+    def writes
+      [
+        [:post, '/emails/123/blocks', '{"type":"divider","editor_content":{},"etag":"42"}',
+         ->(key) { emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, idempotency_key: key) }],
+        [:patch, '/emails/123/blocks/57', '{"editor_content":{},"etag":"42"}',
+         ->(key) { emails.update_block(email_id: '123', block_id: '57', etag: '42', editor_content: {}, idempotency_key: key) }],
+        [:delete, '/emails/123/blocks/57', '{"etag":"42"}',
+         ->(key) { emails.delete_block(email_id: '123', block_id: '57', etag: '42', idempotency_key: key) }],
+        [:post, '/emails/123/blocks/57/move', '{"placement":{"position":"end"},"etag":"42"}',
+         ->(key) { emails.move_block(email_id: '123', block_id: '57', etag: '42', placement: { position: 'end' }, idempotency_key: key) }],
+        [:patch, '/emails/123/settings', '{"etag":"42"}',
+         ->(key) { emails.update_settings(email_id: '123', etag: '42', settings: {}, idempotency_key: key) }],
+        [:post, '/emails/123/templates', '{"name":"Newsletter"}',
+         ->(key) { emails.create_template(email_id: '123', name: 'Newsletter', idempotency_key: key) }],
+        [:post, '/emails/123/versions', '',
+         ->(key) { emails.create_version('123', idempotency_key: key) }],
+        [:post, '/emails/123/versions/901/restore', '{"etag":"42"}',
+         ->(key) { emails.restore_version(email_id: '123', version_id: '901', etag: '42', idempotency_key: key) }]
+      ]
+    end
+
+    it 'sends the Idempotency-Key header on each write' do
+      writes.each do |method, path, body, call|
+        stub = stub_api(method, path, body: body, key: 'key-1', response: { etag: '43' })
+        call.call('key-1')
+        expect(stub).to have_been_requested
+      end
+    end
+
+    it 'sends no Idempotency-Key header without a key' do
+      writes.each do |method, path, body, call|
+        stub = stub_api(method, path, body: body, response: { etag: '43' })
+        call.call(nil)
+        expect(stub).to have_been_requested
+      end
+    end
+
+    it 'accepts a key with 255 characters' do
+      stub = stub_api(:post, '/emails/123/versions', key: 'k' * 255, status: 201, response: load_fixture('email_version'))
+
+      emails.create_version('123', idempotency_key: 'k' * 255)
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'checks the key and sends no request' do
+      writes.each do |_method, _path, _body, call|
+        ['', 'k' * 256, "a\nb", "a\tb", 'é', "\x7F", ' k', 'k '].each do |key|
+          expect { call.call(key) }.to raise_error(MailerLite::InvalidIdempotencyKeyError)
+        end
+        expect { call.call(1) }.to raise_error(TypeError, /`idempotency_key`/)
+      end
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
+    it 'shows a replay of a stored response' do
+      stub_api(:post, '/emails/123/blocks', body: '{"type":"divider","editor_content":{},"etag":"42"}', key: 'key-1', status: 201,
+                                            response: load_fixture('email_block_created'), headers: { 'Idempotent-Replayed' => 'True' })
+
+      response = emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, idempotency_key: 'key-1')
+
+      expect(response.code).to eq 201
+      expect(response.idempotent_replay?).to be(true)
+      expect(decoded(response)['data']['id']).to eq '58'
+    end
+
+    it 'does not accept a key on the validate methods' do
+      expect { emails.validate_block(type: 'divider', editor_content: {}, idempotency_key: 'k') }.to raise_error(ArgumentError, /idempotency_key/)
+      expect { emails.validate_settings(email_id: '123', settings: {}, idempotency_key: 'k') }.to raise_error(ArgumentError, /idempotency_key/)
     end
   end
 end
