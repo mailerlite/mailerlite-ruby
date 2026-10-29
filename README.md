@@ -75,6 +75,8 @@ For more information how to obtain an API key visit the [following link](https:/
     - [List the versions of an email](#list-the-versions-of-an-email)
     - [Save a version of an email](#save-a-version-of-an-email)
     - [Restore a version of an email](#restore-a-version-of-an-email)
+  - [Brand styles](#brand-styles)
+    - [Get the brand styles](#get-the-brand-styles)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -879,6 +881,27 @@ emails = MailerLite::Emails.new
 response = emails.restore_version(email_id: '123456', version_id: '901', etag: 'etag-from-the-last-response')
 
 etag = JSON.parse(response.body)['etag']
+```
+
+## Brand styles
+
+<a name="brand-styles"></a>
+
+### Get the brand styles
+
+<a name="get-the-brand-styles"></a>
+
+Returns the palettes of your account: `brand` (your brand styles, or `nil` if your account has none), `default` and the `presets`. Match a palette on its `identifier`, not on its `name`. To apply a preset to an email, [update the design settings](#update-the-design-settings) with `{ brand: { style: identifier } }`.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+brand_styles = MailerLite::BrandStyles.new
+
+response = brand_styles.get
+
+identifiers = JSON.parse(response.body)['data']['presets'].map { |preset| preset['identifier'] }
 ```
 
 ## Forms
