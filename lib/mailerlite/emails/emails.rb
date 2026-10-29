@@ -221,6 +221,18 @@ module MailerLite
       Request.call(client, :post, "/emails/#{email_id}/settings/validate", json: Params.settings(settings))
     end
 
+    # Saves the email as a new template with the name. The API cannot delete templates.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param name [String] the name of the template
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the ID is not valid
+    # @raise [TypeError] if an argument has a type that is not valid
+    def create_template(email_id:, name:)
+      email_id = Params.path_id(email_id, 'email_id')
+      Request.call(client, :post, "/emails/#{email_id}/templates", json: { 'name' => Params.require_string(name, 'name') })
+    end
+
     private
 
     # Returns the body to insert or to validate a block.
