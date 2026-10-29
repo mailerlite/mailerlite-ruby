@@ -60,6 +60,8 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Cancel a campaign](#cancel-a-campaign)
     - [Delete a campaign](#delete-a-campaign)
     - [Get subscribers activity for a campaign](#get-subscribers-activity-for-a-campaign)
+  - [Emails](#emails)
+    - [Get an email](#get-an-email)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -567,6 +569,38 @@ campaigns = MailerLite::Campaigns.new
 campaign_id = 123456
 
 campaigns.activity(campaign_id)
+```
+
+## Emails
+
+<a name="emails"></a>
+
+These methods edit emails built with the simple editor. To create such an email, create a campaign with `editor: 'simple'` in the email. The ID of the email is in `data.emails[0].id` of the response.
+
+- IDs are strings of digits. You can also give them as integers. An empty ID raises `MailerLite::EmptyIdError`, and an ID that does not contain only digits raises `MailerLite::InvalidIdError`. The SDK sends no request in these cases.
+- The methods return an `HTTP::Response`, like the other methods. Use `response.code` for the status code, `response.headers` for the headers and `JSON.parse(response.body)` for the body.
+- The methods do not raise an error for a `4xx` or `5xx` status. `response.api_error` is `nil` for a `2xx` status. For other statuses, it is a `MailerLite::ApiError` with `status`, `code`, `etag`, `api_message` and `errors`. You can raise it.
+- Each write needs the etag from the last response for the email, and returns a new etag. The etag covers the whole email, so send the writes to one email one after another. An empty etag raises `MailerLite::EmptyEtagError`, and the SDK sends no request.
+- If the email changed after you read it, the write returns `409`, and `response.api_error.code` is `MailerLite::Emails::VERSION_CONFLICT`. Then `response.api_error.etag` is the current etag. Get the email again, and then send the write again with the current etag.
+- The keys of `editor_content` are camelCase, for example `textAlign`. The SDK sends them as you give them.
+
+### Get an email
+
+<a name="get-an-email"></a>
+
+Returns the email with its settings and blocks, and the etag of the email.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.get('123456')
+
+body = JSON.parse(response.body)
+email = body['data']
+etag = body['etag']
 ```
 
 ## Forms
