@@ -11,8 +11,7 @@ RSpec.describe MailerLite::Emails do
   let(:client) { MailerLite::Client.new }
   let(:emails) { described_class.new(client: client) }
 
-  # Stubs one request. The stub matches only the exact raw body, the Authorization header,
-  # and the Idempotency-Key header (or no such header when `key` is nil).
+  # A nil `key` matches only a request without the Idempotency-Key header.
   def stub_api(method, path, body: '', response: {}, status: 200, query: nil, key: nil, headers: {})
     pattern = { headers: { 'Authorization' => 'Bearer dummy_token' } }
     pattern[:query] = query if query
@@ -25,7 +24,6 @@ RSpec.describe MailerLite::Emails do
     JSON.parse(response.body.to_s)
   end
 
-  # Each value raises the error before the request.
   def invalid_ids
     [
       ['', MailerLite::EmptyIdError], [nil, MailerLite::EmptyIdError],
@@ -527,7 +525,7 @@ RSpec.describe MailerLite::Emails do
   end
 
   describe 'idempotency keys' do
-    # The 8 writes that accept a key: the method, the path, the raw body, and a call with the key.
+    # Each item: the method, the path, the raw body, and a call with the key.
     def writes
       [
         [:post, '/emails/123/blocks', '{"type":"divider","editor_content":{},"etag":"42"}',

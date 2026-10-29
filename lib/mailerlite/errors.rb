@@ -42,7 +42,6 @@ module MailerLite
           code: data['code'], etag: data['etag'], errors: data['errors'], api_message: data['message'])
     end
 
-    # Returns the body as a Hash, or an empty Hash if the body is not a JSON object.
     def self.parse(body)
       data = JSON.parse(body)
       data.is_a?(Hash) ? data : {}
