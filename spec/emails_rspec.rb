@@ -434,4 +434,33 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#list_versions' do
+    it 'sends no query without options' do
+      stub = stub_api(:get, '/emails/123/versions', response: load_fixture('email_versions'))
+
+      response = emails.list_versions('123')
+
+      expect(stub).to have_been_requested
+      data = decoded(response)
+      expect(data['data'].map { |version| version['id'] }).to eq %w[902 901]
+      expect(data['data'][0]['current']).to be(true)
+      expect(data['data'][1]['current']).to be(false)
+      expect(data['links']).to have_key('prev')
+      expect(data['links']['prev']).to be_nil
+      expect(data['meta']['total']).to eq 2
+    end
+
+    it 'sends the page and the limit' do
+      stub = stub_api(:get, '/emails/123/versions', query: { 'page' => '2', 'limit' => '10' }, response: load_fixture('email_versions'))
+
+      emails.list_versions(123, page: 2, limit: 10)
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'checks the email ID and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.list_versions(id) }
+    end
+  end
 end

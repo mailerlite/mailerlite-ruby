@@ -233,6 +233,18 @@ module MailerLite
       Request.call(client, :post, "/emails/#{email_id}/templates", json: { 'name' => Params.require_string(name, 'name') })
     end
 
+    # Returns the saved versions of the email, newest first. `current` marks the version that the email has now.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param page [Integer] the page number of the results to return
+    # @param limit [Integer] the maximum number of versions to return, from 1 to 100
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if the ID is not valid
+    def list_versions(email_id, page: nil, limit: nil)
+      email_id = Params.path_id(email_id, 'email_id')
+      Request.call(client, :get, "/emails/#{email_id}/versions", query: Params.query(page: page, limit: limit))
+    end
+
     private
 
     # Returns the body to insert or to validate a block.
