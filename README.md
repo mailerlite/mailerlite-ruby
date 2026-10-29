@@ -781,6 +781,8 @@ etag = JSON.parse(response.body)['etag']
 
 Checks a block before you insert it. It needs no email and no etag. An invalid block is not an error: the response has `valid` set to `false` and the `errors` for each field.
 
+The block in this example is not valid, because `sideways` is not a valid `textAlign`. The response has `valid: false` and `errors`.
+
 ```ruby
 require "mailerlite-ruby"
 
@@ -788,8 +790,8 @@ require "mailerlite-ruby"
 emails = MailerLite::Emails.new
 
 response = emails.validate_block(
-  type: MailerLite::Emails::BlockType::BUTTON,
-  editor_content: { attrs: { href: 'https://example.com' }, content: [{ type: 'text', text: 'Buy now' }] }
+  type: MailerLite::Emails::BlockType::PARAGRAPH,
+  editor_content: { attrs: { textAlign: 'sideways' } }
 )
 
 body = JSON.parse(response.body)

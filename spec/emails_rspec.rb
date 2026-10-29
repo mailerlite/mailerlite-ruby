@@ -320,17 +320,20 @@ RSpec.describe MailerLite::Emails do
   end
 
   describe '#validate_block' do
-    it 'sends the block without an etag and returns a valid result' do
-      body = '{"type":"button","editor_content":{"attrs":{"href":"https://example.com"}},"placement":{"position":"end"}}'
-      stub = stub_api(:post, '/emails/blocks/validate', body: body, response: load_fixture('email_block_validation_valid'))
+    it 'sends the block without an etag and returns the errors of the content' do
+      body = '{"type":"paragraph","editor_content":{"attrs":{"textAlign":"sideways"}},"placement":{"position":"end"}}'
+      result = { valid: false, errors: { 'editor_content.attrs.textAlign' => ['The value is not valid.'] },
+                 schema: { version: '2.73.2', hash: '0f3a9c' } }
+      stub = stub_api(:post, '/emails/blocks/validate', body: body, response: result)
 
-      response = emails.validate_block(type: 'button', editor_content: { attrs: { href: 'https://example.com' } },
+      response = emails.validate_block(type: described_class::BlockType::PARAGRAPH, editor_content: { attrs: { textAlign: 'sideways' } },
                                        placement: { position: described_class::BlockPosition::AT_END })
 
       expect(stub).to have_been_requested
+      expect(response.api_error).to be_nil
       data = decoded(response)
-      expect(data['valid']).to be(true)
-      expect(data['errors']).to eq({})
+      expect(data['valid']).to be(false)
+      expect(data['errors']).to eq('editor_content.attrs.textAlign' => ['The value is not valid.'])
       expect(data['schema']['version']).to eq '2.73.2'
     end
 
