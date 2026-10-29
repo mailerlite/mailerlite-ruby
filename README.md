@@ -66,6 +66,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Get a block](#get-a-block)
     - [Insert a block](#insert-a-block)
     - [Update a block](#update-a-block)
+    - [Delete a block](#delete-a-block)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -687,6 +688,23 @@ response = emails.update_block(
   etag: 'etag-from-the-last-response',
   editor_content: { attrs: { textAlign: 'center' }, content: [{ type: 'text', text: 'Hello again' }] }
 )
+
+etag = JSON.parse(response.body)['etag']
+```
+
+### Delete a block
+
+<a name="delete-a-block"></a>
+
+Also deletes the blocks in it. The response has only the new etag.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.delete_block(email_id: '123456', block_id: '57', etag: 'etag-from-the-last-response')
 
 etag = JSON.parse(response.body)['etag']
 ```

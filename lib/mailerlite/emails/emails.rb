@@ -133,6 +133,22 @@ module MailerLite
       Request.call(client, :patch, "/emails/#{email_id}/blocks/#{block_id}", json: body)
     end
 
+    # Deletes a block of the email, and the blocks in it. The response has only the new etag of the email,
+    # so the method returns the response and not true.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param block_id [String, Integer] the ID of the block
+    # @param etag [String] the etag from the last response for the email
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
+    # @raise [MailerLite::EmptyEtagError] if the etag is empty
+    # @raise [TypeError] if an argument has a type that is not valid
+    def delete_block(email_id:, block_id:, etag:)
+      email_id = Params.path_id(email_id, 'email_id')
+      block_id = Params.path_id(block_id, 'block_id')
+      Request.call(client, :delete, "/emails/#{email_id}/blocks/#{block_id}", json: { 'etag' => Params.etag(etag) })
+    end
+
     private
 
     # Returns the body to insert or to validate a block.
