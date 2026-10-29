@@ -224,4 +224,29 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#update_block' do
+    it 'sends a PATCH request with the content and the etag' do
+      body = '{"editor_content":{"content":[{"type":"text","text":"Hello again"}]},"etag":"43"}'
+      stub = stub_api(:patch, '/emails/123/blocks/57', body: body, response: load_fixture('email_block_updated'))
+
+      response = emails.update_block(email_id: '123', block_id: '57', etag: '43',
+                                     editor_content: { content: [{ type: 'text', text: 'Hello again' }] })
+
+      expect(stub).to have_been_requested
+      data = decoded(response)
+      expect(data['etag']).to eq '44'
+      expect(data['data']['editor_content']['content'][0]['text']).to eq 'Hello again'
+      expect(data['data']['placement']).to eq('after' => '56', 'before' => '58')
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.update_block(email_id: id, block_id: '57', etag: '43', editor_content: {}) }
+      expect_invalid_ids('block_id') { |id| emails.update_block(email_id: '123', block_id: id, etag: '43', editor_content: {}) }
+      expect { emails.update_block(email_id: '123', block_id: '57', etag: '', editor_content: {}) }.to raise_error(MailerLite::EmptyEtagError)
+      expect { emails.update_block(email_id: '123', block_id: '57', etag: '43', editor_content: []) }
+        .to raise_error(TypeError, /`editor_content`/)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end

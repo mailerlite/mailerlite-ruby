@@ -115,6 +115,24 @@ module MailerLite
       Request.call(client, :post, "/emails/#{email_id}/blocks", json: body)
     end
 
+    # Updates a block of the email. The new content replaces the whole content of the block: the API removes the
+    # keys that you do not send. Returns the block and the new etag of the email.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param block_id [String, Integer] the ID of the block
+    # @param etag [String] the etag from the last response for the email
+    # @param editor_content [Hash] the new content of the block. Its keys are camelCase, for example `textAlign`.
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
+    # @raise [MailerLite::EmptyEtagError] if the etag is empty
+    # @raise [TypeError] if an argument has a type that is not valid
+    def update_block(email_id:, block_id:, etag:, editor_content:)
+      email_id = Params.path_id(email_id, 'email_id')
+      block_id = Params.path_id(block_id, 'block_id')
+      body = { 'editor_content' => Params.require_hash(editor_content, 'editor_content'), 'etag' => Params.etag(etag) }
+      Request.call(client, :patch, "/emails/#{email_id}/blocks/#{block_id}", json: body)
+    end
+
     private
 
     # Returns the body to insert or to validate a block.
