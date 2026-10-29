@@ -3,7 +3,7 @@
 module MailerLite
   # This is a class for the emails built with the simple editor.
   #
-  # To create such an email, create a campaign with `editor: 'simple'` in the email.
+  # To create such an email, create a campaign with `editor: MailerLite::Campaigns::EDITOR_SIMPLE` in the email.
   # The ID of the email is in `data.emails[0].id` of the response.
   #
   # IDs are Strings of the digits 0-9. You can also give them as Integers. An empty ID raises

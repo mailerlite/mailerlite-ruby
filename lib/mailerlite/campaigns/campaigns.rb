@@ -3,6 +3,9 @@
 module MailerLite
   # This is a class for manipulating the Campaigns from MailerLite API.
   class Campaigns
+    # The value of `editor` in the emails of `create` for the simple editor.
+    EDITOR_SIMPLE = 'simple'
+
     attr_reader :client
 
     # Inits the `Campaigns` class with the specified `client`.
@@ -34,7 +37,10 @@ module MailerLite
     # @param name [String] Maximum string length of 255 characters
     # @param language_id [integer] Used to define the language in the unsubscribe template. Must be a valid language id. Defaults to english
     # @param type [String] Must be one of the following: regular, ab, resend. Type resend is only available for accounts on growing or advanced plans
-    # @param emails [Array] Must contain 1 email object item
+    # @param emails [Array] Must contain 1 email object item. The SDK sends each email as it is. An email can also have these keys:
+    #   - `editor`: the only accepted value is `simple`, which selects the simple editor instead of the drag-and-drop builder. It has to be the same across every email in the payload; a mixed array is rejected. Setting it prohibits `emails.*.content`. Use `EDITOR_SIMPLE`.
+    #   - `template_id`: the template the new email starts from. Allowed only when `editor` is `simple`, accepts only a template from the shared gallery, and also has to be the same across every email.
+    #   Then edit the email with `MailerLite::Emails`. Its ID is in `data.emails[0].id` of the response.
     # @param groups [Array] Must contain valid group ids belonging to the account
     # @param segments [Array] Must contain valid segment ids belonging to the account. If both groups and segments are provided, only segments are used
     # @param ab_settings [Array<Array>] only if type is ab -  All items of the array are required
@@ -82,6 +88,7 @@ module MailerLite
     end
 
     # Update a new campaign with the specified details.
+    # Only `create` accepts `editor` and `template_id`.
     #
     # @param campaign_id [Integer] the ID of the campaign to update
     # @param name [String] Maximum string length of 255 characters

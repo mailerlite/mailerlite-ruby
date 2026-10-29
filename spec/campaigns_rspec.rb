@@ -4,6 +4,8 @@
 require 'spec_helper'
 require 'vcr'
 require 'json'
+require 'webmock/rspec'
+require_relative 'support/json_fixture'
 
 # require "webmock/rspec"
 # Import the `Campaigns` class
@@ -150,6 +152,44 @@ RSpec.describe MailerLite::Campaigns do
         response = campaigns.delete(74_917_804_992_628_332)
         expect(response.status).to eq 204
       end
+    end
+  end
+
+  describe '#create with the simple editor' do
+    let(:url) { "#{MAILERLITE_API_URL}/campaigns" }
+
+    def stub_create(body)
+      stub_request(:post, url)
+        .with(headers: { 'Authorization' => 'Bearer dummy_token' }) { |req| req.body == body }
+        .to_return(status: 201, body: load_fixture('campaign_simple_editor').to_json, headers: { 'Content-Type' => 'application/json' })
+    end
+
+    it 'has the value of the simple editor' do
+      expect(MailerLite::Campaigns::EDITOR_SIMPLE).to eq 'simple'
+    end
+
+    it 'sends editor, template_id and reply_to, and no content' do
+      stub = stub_create('{"name":"Simple editor campaign","type":"regular","emails":[{"subject":"Hello","from_name":"Sender",' \
+                         '"from":"sender@example.com","reply_to":"reply@example.com","editor":"simple","template_id":789}]}')
+
+      response = campaigns.create(name: 'Simple editor campaign', type: 'regular',
+                                  emails: [{ subject: 'Hello', from_name: 'Sender', from: 'sender@example.com',
+                                             reply_to: 'reply@example.com', editor: MailerLite::Campaigns::EDITOR_SIMPLE, template_id: 789 }])
+
+      expect(stub).to have_been_requested
+      email = JSON.parse(response.body.to_s)['data']['emails'][0]
+      expect(email['id']).to eq '123'
+      expect(email['type']).to eq 'builder_inline_email'
+    end
+
+    it 'sends the same body as before without editor' do
+      stub = stub_create('{"name":"HTML campaign","type":"regular","emails":[{"subject":"Hello","from_name":"Sender",' \
+                         '"from":"sender@example.com","content":"<p>Hi</p>"}]}')
+
+      campaigns.create(name: 'HTML campaign', type: 'regular',
+                       emails: [{ subject: 'Hello', from_name: 'Sender', from: 'sender@example.com', content: '<p>Hi</p>' }])
+
+      expect(stub).to have_been_requested
     end
   end
 end
