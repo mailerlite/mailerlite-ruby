@@ -166,6 +166,19 @@ module MailerLite
       Request.call(client, :post, "/emails/#{email_id}/blocks/#{block_id}/move", json: body)
     end
 
+    # Validates a block before you insert it. It needs no email and no etag. An invalid block is not an error:
+    # the response has `valid` set to false and the `errors` for each field.
+    #
+    # @param type [String] the block type, see `BlockType`
+    # @param editor_content [Hash] the content of the block. Its keys are camelCase, for example `textAlign`.
+    # @param placement [Hash, nil] `position` (see `BlockPosition`) and, for `before` and `after`, `block_id`
+    # @return [HTTP::Response] the response from the API, with `valid`, `errors` and `schema`
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the `block_id` of the placement is not valid
+    # @raise [TypeError] if an argument has a type that is not valid
+    def validate_block(type:, editor_content:, placement: nil)
+      Request.call(client, :post, '/emails/blocks/validate', json: block_body(type, editor_content, placement))
+    end
+
     private
 
     # Returns the body to insert or to validate a block.
