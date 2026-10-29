@@ -249,4 +249,23 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#delete_block' do
+    it 'sends a DELETE request with the etag in the body, and returns the new etag' do
+      stub = stub_api(:delete, '/emails/123/blocks/57', body: '{"etag":"44"}', response: load_fixture('email_etag'))
+
+      response = emails.delete_block(email_id: '123', block_id: '57', etag: '44')
+
+      expect(stub).to have_been_requested
+      expect(response).to be_a(HTTP::Response)
+      expect(decoded(response)).to eq('etag' => '45')
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.delete_block(email_id: id, block_id: '57', etag: '44') }
+      expect_invalid_ids('block_id') { |id| emails.delete_block(email_id: '123', block_id: id, etag: '44') }
+      expect { emails.delete_block(email_id: '123', block_id: '57', etag: nil) }.to raise_error(MailerLite::EmptyEtagError)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end
