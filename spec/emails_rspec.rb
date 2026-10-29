@@ -489,4 +489,25 @@ RSpec.describe MailerLite::Emails do
       expect_invalid_ids('email_id') { |id| emails.create_version(id) }
     end
   end
+
+  describe '#restore_version' do
+    it 'sends the etag and returns the email' do
+      stub = stub_api(:post, '/emails/123/versions/901/restore', body: '{"etag":"47"}', response: load_fixture('email'))
+
+      response = emails.restore_version(email_id: '123', version_id: 901, etag: '47')
+
+      expect(stub).to have_been_requested
+      data = decoded(response)
+      expect(data['etag']).to eq '42'
+      expect(data['data']['id']).to eq '123'
+      expect(data['data']['blocks'].size).to eq 2
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.restore_version(email_id: id, version_id: '901', etag: '47') }
+      expect_invalid_ids('version_id') { |id| emails.restore_version(email_id: '123', version_id: id, etag: '47') }
+      expect { emails.restore_version(email_id: '123', version_id: '901', etag: '') }.to raise_error(MailerLite::EmptyEtagError)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end

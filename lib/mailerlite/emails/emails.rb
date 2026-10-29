@@ -257,6 +257,22 @@ module MailerLite
       Request.call(client, :post, "/emails/#{email_id}/versions")
     end
 
+    # Restores the email to a version. Returns the email in the shape of `get`, with the new etag. Before the
+    # restore, the API saves the current state as a version, so you can undo the restore.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param version_id [String, Integer] the ID of the version
+    # @param etag [String] the etag from the last response for the email
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
+    # @raise [MailerLite::EmptyEtagError] if the etag is empty
+    # @raise [TypeError] if an argument has a type that is not valid
+    def restore_version(email_id:, version_id:, etag:)
+      email_id = Params.path_id(email_id, 'email_id')
+      version_id = Params.path_id(version_id, 'version_id')
+      Request.call(client, :post, "/emails/#{email_id}/versions/#{version_id}/restore", json: { 'etag' => Params.etag(etag) })
+    end
+
     private
 
     # Returns the body to insert or to validate a block.
