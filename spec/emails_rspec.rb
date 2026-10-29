@@ -390,4 +390,27 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#validate_settings' do
+    it 'sends the settings without an etag' do
+      stub = stub_api(:post, '/emails/123/settings/validate', body: '{"layout":{"width":"700"}}', response: load_fixture('email_settings_validation'))
+
+      response = emails.validate_settings(email_id: '123', settings: { layout: { width: '700' } })
+
+      expect(stub).to have_been_requested
+      expect(response.api_error).to be_nil
+      data = decoded(response)
+      expect(data['valid']).to be(false)
+      expect(data['errors']).to eq('layout.width' => ['The layout.width field cannot be changed.'])
+      expect(data['rejected']['message']).to eq 'Some attributes were rejected.'
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.validate_settings(email_id: id, settings: {}) }
+      expect { emails.validate_settings(email_id: '123', settings: 'x') }.to raise_error(TypeError, /`settings`/)
+      expect { emails.validate_settings(email_id: '123', settings: { etag: '1' }) }.to raise_error(ArgumentError, /etag/)
+      expect { emails.validate_settings(email_id: '123', settings: { 'etag' => '1' }) }.to raise_error(ArgumentError, /etag/)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end

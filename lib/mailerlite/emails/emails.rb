@@ -206,6 +206,21 @@ module MailerLite
       Request.call(client, :patch, "/emails/#{email_id}/settings", json: body)
     end
 
+    # Validates a change to the design settings of the email with the rules of `update_settings`, and saves nothing.
+    # It needs no etag. Invalid settings are not an error: the response has `valid` set to false and the `errors`
+    # for each field. The response can also have `rejected`.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param settings [Hash] the settings that you want to send to `update_settings`, without `etag`
+    # @return [HTTP::Response] the response from the API, with `valid`, `errors` and `schema`
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the ID is not valid
+    # @raise [ArgumentError] if the settings contain an `etag` key
+    # @raise [TypeError] if an argument has a type that is not valid
+    def validate_settings(email_id:, settings:)
+      email_id = Params.path_id(email_id, 'email_id')
+      Request.call(client, :post, "/emails/#{email_id}/settings/validate", json: Params.settings(settings))
+    end
+
     private
 
     # Returns the body to insert or to validate a block.

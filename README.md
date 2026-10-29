@@ -70,6 +70,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Move a block](#move-a-block)
     - [Validate a block](#validate-a-block)
     - [Update the design settings](#update-the-design-settings)
+    - [Validate the design settings](#validate-the-design-settings)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -787,6 +788,24 @@ response = emails.update_settings(
 body = JSON.parse(response.body)
 etag = body['etag']
 puts body['rejected']['keys'] if body['rejected']
+```
+
+### Validate the design settings
+
+<a name="validate-the-design-settings"></a>
+
+Checks a change with the rules of the update, and saves nothing. It needs no etag. Invalid settings are not an error: the response has `valid` set to `false` and the `errors` for each field.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.validate_settings(email_id: '123456', settings: { button: { border_radius: '8' } })
+
+body = JSON.parse(response.body)
+puts body['errors'] unless body['valid']
 ```
 
 ## Forms
