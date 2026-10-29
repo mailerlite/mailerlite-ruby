@@ -344,4 +344,50 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#update_settings' do
+    it 'sends a PATCH request with only the keys of the caller and the etag' do
+      body = '{"brand":{"mode":"custom","background_color":"#f4f4f4"},"footer":{"company_name":""},"etag":"46"}'
+      stub = stub_api(:patch, '/emails/123/settings', body: body, response: load_fixture('email_settings'))
+      settings = { brand: { mode: described_class::BrandMode::CUSTOM, background_color: '#f4f4f4' }, footer: { company_name: '' } }
+
+      response = emails.update_settings(email_id: '123', etag: '46', settings: settings)
+
+      expect(stub).to have_been_requested
+      expect(settings).to eq(brand: { mode: 'custom', background_color: '#f4f4f4' }, footer: { company_name: '' })
+      data = decoded(response)
+      expect(data['etag']).to eq '47'
+      expect(data['data']['brand']['mode']).to eq 'custom'
+      expect(data['data']['brand']['background_color']).to eq '#f4f4f4'
+      expect(data['data']['typography']['paragraph']['p1']['size']).to eq '16'
+      expect(data['rejected']['keys']).to eq ['footer.social_links[0].url']
+    end
+
+    it 'sends a nil value as null' do
+      stub = stub_api(:patch, '/emails/123/settings', body: '{"layout":{"alignment":null},"etag":"46"}', response: load_fixture('email_settings'))
+
+      emails.update_settings(email_id: '123', etag: '46', settings: { 'layout' => { 'alignment' => nil } })
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'returns a version conflict' do
+      stub_api(:patch, '/emails/123/settings', body: '{"layout":{"alignment":"left"},"etag":"40"}', status: 409,
+                                               response: { message: 'The email was changed.', code: 'version_conflict', etag: '46' })
+
+      response = emails.update_settings(email_id: '123', etag: '40', settings: { layout: { alignment: 'left' } })
+
+      expect(response.api_error.code).to eq described_class::VERSION_CONFLICT
+      expect(response.api_error.etag).to eq '46'
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.update_settings(email_id: id, etag: '46', settings: {}) }
+      expect { emails.update_settings(email_id: '123', etag: '', settings: {}) }.to raise_error(MailerLite::EmptyEtagError)
+      expect { emails.update_settings(email_id: '123', etag: '46', settings: nil) }.to raise_error(TypeError, /`settings`/)
+      expect { emails.update_settings(email_id: '123', etag: '46', settings: { etag: '1' }) }.to raise_error(ArgumentError, /etag/)
+      expect { emails.update_settings(email_id: '123', etag: '46', settings: { 'etag' => '1' }) }.to raise_error(ArgumentError, /etag/)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end
