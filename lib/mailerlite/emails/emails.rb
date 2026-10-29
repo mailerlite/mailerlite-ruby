@@ -179,6 +179,33 @@ module MailerLite
       Request.call(client, :post, '/emails/blocks/validate', json: block_body(type, editor_content, placement))
     end
 
+    # Updates the design settings of the email. Returns the settings and the new etag of the email.
+    #
+    # Send only the keys to change, in the shape of `settings` in the response of `get`. The groups are `brand`,
+    # `layout`, `typography`, `button` and `footer`. The SDK sends exactly the keys of the Hash:
+    # - a key that is not in the Hash does not change;
+    # - an empty String unsets the value;
+    # - any other value is the new value. Send style values as Strings, for example '16'.
+    #
+    # The API stores each value that you send, also a value that the email inherits from the account.
+    # `footer.social_links` replaces the whole list: keep the `link_id` of each link to keep its click history.
+    # To apply a preset palette, send its `identifier` from `BrandStyles#get` in `brand.style`.
+    # The response can have `rejected` when the API removed unsafe values.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param etag [String] the etag from the last response for the email
+    # @param settings [Hash] the settings to change, without `etag`
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the ID is not valid
+    # @raise [MailerLite::EmptyEtagError] if the etag is empty
+    # @raise [ArgumentError] if the settings contain an `etag` key
+    # @raise [TypeError] if an argument has a type that is not valid
+    def update_settings(email_id:, etag:, settings:)
+      email_id = Params.path_id(email_id, 'email_id')
+      body = Params.settings(settings).merge('etag' => Params.etag(etag))
+      Request.call(client, :patch, "/emails/#{email_id}/settings", json: body)
+    end
+
     private
 
     # Returns the body to insert or to validate a block.

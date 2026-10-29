@@ -69,6 +69,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Delete a block](#delete-a-block)
     - [Move a block](#move-a-block)
     - [Validate a block](#validate-a-block)
+    - [Update the design settings](#update-the-design-settings)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -752,6 +753,40 @@ response = emails.validate_block(
 
 body = JSON.parse(response.body)
 puts body['errors'] unless body['valid']
+```
+
+### Update the design settings
+
+<a name="update-the-design-settings"></a>
+
+Send only the keys to change, in the shape of `settings` in the email. The groups are `brand`, `layout`, `typography`, `button` and `footer`.
+
+- The SDK sends exactly the keys of the Hash. A key that is not in the Hash does not change. An empty string unsets the value.
+- Send all style values as strings, for example `'16'` and not `16`.
+- The API stores each value that you send, also a value that the email inherits from your account. Then the email no longer follows your account for that value.
+- `footer.social_links` replaces the whole list. Keep the `link_id` of each link to keep its click history.
+- `brand.mode` is one of `MailerLite::Emails::BrandMode`. To apply a preset palette, send its `identifier` from the brand styles in `brand.style`.
+- Do not put `etag` in the settings. Use the `etag` argument.
+- If the API removed unsafe values, the response has `rejected` with the keys of these values.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.update_settings(
+  email_id: '123456',
+  etag: 'etag-from-the-last-response',
+  settings: {
+    brand: { mode: MailerLite::Emails::BrandMode::CUSTOM, background_color: '#f4f4f4' },
+    typography: { paragraph: { p1: { size: '18' } } }
+  }
+)
+
+body = JSON.parse(response.body)
+etag = body['etag']
+puts body['rejected']['keys'] if body['rejected']
 ```
 
 ## Forms
