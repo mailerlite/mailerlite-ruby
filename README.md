@@ -65,6 +65,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Get the HTML of an email](#get-the-html-of-an-email)
     - [Get a block](#get-a-block)
     - [Insert a block](#insert-a-block)
+    - [Update a block](#update-a-block)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -666,6 +667,28 @@ response = emails.create_block(
 body = JSON.parse(response.body)
 block_id = body['data']['id']
 etag = body['etag']
+```
+
+### Update a block
+
+<a name="update-a-block"></a>
+
+The new `editor_content` replaces the whole content of the block. The API removes the keys that you do not send.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.update_block(
+  email_id: '123456',
+  block_id: '57',
+  etag: 'etag-from-the-last-response',
+  editor_content: { attrs: { textAlign: 'center' }, content: [{ type: 'text', text: 'Hello again' }] }
+)
+
+etag = JSON.parse(response.body)['etag']
 ```
 
 ## Forms
