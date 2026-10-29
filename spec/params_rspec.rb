@@ -127,6 +127,22 @@ RSpec.describe MailerLite::Params do
       end
     end
 
+    it 'removes the block_id and does not check it for start and end' do
+      expect(described_class.placement({ position: 'end', block_id: nil })).to eq('position' => 'end')
+      expect(described_class.placement({ position: 'start', block_id: '' })).to eq('position' => 'start')
+      expect(described_class.placement({ 'position' => 'end', 'block_id' => '1/2' })).to eq('position' => 'end')
+    end
+
+    it 'checks the block_id for before and after' do
+      expect { described_class.placement({ position: 'after', block_id: nil }) }.to raise_error(MailerLite::EmptyIdError)
+      expect { described_class.placement({ position: 'before', block_id: '1/2' }) }.to raise_error(MailerLite::InvalidIdError)
+    end
+
+    it 'raises EmptyIdError for before and after without a block_id' do
+      expect { described_class.placement({ position: 'after' }) }.to raise_error(MailerLite::EmptyIdError)
+      expect { described_class.placement({ position: :before }) }.to raise_error(MailerLite::EmptyIdError)
+    end
+
     it 'raises ArgumentError when a key is there as a Symbol and as a String' do
       expect { described_class.placement({ block_id: '1', 'block_id' => '2' }) }.to raise_error(ArgumentError, /block_id/)
       expect { described_class.placement({ position: 'end', 'position' => 'start' }) }.to raise_error(ArgumentError, /position/)
