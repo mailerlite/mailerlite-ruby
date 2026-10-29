@@ -804,7 +804,10 @@ puts body['errors'] unless body['valid']
 
 Send only the keys to change, in the shape of `settings` in the email. The groups are `brand`, `layout`, `typography`, `button` and `footer`.
 
-- The SDK sends exactly the keys of the Hash. A key that is not in the Hash does not change. An empty string unsets the value.
+- The SDK sends exactly the keys of the Hash. A key that is not in the Hash does not change.
+- To unset a brand colour, send an empty string. The API stores the value empty, and the email then uses the account value.
+- To unset a footer text, send an empty editor document: `{ editor_content: {} }` or `{ editor_content: { content: [] } }`.
+- Other colours, sizes, `button.border_radius` and `brand.style` cannot be empty. An empty string gives a `422` error.
 - Send all style values as strings, for example `'16'` and not `16`.
 - The API stores each value that you send, also a value that the email inherits from your account. Then the email no longer follows your account for that value.
 - `footer.social_links` replaces the whole list. Keep the `link_id` of each link to keep its click history.
