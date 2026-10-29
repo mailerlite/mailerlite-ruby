@@ -1,0 +1,12 @@
+{
+  "data": {
+    "id": "58",
+    "type": "paragraph",
+    "editor_content": {
+      "attrs": {"textAlign": "center"},
+      "content": [{"text": "Hi", "type": "text"}]
+    },
+    "placement": {"after": "57", "before": null}
+  },
+  "etag": "43"
+}
