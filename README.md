@@ -55,6 +55,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [List all campaigns](#list-all-campaigns)
     - [Get a campaign](#get-a-campaign)
     - [Create a campaign](#create-a-campaign)
+    - [Create a campaign with the simple editor](#create-a-campaign-with-the-simple-editor)
     - [Update a campaign](#update-a-campaign)
     - [Schedule a campaign](#schedule-a-campaign)
     - [Cancel a campaign](#cancel-a-campaign)
@@ -499,6 +500,36 @@ campaigns.create(
   )
 ```
 
+### Create a campaign with the simple editor
+
+<a name="create-a-campaign-with-the-simple-editor"></a>
+
+To build the email with the simple editor, set `editor` to `MailerLite::Campaigns::EDITOR_SIMPLE`, and do not send `content`. Then edit the email with [the email methods](#emails).
+
+- `template_id` is optional. It is a shared template of the simple editor that the email starts from. It needs `editor`.
+- All emails of a campaign must have the same `editor` and `template_id`.
+- Only `create` accepts `editor` and `template_id`. `update` does not.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+campaigns = MailerLite::Campaigns.new
+
+response = campaigns.create(
+  name: "Test Campaign",
+  type: "regular",
+  emails: [{
+    subject: "This is a test campaign",
+    from_name: "Test Man",
+    from: "testuser@mailerlite.com",
+    editor: MailerLite::Campaigns::EDITOR_SIMPLE
+  }]
+)
+
+email_id = JSON.parse(response.body)['data']['emails'][0]['id']
+```
+
 ### Update a campaign
 
 <a name="update-a-campaign"></a>
@@ -592,7 +623,7 @@ campaigns.activity(campaign_id)
 
 <a name="emails"></a>
 
-These methods edit emails built with the simple editor. To create such an email, create a campaign with `editor: 'simple'` in the email. The ID of the email is in `data.emails[0].id` of the response.
+These methods edit emails built with the simple editor. To create such an email, [create a campaign with the simple editor](#create-a-campaign-with-the-simple-editor). The ID of the email is in `data.emails[0].id` of the response.
 
 - IDs are strings of digits. You can also give them as integers. An empty ID raises `MailerLite::EmptyIdError`, and an ID that does not contain only digits raises `MailerLite::InvalidIdError`. The SDK sends no request in these cases.
 - The methods return an `HTTP::Response`, like the other methods. Use `response.code` for the status code, `response.headers` for the headers and `JSON.parse(response.body)` for the body.
