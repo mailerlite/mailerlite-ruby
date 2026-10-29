@@ -6,6 +6,8 @@ require 'json'
 require_relative 'support/json_fixture'
 
 RSpec.describe MailerLite::Files do
+  include_context 'with the dummy API token'
+
   let(:files) { described_class.new(client: MailerLite::Client.new) }
   let(:url) { "#{MAILERLITE_API_URL}/files" }
 

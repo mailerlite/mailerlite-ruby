@@ -6,6 +6,8 @@ require 'json'
 require_relative 'support/json_fixture'
 
 RSpec.describe MailerLite::ApiResponse do
+  include_context 'with the dummy API token'
+
   let(:url) { "#{MAILERLITE_API_URL}/emails/123" }
 
   # Returns a real HTTP::Response from WebMock, extended with ApiResponse.

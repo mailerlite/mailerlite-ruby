@@ -15,4 +15,18 @@ module JsonFixture
   end
 end
 
-RSpec.configure { |config| config.include JsonFixture } if defined?(RSpec)
+if defined?(RSpec)
+  RSpec.configure { |config| config.include JsonFixture }
+
+  # Sets the API token that the WebMock stubs expect, and restores the old value after each example.
+  # Then the specs do not depend on the token in the shell.
+  RSpec.shared_context 'with the dummy API token' do
+    around do |example|
+      old_token = ENV.fetch('MAILERLITE_API_TOKEN', nil)
+      ENV['MAILERLITE_API_TOKEN'] = 'dummy_token'
+      example.run
+    ensure
+      ENV['MAILERLITE_API_TOKEN'] = old_token
+    end
+  end
+end

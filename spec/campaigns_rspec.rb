@@ -156,6 +156,8 @@ RSpec.describe MailerLite::Campaigns do
   end
 
   describe '#create with the simple editor' do
+    include_context 'with the dummy API token'
+
     let(:url) { "#{MAILERLITE_API_URL}/campaigns" }
 
     def stub_create(body)

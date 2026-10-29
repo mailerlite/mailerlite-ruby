@@ -3,8 +3,11 @@
 require 'spec_helper'
 require 'webmock/rspec'
 require 'json'
+require_relative 'support/json_fixture'
 
 RSpec.describe MailerLite::Request do
+  include_context 'with the dummy API token'
+
   let(:client) { MailerLite::Client.new }
   let(:api) { MAILERLITE_API_URL }
 
