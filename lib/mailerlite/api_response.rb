@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module MailerLite
-  # Helpers that the new resources add to each `HTTP::Response` that they return.
+  # Helpers that `Emails`, `BrandStyles` and `Files` add to each `HTTP::Response` that they return.
   #
   # The response is still an `HTTP::Response`. Use `response.code` for the status code,
   # `response.headers` for the headers and `response.parse` for the decoded body.

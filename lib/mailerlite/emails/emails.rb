@@ -45,7 +45,6 @@ module MailerLite
     end
 
     # Positions of a block, for `placement`. `BEFORE` and `AFTER` also need a `block_id`.
-    # The names are not `START` and `END`, because `END` is a keyword in Ruby.
     module BlockPosition
       AT_START = 'start'
       AT_END = 'end'
@@ -307,7 +306,6 @@ module MailerLite
 
     private
 
-    # Returns the body to insert or to validate a block.
     def block_body(type, editor_content, placement)
       body = {
         'type' => Params.require_string(type, 'type'),

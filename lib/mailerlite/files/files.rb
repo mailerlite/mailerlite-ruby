@@ -2,7 +2,6 @@
 
 module MailerLite
   # This is a class for the files of the media library from MailerLite API.
-  # The name is `Files`, not `File`, so it does not hide the `File` class of Ruby.
   class Files
     # File types for `filter: { type: ... }`. The API can also return types that are not in this list.
     module FileType

@@ -10,7 +10,6 @@ RSpec.describe MailerLite::ApiResponse do
 
   let(:url) { "#{MAILERLITE_API_URL}/emails/123" }
 
-  # Returns a real HTTP::Response from WebMock, extended with ApiResponse.
   def response_for(status:, body: '', headers: {})
     stub_request(:get, url).to_return(status: status, body: body, headers: headers)
     MailerLite::Client.new.http.get(url).extend(described_class)
