@@ -99,4 +99,32 @@ RSpec.describe MailerLite::Emails do
       expect_invalid_ids('email_id') { |id| emails.get(id) }
     end
   end
+
+  describe '#get_html' do
+    it 'gets the HTML of the email' do
+      stub = stub_api(:get, '/emails/123/html', response: load_fixture('email_html'))
+
+      response = emails.get_html('123')
+
+      expect(stub).to have_been_requested
+      data = decoded(response)
+      expect(data['data']['html']).to eq '<!doctype html><html><body><p>Hello</p></body></html>'
+      expect(data['etag']).to eq '42'
+    end
+
+    it 'returns a 503 with an HTML body and does not raise' do
+      stub_request(:get, "#{MAILERLITE_API_URL}/emails/123/html")
+        .to_return(status: 503, body: '<html><body>Service Unavailable</body></html>', headers: { 'Content-Type' => 'text/html' })
+
+      response = emails.get_html('123')
+
+      expect(response.code).to eq 503
+      expect(response.api_error.status).to eq 503
+      expect(response.api_error.api_message).to be_nil
+    end
+
+    it 'checks the email ID and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.get_html(id) }
+    end
+  end
 end
