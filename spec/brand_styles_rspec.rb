@@ -6,6 +6,8 @@ require 'json'
 require_relative 'support/json_fixture'
 
 RSpec.describe MailerLite::BrandStyles do
+  include_context 'with the dummy API token'
+
   let(:brand_styles) { described_class.new(client: MailerLite::Client.new) }
   let(:url) { "#{MAILERLITE_API_URL}/brand-styles" }
 
