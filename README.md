@@ -63,6 +63,7 @@ For more information how to obtain an API key visit the [following link](https:/
   - [Emails](#emails)
     - [Get an email](#get-an-email)
     - [Get the HTML of an email](#get-the-html-of-an-email)
+    - [Get a block](#get-a-block)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -619,6 +620,23 @@ emails = MailerLite::Emails.new
 response = emails.get_html('123456')
 
 html = JSON.parse(response.body)['data']['html'] if response.code == 200
+```
+
+### Get a block
+
+<a name="get-a-block"></a>
+
+Returns the block and its place in the email: `placement` has the IDs of the blocks `after` and `before` it, or `nil`.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.get_block(email_id: '123456', block_id: '57')
+
+block = JSON.parse(response.body)['data']
 ```
 
 ## Forms

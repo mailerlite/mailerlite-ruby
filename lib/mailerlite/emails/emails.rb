@@ -83,5 +83,18 @@ module MailerLite
       email_id = Params.path_id(email_id, 'email_id')
       Request.call(client, :get, "/emails/#{email_id}/html")
     end
+
+    # Returns the block and its place in the email, and the etag of the email.
+    # `placement` has the IDs of the blocks `after` and `before` it, or nil.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param block_id [String, Integer] the ID of the block
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if an ID is not valid
+    def get_block(email_id:, block_id:)
+      email_id = Params.path_id(email_id, 'email_id')
+      block_id = Params.path_id(block_id, 'block_id')
+      Request.call(client, :get, "/emails/#{email_id}/blocks/#{block_id}")
+    end
   end
 end
