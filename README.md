@@ -67,6 +67,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Insert a block](#insert-a-block)
     - [Update a block](#update-a-block)
     - [Delete a block](#delete-a-block)
+    - [Move a block](#move-a-block)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -705,6 +706,28 @@ require "mailerlite-ruby"
 emails = MailerLite::Emails.new
 
 response = emails.delete_block(email_id: '123456', block_id: '57', etag: 'etag-from-the-last-response')
+
+etag = JSON.parse(response.body)['etag']
+```
+
+### Move a block
+
+<a name="move-a-block"></a>
+
+The `BEFORE` and `AFTER` positions also need a `block_id`.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.move_block(
+  email_id: '123456',
+  block_id: '57',
+  etag: 'etag-from-the-last-response',
+  placement: { position: MailerLite::Emails::BlockPosition::AFTER, block_id: '12' }
+)
 
 etag = JSON.parse(response.body)['etag']
 ```
