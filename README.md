@@ -76,6 +76,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [List the versions of an email](#list-the-versions-of-an-email)
     - [Save a version of an email](#save-a-version-of-an-email)
     - [Restore a version of an email](#restore-a-version-of-an-email)
+    - [Retry a write with an idempotency key](#retry-a-write-with-an-idempotency-key)
   - [Brand styles](#brand-styles)
     - [Get the brand styles](#get-the-brand-styles)
   - [Files](#files)
@@ -914,6 +915,45 @@ emails = MailerLite::Emails.new
 response = emails.restore_version(email_id: '123456', version_id: '901', etag: 'etag-from-the-last-response')
 
 etag = JSON.parse(response.body)['etag']
+```
+
+### Retry a write with an idempotency key
+
+<a name="retry-a-write-with-an-idempotency-key"></a>
+
+If a write fails with a network error, you do not know if the API did the write. Give the write an `idempotency_key`, and send it again with the same key and the same arguments. If the first request was a success, the API returns the stored response and does not do the write two times. Then `response.idempotent_replay?` is `true`.
+
+- Use a new key for each write. The API keeps a key for 24 hours.
+- The key must be 1 to 255 printable ASCII characters, without a space at the start or the end. Otherwise the SDK raises `MailerLite::InvalidIdempotencyKeyError` and sends no request.
+- The same key with different arguments returns `422`. If the first request is still running, the API returns `409` without a `code`.
+- These methods accept a key: `create_block`, `update_block`, `delete_block`, `move_block`, `update_settings`, `create_template`, `create_version` and `restore_version`.
+
+```ruby
+require "mailerlite-ruby"
+require "securerandom"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+args = {
+  email_id: '123456',
+  etag: 'etag-from-the-last-response',
+  type: MailerLite::Emails::BlockType::DIVIDER,
+  editor_content: {},
+  idempotency_key: SecureRandom.uuid
+}
+
+begin
+  response = emails.create_block(**args)
+rescue HTTP::ConnectionError, HTTP::TimeoutError
+  # Network error: send the write again with the same key and the same arguments.
+  response = emails.create_block(**args)
+end
+
+error = response.api_error
+raise error if error
+
+puts JSON.parse(response.body)['data']['id'], response.idempotent_replay?
 ```
 
 ## Brand styles
