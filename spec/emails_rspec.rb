@@ -150,4 +150,78 @@ RSpec.describe MailerLite::Emails do
       expect_invalid_ids('block_id') { |id| emails.get_block(email_id: '123', block_id: id) }
     end
   end
+
+  describe '#create_block' do
+    let(:content) { { attrs: { textAlign: 'center' }, content: [{ type: 'text', text: 'Hi' }] } }
+
+    it 'inserts the block with the placement and the etag' do
+      body = '{"type":"paragraph","editor_content":{"attrs":{"textAlign":"center"},"content":[{"type":"text","text":"Hi"}]},' \
+             '"placement":{"position":"after","block_id":"57"},"etag":"42"}'
+      stub = stub_api(:post, '/emails/123/blocks', body: body, status: 201, response: load_fixture('email_block_created'))
+      placement = { position: described_class::BlockPosition::AFTER, block_id: 57 }
+
+      response = emails.create_block(email_id: '123', etag: '42', type: described_class::BlockType::PARAGRAPH,
+                                     editor_content: content, placement: placement)
+
+      expect(stub).to have_been_requested
+      expect(response.code).to eq 201
+      data = decoded(response)
+      expect(data['etag']).to eq '43'
+      expect(data['data']['id']).to eq '58'
+      expect(data['data']['editor_content']['attrs']['textAlign']).to eq 'center'
+      expect(data['data']['placement']['after']).to eq '57'
+      expect(placement).to eq(position: 'after', block_id: 57)
+    end
+
+    it 'sends no placement without a placement, and accepts empty content' do
+      stub = stub_api(:post, '/emails/123/blocks', body: '{"type":"divider","editor_content":{},"etag":"42"}',
+                                                   status: 201, response: load_fixture('email_block_created'))
+
+      emails.create_block(email_id: 123, etag: '42', type: 'divider', editor_content: {})
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'returns a version conflict with the code and the current etag' do
+      stub_api(:post, '/emails/123/blocks', body: '{"type":"divider","editor_content":{},"etag":"41"}', status: 409,
+                                            response: { message: 'The email was changed.', code: 'version_conflict', etag: '42' })
+
+      response = emails.create_block(email_id: '123', etag: '41', type: 'divider', editor_content: {})
+
+      expect(response.code).to eq 409
+      expect(response.api_error.status).to eq 409
+      expect(response.api_error.code).to eq described_class::VERSION_CONFLICT
+      expect(response.api_error.etag).to eq '42'
+    end
+
+    it 'returns the field errors of a 422' do
+      stub_api(:post, '/emails/123/blocks', body: '{"type":"title","editor_content":{},"etag":"42"}', status: 422,
+                                            response: { message: 'The selected type is invalid.', errors: { type: ['The selected type is invalid.'] } })
+
+      response = emails.create_block(email_id: '123', etag: '42', type: 'title', editor_content: {})
+
+      expect(response.api_error.errors).to eq('type' => ['The selected type is invalid.'])
+    end
+
+    it 'checks the email ID and the block_id of the placement, and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.create_block(email_id: id, etag: '42', type: 'divider', editor_content: {}) }
+      expect_invalid_ids('block_id') do |id|
+        emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: { position: 'after', block_id: id })
+      end
+      expect_invalid_ids('block_id') do |id|
+        emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: { 'position' => 'after', 'block_id' => id })
+      end
+    end
+
+    it 'checks the etag and the types, and sends no request' do
+      expect { emails.create_block(email_id: '123', etag: '', type: 'divider', editor_content: {}) }.to raise_error(MailerLite::EmptyEtagError)
+      expect { emails.create_block(email_id: '123', etag: nil, type: 'divider', editor_content: {}) }.to raise_error(MailerLite::EmptyEtagError)
+      expect { emails.create_block(email_id: '123', etag: 42, type: 'divider', editor_content: {}) }.to raise_error(TypeError, /`etag`/)
+      expect { emails.create_block(email_id: '123', etag: '42', type: 1, editor_content: {}) }.to raise_error(TypeError, /`type`/)
+      expect { emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: nil) }.to raise_error(TypeError, /`editor_content`/)
+      expect { emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: 'end') }
+        .to raise_error(TypeError, /`placement`/)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end

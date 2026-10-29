@@ -96,5 +96,35 @@ module MailerLite
       block_id = Params.path_id(block_id, 'block_id')
       Request.call(client, :get, "/emails/#{email_id}/blocks/#{block_id}")
     end
+
+    # Inserts a block in the email. Returns the new block and the new etag of the email.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @param etag [String] the etag from the last response for the email
+    # @param type [String] the block type, see `BlockType`. You cannot insert `title`.
+    # @param editor_content [Hash] the content of the block. It can be empty. Its keys are camelCase, for example `textAlign`.
+    # @param placement [Hash, nil] `position` (see `BlockPosition`) and, for `before` and `after`, `block_id`.
+    #   Without it, the API puts the block at the end of the email.
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
+    # @raise [MailerLite::EmptyEtagError] if the etag is empty
+    # @raise [TypeError] if an argument has a type that is not valid
+    def create_block(email_id:, etag:, type:, editor_content:, placement: nil)
+      email_id = Params.path_id(email_id, 'email_id')
+      body = block_body(type, editor_content, placement).merge('etag' => Params.etag(etag))
+      Request.call(client, :post, "/emails/#{email_id}/blocks", json: body)
+    end
+
+    private
+
+    # Returns the body to insert or to validate a block.
+    def block_body(type, editor_content, placement)
+      body = {
+        'type' => Params.require_string(type, 'type'),
+        'editor_content' => Params.require_hash(editor_content, 'editor_content')
+      }
+      body['placement'] = Params.placement(placement) unless placement.nil?
+      body
+    end
   end
 end
