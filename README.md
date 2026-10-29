@@ -64,6 +64,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Get an email](#get-an-email)
     - [Get the HTML of an email](#get-the-html-of-an-email)
     - [Get a block](#get-a-block)
+    - [Insert a block](#insert-a-block)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -637,6 +638,34 @@ emails = MailerLite::Emails.new
 response = emails.get_block(email_id: '123456', block_id: '57')
 
 block = JSON.parse(response.body)['data']
+```
+
+### Insert a block
+
+<a name="insert-a-block"></a>
+
+Use the block types in `MailerLite::Emails::BlockType`. `editor_content` can be empty. Without `placement`, the API puts the block at the end of the email. The positions are in `MailerLite::Emails::BlockPosition`. The `BEFORE` and `AFTER` positions also need a `block_id`.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+email_id = '123456'
+etag = JSON.parse(emails.get(email_id).body)['etag']
+
+response = emails.create_block(
+  email_id: email_id,
+  etag: etag,
+  type: MailerLite::Emails::BlockType::PARAGRAPH,
+  editor_content: { attrs: { textAlign: 'left' }, content: [{ type: 'text', text: 'Hello' }] },
+  placement: { position: MailerLite::Emails::BlockPosition::AT_START }
+)
+
+body = JSON.parse(response.body)
+block_id = body['data']['id']
+etag = body['etag']
 ```
 
 ## Forms
