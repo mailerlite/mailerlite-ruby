@@ -202,7 +202,9 @@ module MailerLite
     # Send only the keys to change, in the shape of `settings` in the response of `get`. The groups are `brand`,
     # `layout`, `typography`, `button` and `footer`. The SDK sends exactly the keys of the Hash:
     # - a key that is not in the Hash does not change;
-    # - an empty String unsets the value;
+    # - an empty String unsets a brand colour, and the email then uses the account value;
+    # - an empty editor document, `{ editor_content: {} }` or `{ editor_content: { content: [] } }`, unsets a footer text;
+    # - other colours, sizes, `button.border_radius` and `brand.style` cannot be empty: an empty String gives a `422` error;
     # - any other value is the new value. Send style values as Strings, for example '16'.
     #
     # The API stores each value that you send, also a value that the email inherits from the account.
