@@ -127,4 +127,27 @@ RSpec.describe MailerLite::Emails do
       expect_invalid_ids('email_id') { |id| emails.get_html(id) }
     end
   end
+
+  describe '#get_block' do
+    it 'gets the block and its placement' do
+      stub = stub_api(:get, '/emails/123/blocks/57', response: load_fixture('email_block'))
+
+      response = emails.get_block(email_id: '123', block_id: 57)
+
+      expect(stub).to have_been_requested
+      data = decoded(response)
+      expect(data['etag']).to eq '43'
+      expect(data['data']['id']).to eq '57'
+      expect(data['data']['type']).to eq 'paragraph'
+      expect(data['data']['editor_content']['attrs']['textAlign']).to eq 'left'
+      expect(data['data']['placement']['after']).to eq '56'
+      expect(data['data']['placement']).to have_key('before')
+      expect(data['data']['placement']['before']).to be_nil
+    end
+
+    it 'checks the IDs and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.get_block(email_id: id, block_id: '57') }
+      expect_invalid_ids('block_id') { |id| emails.get_block(email_id: '123', block_id: id) }
+    end
+  end
 end
