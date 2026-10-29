@@ -72,6 +72,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Update the design settings](#update-the-design-settings)
     - [Validate the design settings](#validate-the-design-settings)
     - [Save an email as a template](#save-an-email-as-a-template)
+    - [List the versions of an email](#list-the-versions-of-an-email)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -824,6 +825,23 @@ emails = MailerLite::Emails.new
 response = emails.create_template(email_id: '123456', name: 'Monthly newsletter')
 
 template_id = JSON.parse(response.body)['data']['id']
+```
+
+### List the versions of an email
+
+<a name="list-the-versions-of-an-email"></a>
+
+A version is a saved copy of the content and the settings of an email. The list starts with the newest version. `current` marks the version that the email has now.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.list_versions('123456', page: 1, limit: 10)
+
+versions = JSON.parse(response.body)['data']
 ```
 
 ## Forms
