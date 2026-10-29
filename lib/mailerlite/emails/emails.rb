@@ -72,5 +72,16 @@ module MailerLite
       email_id = Params.path_id(email_id, 'email_id')
       Request.call(client, :get, "/emails/#{email_id}")
     end
+
+    # Returns the HTML that the email sends, and the etag of the email.
+    # The API can return a temporary 503 error. Then try again later.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if the ID is not valid
+    def get_html(email_id)
+      email_id = Params.path_id(email_id, 'email_id')
+      Request.call(client, :get, "/emails/#{email_id}/html")
+    end
   end
 end

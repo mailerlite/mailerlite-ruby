@@ -62,6 +62,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Get subscribers activity for a campaign](#get-subscribers-activity-for-a-campaign)
   - [Emails](#emails)
     - [Get an email](#get-an-email)
+    - [Get the HTML of an email](#get-the-html-of-an-email)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -601,6 +602,23 @@ response = emails.get('123456')
 body = JSON.parse(response.body)
 email = body['data']
 etag = body['etag']
+```
+
+### Get the HTML of an email
+
+<a name="get-the-html-of-an-email"></a>
+
+Returns the HTML that the email sends. The API can return a temporary `503` error. If it does, try again later.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.get_html('123456')
+
+html = JSON.parse(response.body)['data']['html'] if response.code == 200
 ```
 
 ## Forms
