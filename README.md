@@ -697,7 +697,7 @@ block = JSON.parse(response.body)['data']
 
 <a name="insert-a-block"></a>
 
-Use the block types in `MailerLite::Emails::BlockType`. `editor_content` can be empty. Without `placement`, the API puts the block at the end of the email. The positions are in `MailerLite::Emails::BlockPosition`. The `BEFORE` and `AFTER` positions also need a `block_id`.
+Use the block types in `MailerLite::Emails::BlockType`. `editor_content` can be empty. Without `placement`, the API puts the block at the end of the email. The positions are in `MailerLite::Emails::BlockPosition`. The `BEFORE` and `AFTER` positions also need a `block_id`. For the other positions, the SDK does not send `block_id`.
 
 ```ruby
 require "mailerlite-ruby"
@@ -764,7 +764,7 @@ etag = JSON.parse(response.body)['etag']
 
 <a name="move-a-block"></a>
 
-The `BEFORE` and `AFTER` positions also need a `block_id`.
+The `BEFORE` and `AFTER` positions also need a `block_id`. For the other positions, the SDK does not send `block_id`.
 
 ```ruby
 require "mailerlite-ruby"

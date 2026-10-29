@@ -69,14 +69,20 @@ module MailerLite
       value
     end
 
-    # Returns a copy of the placement of a block with String keys and a valid `block_id`.
+    # Positions of a block that use `block_id`.
+    SIBLING_POSITIONS = %w[before after].freeze
+
+    # Returns a copy of the placement of a block with String keys.
+    # For `before` and `after`, it checks `block_id`. For the other positions, the API discards `block_id`
+    # without a check, so the copy does not contain it.
     #
     # @param placement [Hash] `position` and, for `before` and `after`, `block_id`
     # @return [Hash] a new Hash. The Hash of the caller does not change.
     # @raise [TypeError] if the placement is not a Hash, or `block_id` is not a String or an Integer
     # @raise [ArgumentError] if a key is in the Hash as a Symbol and as a String
-    # @raise [MailerLite::EmptyIdError] if `block_id` is nil or empty
-    # @raise [MailerLite::InvalidIdError] if `block_id` does not contain only the digits 0-9
+    # @raise [MailerLite::EmptyIdError] if the position is `before` or `after` and `block_id` is nil or empty
+    # @raise [MailerLite::InvalidIdError] if the position is `before` or `after` and `block_id` does not contain
+    #   only the digits 0-9
     def placement(placement)
       require_hash(placement, 'placement')
       result = {}
@@ -87,7 +93,12 @@ module MailerLite
 
         result[name] = value
       end
-      result['block_id'] = path_id(result['block_id'], 'block_id') if result.key?('block_id')
+      # JSON sends a Symbol position as a String, so compare the String.
+      if SIBLING_POSITIONS.include?(result['position'].to_s)
+        result['block_id'] = path_id(result['block_id'], 'block_id')
+      else
+        result.delete('block_id')
+      end
       result
     end
 

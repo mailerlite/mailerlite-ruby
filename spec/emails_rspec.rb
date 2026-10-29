@@ -294,6 +294,16 @@ RSpec.describe MailerLite::Emails do
       expect(stub).to have_been_requested
     end
 
+    it 'does not send the block_id for the end position' do
+      stub = stub_api(:post, '/emails/123/blocks/57/move', body: '{"placement":{"position":"end"},"etag":"45"}',
+                                                           response: load_fixture('email_block_moved'))
+
+      emails.move_block(email_id: '123', block_id: '57', etag: '45',
+                        placement: { position: described_class::BlockPosition::AT_END, block_id: '12' })
+
+      expect(stub).to have_been_requested
+    end
+
     it 'checks the arguments and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.move_block(email_id: id, block_id: '57', etag: '45', placement: { position: 'end' }) }
       expect_invalid_ids('block_id') { |id| emails.move_block(email_id: '123', block_id: id, etag: '45', placement: { position: 'end' }) }
