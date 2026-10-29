@@ -77,6 +77,8 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Restore a version of an email](#restore-a-version-of-an-email)
   - [Brand styles](#brand-styles)
     - [Get the brand styles](#get-the-brand-styles)
+  - [Files](#files)
+    - [List all files](#list-all-files)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -902,6 +904,36 @@ brand_styles = MailerLite::BrandStyles.new
 response = brand_styles.get
 
 identifiers = JSON.parse(response.body)['data']['presets'].map { |preset| preset['identifier'] }
+```
+
+## Files
+
+<a name="files"></a>
+
+### List all files
+
+<a name="list-all-files"></a>
+
+Returns the files of your media library. Use their `url` in image blocks. `width` and `height` are `nil` for files that are not images.
+
+- `filter`: `name` (a part of the file name) and `type` (one of `MailerLite::Files::FileType`).
+- `sort`: one of `MailerLite::Files::FileSort`. The default is newest first.
+- The SDK does not send `nil` values.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+files = MailerLite::Files.new
+
+response = files.list(
+  filter: { name: 'summer sale', type: MailerLite::Files::FileType::IMAGE },
+  sort: MailerLite::Files::FileSort::SIZE_DESC,
+  page: 1,
+  limit: 25
+)
+
+urls = JSON.parse(response.body)['data'].map { |file| file['url'] }
 ```
 
 ## Forms
