@@ -68,6 +68,7 @@ For more information how to obtain an API key visit the [following link](https:/
     - [Update a block](#update-a-block)
     - [Delete a block](#delete-a-block)
     - [Move a block](#move-a-block)
+    - [Validate a block](#validate-a-block)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -730,6 +731,27 @@ response = emails.move_block(
 )
 
 etag = JSON.parse(response.body)['etag']
+```
+
+### Validate a block
+
+<a name="validate-a-block"></a>
+
+Checks a block before you insert it. It needs no email and no etag. An invalid block is not an error: the response has `valid` set to `false` and the `errors` for each field.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.validate_block(
+  type: MailerLite::Emails::BlockType::BUTTON,
+  editor_content: { attrs: { href: 'https://example.com' }, content: [{ type: 'text', text: 'Buy now' }] }
+)
+
+body = JSON.parse(response.body)
+puts body['errors'] unless body['valid']
 ```
 
 ## Forms

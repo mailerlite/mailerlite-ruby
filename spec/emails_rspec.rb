@@ -308,4 +308,40 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#validate_block' do
+    it 'sends the block without an etag and returns a valid result' do
+      body = '{"type":"button","editor_content":{"attrs":{"href":"https://example.com"}},"placement":{"position":"end"}}'
+      stub = stub_api(:post, '/emails/blocks/validate', body: body, response: load_fixture('email_block_validation_valid'))
+
+      response = emails.validate_block(type: 'button', editor_content: { attrs: { href: 'https://example.com' } },
+                                       placement: { position: described_class::BlockPosition::AT_END })
+
+      expect(stub).to have_been_requested
+      data = decoded(response)
+      expect(data['valid']).to be(true)
+      expect(data['errors']).to eq({})
+      expect(data['schema']['version']).to eq '2.73.2'
+    end
+
+    it 'returns an invalid result as a 200 response' do
+      stub = stub_api(:post, '/emails/blocks/validate', body: '{"type":"unknown","editor_content":{}}',
+                                                        response: load_fixture('email_block_validation_invalid'))
+
+      response = emails.validate_block(type: 'unknown', editor_content: {})
+
+      expect(stub).to have_been_requested
+      expect(response.api_error).to be_nil
+      data = decoded(response)
+      expect(data['valid']).to be(false)
+      expect(data['errors']).to eq('type' => ['The selected type is invalid.'])
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('block_id') { |id| emails.validate_block(type: 'divider', editor_content: {}, placement: { position: 'after', block_id: id }) }
+      expect { emails.validate_block(type: nil, editor_content: {}) }.to raise_error(TypeError, /`type`/)
+      expect { emails.validate_block(type: 'divider', editor_content: 'x') }.to raise_error(TypeError, /`editor_content`/)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end
