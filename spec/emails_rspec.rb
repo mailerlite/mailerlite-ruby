@@ -463,4 +463,30 @@ RSpec.describe MailerLite::Emails do
       expect_invalid_ids('email_id') { |id| emails.list_versions(id) }
     end
   end
+
+  describe '#create_version' do
+    it 'sends no body and returns 201 for a new version' do
+      stub = stub_api(:post, '/emails/123/versions', body: '', status: 201, response: load_fixture('email_version'))
+
+      response = emails.create_version('123')
+
+      expect(stub).to have_been_requested
+      expect(response.code).to eq 201
+      expect(decoded(response)['data']).to eq('id' => '903', 'created_at' => '2026-10-28 12:10:00', 'current' => true)
+    end
+
+    it 'returns 200 for the last version when nothing changed' do
+      stub_api(:post, '/emails/123/versions', body: '', status: 200, response: load_fixture('email_version'))
+
+      response = emails.create_version(123)
+
+      expect(response.code).to eq 200
+      expect(response.api_error).to be_nil
+      expect(decoded(response)['data']['id']).to eq '903'
+    end
+
+    it 'checks the email ID and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.create_version(id) }
+    end
+  end
 end

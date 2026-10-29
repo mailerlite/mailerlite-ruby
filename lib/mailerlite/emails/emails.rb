@@ -245,6 +245,18 @@ module MailerLite
       Request.call(client, :get, "/emails/#{email_id}/versions", query: Params.query(page: page, limit: limit))
     end
 
+    # Saves the content and the settings of the email as a new version. If nothing changed after the last version,
+    # the API saves no new version and returns the last version. The status code (`response.code`) is 201 for a new
+    # version and 200 for the last version. Both are a success.
+    #
+    # @param email_id [String, Integer] the ID of the email
+    # @return [HTTP::Response] the response from the API
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if the ID is not valid
+    def create_version(email_id)
+      email_id = Params.path_id(email_id, 'email_id')
+      Request.call(client, :post, "/emails/#{email_id}/versions")
+    end
+
     private
 
     # Returns the body to insert or to validate a block.
