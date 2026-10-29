@@ -413,4 +413,25 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#create_template' do
+    it 'sends the name and returns the template' do
+      stub = stub_api(:post, '/emails/123/templates', body: '{"name":"Newsletter"}', status: 201, response: load_fixture('email_template'))
+
+      response = emails.create_template(email_id: '123', name: 'Newsletter')
+
+      expect(stub).to have_been_requested
+      expect(response.code).to eq 201
+      data = decoded(response)
+      expect(data['data']).to eq('id' => '789', 'name' => 'Newsletter', 'type' => 'email', 'created_at' => '2026-10-28 12:00:00')
+      expect(data).not_to have_key('etag')
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.create_template(email_id: id, name: 'Newsletter') }
+      expect { emails.create_template(email_id: '123', name: nil) }.to raise_error(TypeError, /`name`/)
+      expect { emails.create_template(email_id: '123', name: 1) }.to raise_error(TypeError, /`name`/)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end
