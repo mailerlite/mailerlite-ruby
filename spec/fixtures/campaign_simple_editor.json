@@ -1,0 +1,24 @@
+{
+  "data": {
+    "id": "456",
+    "account_id": "1",
+    "name": "Simple editor campaign",
+    "type": "regular",
+    "status": "draft",
+    "default_email_id": "123",
+    "emails": [
+      {
+        "id": "123",
+        "account_id": "1",
+        "emailable_id": "456",
+        "emailable_type": "campaigns",
+        "type": "builder_inline_email",
+        "from": "sender@example.com",
+        "from_name": "Sender",
+        "reply_to": "reply@example.com",
+        "subject": "Hello",
+        "is_designed": true
+      }
+    ]
+  }
+}

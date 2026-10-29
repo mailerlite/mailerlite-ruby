@@ -1,0 +1,5 @@
+{
+  "valid": false,
+  "errors": {"type": ["The selected type is invalid."]},
+  "schema": {"version": "2.73.2", "hash": "0f3a9c"}
+}
