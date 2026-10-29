@@ -268,4 +268,44 @@ RSpec.describe MailerLite::Emails do
       expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
+
+  describe '#move_block' do
+    it 'sends the placement and the etag' do
+      stub = stub_api(:post, '/emails/123/blocks/57/move', body: '{"placement":{"position":"before","block_id":"1"},"etag":"45"}',
+                                                           response: load_fixture('email_block_moved'))
+
+      response = emails.move_block(email_id: '123', block_id: '57', etag: '45',
+                                   placement: { 'position' => described_class::BlockPosition::BEFORE, 'block_id' => 1 })
+
+      expect(stub).to have_been_requested
+      data = decoded(response)
+      expect(data['etag']).to eq '46'
+      expect(data['data']['placement']).to have_key('after')
+      expect(data['data']['placement']['after']).to be_nil
+      expect(data['data']['placement']['before']).to eq '1'
+    end
+
+    it 'sends a placement without a block_id' do
+      stub = stub_api(:post, '/emails/123/blocks/57/move', body: '{"placement":{"position":"start"},"etag":"45"}',
+                                                           response: load_fixture('email_block_moved'))
+
+      emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: { position: described_class::BlockPosition::AT_START })
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'checks the arguments and sends no request' do
+      expect_invalid_ids('email_id') { |id| emails.move_block(email_id: id, block_id: '57', etag: '45', placement: { position: 'end' }) }
+      expect_invalid_ids('block_id') { |id| emails.move_block(email_id: '123', block_id: id, etag: '45', placement: { position: 'end' }) }
+      expect_invalid_ids('block_id') do |id|
+        emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: { position: 'after', block_id: id })
+      end
+      expect_invalid_ids('block_id') do |id|
+        emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: { 'position' => 'after', 'block_id' => id })
+      end
+      expect { emails.move_block(email_id: '123', block_id: '57', etag: '', placement: { position: 'end' }) }.to raise_error(MailerLite::EmptyEtagError)
+      expect { emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: nil) }.to raise_error(TypeError, /`placement`/)
+      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+  end
 end
