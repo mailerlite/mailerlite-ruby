@@ -67,4 +67,43 @@ RSpec.describe MailerLite::Segments do
       end
     end
   end
+
+  describe '#list query string' do
+    it 'sends the params in the query string with no body' do
+      stub = stub_api(:get, '/segments', query: { 'limit' => '10', 'page' => '2', 'sort' => '-created_at' })
+
+      segments.list(limit: 10, page: 2, sort: '-created_at')
+
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe '#update with filter' do
+    it 'sends name and filter' do
+      rules = [[{ 'operator' => 'in_any', 'args' => %w[groups 1] }]]
+      stub = stub_api(:put, '/segments/1', body: { 'name' => 'VIP', 'filter' => rules })
+
+      segments.update(segment_id: 1, name: 'VIP', filter: rules)
+
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe '#get_subscribers cursor' do
+    it 'sends cursor' do
+      stub = stub_api(:get, '/segments/1/subscribers', query: { 'filter[status]' => 'active', 'limit' => '10', 'cursor' => 'abc' })
+
+      segments.get_subscribers(segment_id: 1, filter: { status: 'active' }, limit: 10, cursor: 'abc')
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'still sends after' do
+      stub = stub_api(:get, '/segments/1/subscribers', query: { 'after' => '123' })
+
+      segments.get_subscribers(segment_id: 1, after: 123)
+
+      expect(stub).to have_been_requested
+    end
+  end
 end
