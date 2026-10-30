@@ -7,8 +7,6 @@ RSpec.describe MailerLite::Params do
     it 'makes the client-side errors subclasses of ArgumentError' do
       expect(MailerLite::EmptyIdError.ancestors).to include(ArgumentError)
       expect(MailerLite::InvalidIdError.ancestors).to include(ArgumentError)
-      expect(MailerLite::EmptyEtagError.ancestors).to include(ArgumentError)
-      expect(MailerLite::InvalidIdempotencyKeyError.ancestors).to include(ArgumentError)
     end
 
     it 'has a base error class for the SDK' do
@@ -56,21 +54,6 @@ RSpec.describe MailerLite::Params do
     end
   end
 
-  describe '.etag' do
-    it 'returns the etag' do
-      expect(described_class.etag('42')).to eq '42'
-    end
-
-    it 'raises EmptyEtagError for an empty String and for nil' do
-      expect { described_class.etag('') }.to raise_error(MailerLite::EmptyEtagError)
-      expect { described_class.etag(nil) }.to raise_error(MailerLite::EmptyEtagError)
-    end
-
-    it 'raises TypeError for a value that is not a String' do
-      expect { described_class.etag(42) }.to raise_error(TypeError, /`etag`/)
-    end
-  end
-
   describe '.require_hash' do
     it 'returns the Hash' do
       value = { 'a' => 1 }
@@ -81,75 +64,6 @@ RSpec.describe MailerLite::Params do
       it "raises TypeError for #{value.inspect}" do
         expect { described_class.require_hash(value, 'filter') }.to raise_error(TypeError, /`filter`/)
       end
-    end
-  end
-
-  describe '.require_string' do
-    it 'returns the String' do
-      expect(described_class.require_string('paragraph', 'type')).to eq 'paragraph'
-    end
-
-    [nil, 1, :paragraph].each do |value|
-      it "raises TypeError for #{value.inspect}" do
-        expect { described_class.require_string(value, 'type') }.to raise_error(TypeError, /`type`/)
-      end
-    end
-  end
-
-  describe '.placement' do
-    it 'returns the placement with String keys' do
-      expect(described_class.placement({ position: 'end' })).to eq('position' => 'end')
-    end
-
-    it 'sends an Integer block_id as a String' do
-      expect(described_class.placement({ position: 'after', block_id: 57 }))
-        .to eq('position' => 'after', 'block_id' => '57')
-    end
-
-    it 'accepts a String key for block_id' do
-      expect(described_class.placement({ 'position' => 'before', 'block_id' => '57' }))
-        .to eq('position' => 'before', 'block_id' => '57')
-    end
-
-    it 'does not change the Hash of the caller' do
-      placement = { position: 'after', block_id: 57 }
-      described_class.placement(placement)
-      expect(placement).to eq(position: 'after', block_id: 57)
-    end
-
-    [:block_id, 'block_id'].each do |key|
-      it "checks the block_id with a #{key.class} key" do
-        expect { described_class.placement({ position: 'after', key => '' }) }.to raise_error(MailerLite::EmptyIdError)
-        expect { described_class.placement({ position: 'after', key => nil }) }.to raise_error(MailerLite::EmptyIdError)
-        expect { described_class.placement({ position: 'after', key => '1/2' }) }.to raise_error(MailerLite::InvalidIdError)
-        expect { described_class.placement({ position: 'after', key => "1\n" }) }.to raise_error(MailerLite::InvalidIdError)
-        expect { described_class.placement({ position: 'after', key => true }) }.to raise_error(TypeError)
-      end
-    end
-
-    it 'removes the block_id and does not check it for start and end' do
-      expect(described_class.placement({ position: 'end', block_id: nil })).to eq('position' => 'end')
-      expect(described_class.placement({ position: 'start', block_id: '' })).to eq('position' => 'start')
-      expect(described_class.placement({ 'position' => 'end', 'block_id' => '1/2' })).to eq('position' => 'end')
-    end
-
-    it 'checks the block_id for before and after' do
-      expect { described_class.placement({ position: 'after', block_id: nil }) }.to raise_error(MailerLite::EmptyIdError)
-      expect { described_class.placement({ position: 'before', block_id: '1/2' }) }.to raise_error(MailerLite::InvalidIdError)
-    end
-
-    it 'raises EmptyIdError for before and after without a block_id' do
-      expect { described_class.placement({ position: 'after' }) }.to raise_error(MailerLite::EmptyIdError)
-      expect { described_class.placement({ position: :before }) }.to raise_error(MailerLite::EmptyIdError)
-    end
-
-    it 'raises ArgumentError when a key is there as a Symbol and as a String' do
-      expect { described_class.placement({ block_id: '1', 'block_id' => '2' }) }.to raise_error(ArgumentError, /block_id/)
-      expect { described_class.placement({ position: 'end', 'position' => 'start' }) }.to raise_error(ArgumentError, /position/)
-    end
-
-    it 'raises TypeError for a placement that is not a Hash' do
-      expect { described_class.placement('end') }.to raise_error(TypeError, /`placement`/)
     end
   end
 
@@ -203,19 +117,10 @@ RSpec.describe MailerLite::Params do
       expect(described_class.idempotency_headers('key-1')).to eq('Idempotency-Key' => 'key-1')
     end
 
-    it 'accepts a key with 255 characters and a space in the middle' do
-      expect(described_class.idempotency_headers('a' * 255)).to eq('Idempotency-Key' => 'a' * 255)
-      expect(described_class.idempotency_headers('a b')).to eq('Idempotency-Key' => 'a b')
-    end
-
-    ['', 'a' * 256, "a\nb", "a\tb", 'é', "\x7F", ' k', 'k ', (+"k\xFF").force_encoding('UTF-8')].each do |key|
-      it "raises InvalidIdempotencyKeyError for #{key.inspect[0, 20]}" do
-        expect { described_class.idempotency_headers(key) }.to raise_error(MailerLite::InvalidIdempotencyKeyError)
+    ['', 'a' * 256, 'é', ' k', 'k ', 1].each do |key|
+      it "returns the header with the key as given for #{key.inspect[0, 20]}" do
+        expect(described_class.idempotency_headers(key)).to eq('Idempotency-Key' => key)
       end
-    end
-
-    it 'raises TypeError for a key that is not a String' do
-      expect { described_class.idempotency_headers(1) }.to raise_error(TypeError, /`idempotency_key`/)
     end
   end
 end

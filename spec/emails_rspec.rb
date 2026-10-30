@@ -156,7 +156,7 @@ RSpec.describe MailerLite::Emails do
 
     it 'inserts the block with the placement and the etag' do
       body = '{"type":"paragraph","editor_content":{"attrs":{"textAlign":"center"},"content":[{"type":"text","text":"Hi"}]},' \
-             '"placement":{"position":"after","block_id":"57"},"etag":"42"}'
+             '"placement":{"position":"after","block_id":57},"etag":"42"}'
       stub = stub_api(:post, '/emails/123/blocks', body: body, status: 201, response: load_fixture('email_block_created'))
       placement = { position: described_class::BlockPosition::AFTER, block_id: 57 }
 
@@ -203,25 +203,33 @@ RSpec.describe MailerLite::Emails do
       expect(response.api_error.errors).to eq('type' => ['The selected type is invalid.'])
     end
 
-    it 'checks the email ID and the block_id of the placement, and sends no request' do
+    it 'checks the email ID and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.create_block(email_id: id, etag: '42', type: 'divider', editor_content: {}) }
-      expect_invalid_ids('block_id') do |id|
-        emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: { position: 'after', block_id: id })
-      end
-      expect_invalid_ids('block_id') do |id|
-        emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: { 'position' => 'after', 'block_id' => id })
-      end
     end
 
-    it 'checks the etag and the types, and sends no request' do
-      expect { emails.create_block(email_id: '123', etag: '', type: 'divider', editor_content: {}) }.to raise_error(MailerLite::EmptyEtagError)
-      expect { emails.create_block(email_id: '123', etag: nil, type: 'divider', editor_content: {}) }.to raise_error(MailerLite::EmptyEtagError)
-      expect { emails.create_block(email_id: '123', etag: 42, type: 'divider', editor_content: {}) }.to raise_error(TypeError, /`etag`/)
-      expect { emails.create_block(email_id: '123', etag: '42', type: 1, editor_content: {}) }.to raise_error(TypeError, /`type`/)
-      expect { emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: nil) }.to raise_error(TypeError, /`editor_content`/)
-      expect { emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: 'end') }
-        .to raise_error(TypeError, /`placement`/)
-      expect(a_request(:any, /.*/)).not_to have_been_made
+    it 'sends an after placement without a block_id as given, and returns the API error' do
+      stub = stub_api(:post, '/emails/123/blocks', body: '{"type":"divider","editor_content":{},"placement":{"position":"after"},"etag":"42"}',
+                                                   status: 422, response: { message: 'Invalid.', errors: { 'placement.block_id' => ['Required.'] } })
+
+      response = emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: { position: 'after' })
+
+      expect(stub).to have_been_requested
+      expect(response.api_error.errors).to eq('placement.block_id' => ['Required.'])
+    end
+
+    it 'sends the values that the API checks, and returns the API error' do
+      calls = {
+        '{"type":"divider","editor_content":{},"etag":""}' => -> { emails.create_block(email_id: '123', etag: '', type: 'divider', editor_content: {}) },
+        '{"type":"paragraph","editor_content":{},"etag":"42"}' => -> { emails.create_block(email_id: '123', etag: '42', type: :paragraph, editor_content: {}) },
+        '{"type":"divider","editor_content":null,"etag":"42"}' => -> { emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: nil) },
+        '{"type":"divider","editor_content":{},"placement":"end","etag":"42"}' =>
+          -> { emails.create_block(email_id: '123', etag: '42', type: 'divider', editor_content: {}, placement: 'end') }
+      }
+      calls.each do |body, call|
+        stub = stub_api(:post, '/emails/123/blocks', body: body, status: 422, response: { message: 'Invalid.' })
+        expect(call.call.api_error.status).to eq 422
+        expect(stub).to have_been_requested
+      end
     end
   end
 
@@ -240,13 +248,18 @@ RSpec.describe MailerLite::Emails do
       expect(data['data']['placement']).to eq('after' => '56', 'before' => '58')
     end
 
-    it 'checks the arguments and sends no request' do
+    it 'checks the IDs and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.update_block(email_id: id, block_id: '57', etag: '43', editor_content: {}) }
       expect_invalid_ids('block_id') { |id| emails.update_block(email_id: '123', block_id: id, etag: '43', editor_content: {}) }
-      expect { emails.update_block(email_id: '123', block_id: '57', etag: '', editor_content: {}) }.to raise_error(MailerLite::EmptyEtagError)
-      expect { emails.update_block(email_id: '123', block_id: '57', etag: '43', editor_content: []) }
-        .to raise_error(TypeError, /`editor_content`/)
-      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
+    it 'sends an empty etag and content that is not a Hash, and returns the API error' do
+      stub = stub_api(:patch, '/emails/123/blocks/57', body: '{"editor_content":[],"etag":""}', status: 422, response: { message: 'Invalid.' })
+
+      response = emails.update_block(email_id: '123', block_id: '57', etag: '', editor_content: [])
+
+      expect(stub).to have_been_requested
+      expect(response.api_error.status).to eq 422
     end
   end
 
@@ -261,17 +274,23 @@ RSpec.describe MailerLite::Emails do
       expect(decoded(response)).to eq('etag' => '45')
     end
 
-    it 'checks the arguments and sends no request' do
+    it 'checks the IDs and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.delete_block(email_id: id, block_id: '57', etag: '44') }
       expect_invalid_ids('block_id') { |id| emails.delete_block(email_id: '123', block_id: id, etag: '44') }
-      expect { emails.delete_block(email_id: '123', block_id: '57', etag: nil) }.to raise_error(MailerLite::EmptyEtagError)
-      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
+    it 'sends a nil etag as null' do
+      stub = stub_api(:delete, '/emails/123/blocks/57', body: '{"etag":null}', status: 422, response: { message: 'Invalid.' })
+
+      emails.delete_block(email_id: '123', block_id: '57', etag: nil)
+
+      expect(stub).to have_been_requested
     end
   end
 
   describe '#move_block' do
     it 'sends the placement and the etag' do
-      stub = stub_api(:post, '/emails/123/blocks/57/move', body: '{"placement":{"position":"before","block_id":"1"},"etag":"45"}',
+      stub = stub_api(:post, '/emails/123/blocks/57/move', body: '{"placement":{"position":"before","block_id":1},"etag":"45"}',
                                                            response: load_fixture('email_block_moved'))
 
       response = emails.move_block(email_id: '123', block_id: '57', etag: '45',
@@ -294,28 +313,35 @@ RSpec.describe MailerLite::Emails do
       expect(stub).to have_been_requested
     end
 
-    it 'does not send the block_id for the end position' do
-      stub = stub_api(:post, '/emails/123/blocks/57/move', body: '{"placement":{"position":"end"},"etag":"45"}',
+    it 'sends the block_id for the start and end positions' do
+      stub = stub_api(:post, '/emails/123/blocks/57/move', body: '{"placement":{"position":"start","block_id":"12"},"etag":"45"}',
                                                            response: load_fixture('email_block_moved'))
 
       emails.move_block(email_id: '123', block_id: '57', etag: '45',
-                        placement: { position: described_class::BlockPosition::AT_END, block_id: '12' })
+                        placement: { position: described_class::BlockPosition::AT_START, block_id: '12' })
 
       expect(stub).to have_been_requested
     end
 
-    it 'checks the arguments and sends no request' do
+    it 'checks the IDs in the URL and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.move_block(email_id: id, block_id: '57', etag: '45', placement: { position: 'end' }) }
       expect_invalid_ids('block_id') { |id| emails.move_block(email_id: '123', block_id: id, etag: '45', placement: { position: 'end' }) }
-      expect_invalid_ids('block_id') do |id|
-        emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: { position: 'after', block_id: id })
+    end
+
+    it 'sends the placement and the etag as given, and returns the API error' do
+      calls = {
+        '{"placement":{"position":"after","block_id":"1/2"},"etag":"45"}' =>
+          -> { emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: { position: 'after', block_id: '1/2' }) },
+        '{"placement":{"position":"before"},"etag":"45"}' =>
+          -> { emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: { 'position' => 'before' }) },
+        '{"placement":null,"etag":"45"}' => -> { emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: nil) },
+        '{"placement":{"position":"end"},"etag":""}' => -> { emails.move_block(email_id: '123', block_id: '57', etag: '', placement: { position: 'end' }) }
+      }
+      calls.each do |body, call|
+        stub = stub_api(:post, '/emails/123/blocks/57/move', body: body, status: 422, response: { message: 'Invalid.' })
+        expect(call.call.api_error.status).to eq 422
+        expect(stub).to have_been_requested
       end
-      expect_invalid_ids('block_id') do |id|
-        emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: { 'position' => 'after', 'block_id' => id })
-      end
-      expect { emails.move_block(email_id: '123', block_id: '57', etag: '', placement: { position: 'end' }) }.to raise_error(MailerLite::EmptyEtagError)
-      expect { emails.move_block(email_id: '123', block_id: '57', etag: '45', placement: nil) }.to raise_error(TypeError, /`placement`/)
-      expect(a_request(:any, /.*/)).not_to have_been_made
     end
   end
 
@@ -350,11 +376,20 @@ RSpec.describe MailerLite::Emails do
       expect(data['errors']).to eq('type' => ['The selected type is invalid.'])
     end
 
-    it 'checks the arguments and sends no request' do
-      expect_invalid_ids('block_id') { |id| emails.validate_block(type: 'divider', editor_content: {}, placement: { position: 'after', block_id: id }) }
-      expect { emails.validate_block(type: nil, editor_content: {}) }.to raise_error(TypeError, /`type`/)
-      expect { emails.validate_block(type: 'divider', editor_content: 'x') }.to raise_error(TypeError, /`editor_content`/)
-      expect(a_request(:any, /.*/)).not_to have_been_made
+    it 'sends a block that is not valid, and returns the result of the API' do
+      calls = {
+        '{"type":"divider","editor_content":{},"placement":{"position":"after"}}' =>
+          -> { emails.validate_block(type: 'divider', editor_content: {}, placement: { position: 'after' }) },
+        '{"type":"divider","editor_content":{},"placement":{"position":"before","block_id":"x"}}' =>
+          -> { emails.validate_block(type: 'divider', editor_content: {}, placement: { position: 'before', block_id: 'x' }) },
+        '{"type":null,"editor_content":{}}' => -> { emails.validate_block(type: nil, editor_content: {}) },
+        '{"type":"divider","editor_content":"x"}' => -> { emails.validate_block(type: 'divider', editor_content: 'x') }
+      }
+      calls.each do |body, call|
+        stub = stub_api(:post, '/emails/blocks/validate', body: body, response: load_fixture('email_block_validation_invalid'))
+        expect(decoded(call.call)['valid']).to be(false)
+        expect(stub).to have_been_requested
+      end
     end
   end
 
@@ -396,11 +431,19 @@ RSpec.describe MailerLite::Emails do
 
     it 'checks the arguments and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.update_settings(email_id: id, etag: '46', settings: {}) }
-      expect { emails.update_settings(email_id: '123', etag: '', settings: {}) }.to raise_error(MailerLite::EmptyEtagError)
       expect { emails.update_settings(email_id: '123', etag: '46', settings: nil) }.to raise_error(TypeError, /`settings`/)
       expect { emails.update_settings(email_id: '123', etag: '46', settings: { etag: '1' }) }.to raise_error(ArgumentError, /etag/)
       expect { emails.update_settings(email_id: '123', etag: '46', settings: { 'etag' => '1' }) }.to raise_error(ArgumentError, /etag/)
       expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
+    it 'sends an empty etag, and returns the API error' do
+      stub = stub_api(:patch, '/emails/123/settings', body: '{"etag":""}', status: 422, response: { message: 'Invalid.' })
+
+      response = emails.update_settings(email_id: '123', etag: '', settings: {})
+
+      expect(stub).to have_been_requested
+      expect(response.api_error.status).to eq 422
     end
   end
 
@@ -418,12 +461,20 @@ RSpec.describe MailerLite::Emails do
       expect(data['rejected']['message']).to eq 'Some attributes were rejected.'
     end
 
-    it 'checks the arguments and sends no request' do
+    it 'checks the email ID and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.validate_settings(email_id: id, settings: {}) }
-      expect { emails.validate_settings(email_id: '123', settings: 'x') }.to raise_error(TypeError, /`settings`/)
-      expect { emails.validate_settings(email_id: '123', settings: { etag: '1' }) }.to raise_error(ArgumentError, /etag/)
-      expect { emails.validate_settings(email_id: '123', settings: { 'etag' => '1' }) }.to raise_error(ArgumentError, /etag/)
-      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
+    it 'sends the settings as given, also with an etag key' do
+      calls = {
+        '{"etag":"1"}' => -> { emails.validate_settings(email_id: '123', settings: { etag: '1' }) },
+        '"x"' => -> { emails.validate_settings(email_id: '123', settings: 'x') }
+      }
+      calls.each do |body, call|
+        stub = stub_api(:post, '/emails/123/settings/validate', body: body, response: load_fixture('email_settings_validation'))
+        expect(decoded(call.call)['valid']).to be(false)
+        expect(stub).to have_been_requested
+      end
     end
   end
 
@@ -440,11 +491,16 @@ RSpec.describe MailerLite::Emails do
       expect(data).not_to have_key('etag')
     end
 
-    it 'checks the arguments and sends no request' do
+    it 'checks the email ID and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.create_template(email_id: id, name: 'Newsletter') }
-      expect { emails.create_template(email_id: '123', name: nil) }.to raise_error(TypeError, /`name`/)
-      expect { emails.create_template(email_id: '123', name: 1) }.to raise_error(TypeError, /`name`/)
-      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
+    it 'sends a name that is not a String, and returns the API error' do
+      { '{"name":null}' => nil, '{"name":1}' => 1 }.each do |body, name|
+        stub = stub_api(:post, '/emails/123/templates', body: body, status: 422, response: { message: 'Invalid.' })
+        expect(emails.create_template(email_id: '123', name: name).api_error.status).to eq 422
+        expect(stub).to have_been_requested
+      end
     end
   end
 
@@ -516,11 +572,18 @@ RSpec.describe MailerLite::Emails do
       expect(data['data']['blocks'].size).to eq 2
     end
 
-    it 'checks the arguments and sends no request' do
+    it 'checks the IDs and sends no request' do
       expect_invalid_ids('email_id') { |id| emails.restore_version(email_id: id, version_id: '901', etag: '47') }
       expect_invalid_ids('version_id') { |id| emails.restore_version(email_id: '123', version_id: id, etag: '47') }
-      expect { emails.restore_version(email_id: '123', version_id: '901', etag: '') }.to raise_error(MailerLite::EmptyEtagError)
-      expect(a_request(:any, /.*/)).not_to have_been_made
+    end
+
+    it 'sends an empty etag, and returns the API error' do
+      stub = stub_api(:post, '/emails/123/versions/901/restore', body: '{"etag":""}', status: 422, response: { message: 'Invalid.' })
+
+      response = emails.restore_version(email_id: '123', version_id: '901', etag: '')
+
+      expect(stub).to have_been_requested
+      expect(response.api_error.status).to eq 422
     end
   end
 
@@ -571,14 +634,14 @@ RSpec.describe MailerLite::Emails do
       expect(stub).to have_been_requested
     end
 
-    it 'checks the key and sends no request' do
-      writes.each do |_method, _path, _body, call|
-        ['', 'k' * 256, "a\nb", "a\tb", 'é', "\x7F", ' k', 'k '].each do |key|
-          expect { call.call(key) }.to raise_error(MailerLite::InvalidIdempotencyKeyError)
+    it 'sends the key as given, and returns the API error' do
+      writes.each do |method, path, body, call|
+        ['', ' k', 'k ', 'k' * 256].each do |key|
+          stub = stub_api(method, path, body: body, key: key, status: 400, response: { message: 'The idempotency key is not valid.' })
+          expect(call.call(key).api_error.status).to eq 400
+          expect(stub).to have_been_requested
         end
-        expect { call.call(1) }.to raise_error(TypeError, /`idempotency_key`/)
       end
-      expect(a_request(:any, /.*/)).not_to have_been_made
     end
 
     it 'shows a replay of a stored response' do
