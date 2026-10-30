@@ -164,8 +164,9 @@ module MailerLite
     # @param limit [Integer] the maximum number of Automations to return
     # @param page [Integer] the page number of the results to return
     # @param sort [String] the field to sort by, prefix with - for descending order
+    # @param with_subscribers [Boolean] include the id, email and name of each subscriber
     # @return [HTTP::Response] the response from the API
-    def get_subscriber_activity(automation_id:, filter: {}, page: nil, limit: nil, sort: nil)
+    def get_subscriber_activity(automation_id:, filter: {}, page: nil, limit: nil, sort: nil, with_subscribers: nil)
       params = { 'filter[status]' => filter[:status] }
       params['filter[date_from]'] = filter[:date_from] if filter.key?(:date_from)
       params['filter[date_to]'] = filter[:date_to] if filter.key?(:date_to)
@@ -175,6 +176,7 @@ module MailerLite
       params['page'] = page if page
       params['limit'] = limit if limit
       params['sort'] = sort if sort
+      params['with_subscribers'] = 1 if with_subscribers
       uri = URI("#{MAILERLITE_API_URL}/automations/#{automation_id}/activity")
       uri.query = URI.encode_www_form(params.compact)
       client.http.get(uri)

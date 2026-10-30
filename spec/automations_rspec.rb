@@ -148,6 +148,20 @@ RSpec.describe MailerLite::Automations do
     end
   end
 
+  describe '#get_subscriber_activity with_subscribers' do
+    it 'sends with_subscribers=1 when true' do
+      stub = stub_api(:get, '/automations/1/activity', query: { 'filter[status]' => 'active', 'with_subscribers' => '1' })
+      automations.get_subscriber_activity(automation_id: 1, filter: { status: 'active' }, with_subscribers: true)
+      expect(stub).to have_been_requested
+    end
+
+    it 'omits with_subscribers when false' do
+      stub = stub_api(:get, '/automations/1/activity', query: { 'filter[status]' => 'active' })
+      automations.get_subscriber_activity(automation_id: 1, filter: { status: 'active' }, with_subscribers: false)
+      expect(stub).to have_been_requested
+    end
+  end
+
   describe '#add_subscribers' do
     it 'sends POST /automations/{automation}/add-subscribers' do
       stub = stub_api(:post, '/automations/1/add-subscribers', body: { 'step_id' => 2, 'emails' => ['a@b.com'], 'groups' => ['3'] })
