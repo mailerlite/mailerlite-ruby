@@ -627,9 +627,10 @@ campaigns.activity(campaign_id)
 These methods edit emails built with the simple editor. To create such an email, [create a campaign with the simple editor](#create-a-campaign-with-the-simple-editor). The ID of the email is in `data.emails[0].id` of the response.
 
 - IDs are strings of digits. You can also give them as integers. An empty ID raises `MailerLite::EmptyIdError`, and an ID that does not contain only digits raises `MailerLite::InvalidIdError`. The SDK sends no request in these cases.
+- The SDK checks only the IDs in the URL path, and the settings of `update_settings`: they must be a Hash without an `etag` key. The SDK sends all other values as you give them, and the API checks them. For a value that is not valid, the API returns `422` with the `errors` for each field.
 - The methods return an `HTTP::Response`, like the other methods. Use `response.code` for the status code, `response.headers` for the headers and `JSON.parse(response.body)` for the body.
 - The methods do not raise an error for a `4xx` or `5xx` status. `response.api_error` is `nil` for a `2xx` status. For other statuses, it is a `MailerLite::ApiError` with `status`, `code`, `etag`, `api_message` and `errors`. You can raise it.
-- Each write needs the etag from the last response for the email, and returns a new etag. The etag covers the whole email, so send the writes to one email one after another. An empty etag raises `MailerLite::EmptyEtagError`, and the SDK sends no request.
+- Each write needs the etag from the last response for the email, and returns a new etag. The etag covers the whole email, so send the writes to one email one after another.
 - If the email changed after you read it, the write returns `409`, and `response.api_error.code` is `MailerLite::Emails::VERSION_CONFLICT`. Then `response.api_error.etag` is the current etag. Get the email again, and then send the write again with the current etag.
 - The keys of `editor_content` are camelCase, for example `textAlign`. The SDK sends them as you give them.
 
@@ -690,7 +691,7 @@ block = JSON.parse(response.body)['data']
 
 <a name="insert-a-block"></a>
 
-Use the block types in `MailerLite::Emails::BlockType`. `editor_content` can be empty. Without `placement`, the API puts the block at the end of the email. The positions are in `MailerLite::Emails::BlockPosition`. The `BEFORE` and `AFTER` positions also need a `block_id`. For the other positions, the SDK does not send `block_id`.
+Use the block types in `MailerLite::Emails::BlockType`. `editor_content` can be empty. Without `placement`, the API puts the block at the end of the email. The positions are in `MailerLite::Emails::BlockPosition`. The `BEFORE` and `AFTER` positions also need a `block_id`. The SDK sends `placement` as you give it.
 
 ```ruby
 require "mailerlite-ruby"
@@ -757,7 +758,7 @@ etag = JSON.parse(response.body)['etag']
 
 <a name="move-a-block"></a>
 
-The `BEFORE` and `AFTER` positions also need a `block_id`. For the other positions, the SDK does not send `block_id`.
+The `BEFORE` and `AFTER` positions also need a `block_id`. The SDK sends `placement` as you give it.
 
 ```ruby
 require "mailerlite-ruby"
@@ -929,7 +930,7 @@ etag = JSON.parse(response.body)['etag']
 If a write fails with a network error, you do not know if the API did the write. Give the write an `idempotency_key`, and send it again with the same key and the same arguments. If the first request was a success, the API returns the stored response and does not do the write two times. Then `response.idempotent_replay?` is `true`.
 
 - Use a new key for each write. The API keeps a key for 24 hours.
-- The key must be 1 to 255 printable ASCII characters, without a space at the start or the end. Otherwise the SDK raises `MailerLite::InvalidIdempotencyKeyError` and sends no request.
+- The key must be 1 to 255 printable ASCII characters. The SDK sends the key as you give it. For a key that is not valid, the API returns `400`.
 - The same key with different arguments returns `422`. If the first request is still running, the API returns `409` without a `code`.
 - These methods accept a key: `create_block`, `update_block`, `delete_block`, `move_block`, `update_settings`, `create_template`, `create_version` and `restore_version`.
 

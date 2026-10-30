@@ -93,10 +93,15 @@ RSpec.describe MailerLite::Request do
     expect(stub).to have_been_requested
   end
 
-  it 'sends no request for an invalid key' do
-    expect { described_class.call(client, :post, '/emails/1/versions', idempotency_key: 'a b ') }
-      .to raise_error(MailerLite::InvalidIdempotencyKeyError)
-    expect(a_request(:any, /.*/)).not_to have_been_made
+  it 'sends a key with a space at the end as given' do
+    stub = stub_request(:post, "#{api}/emails/1/versions")
+           .with { |req| req.headers['Idempotency-Key'] == 'a b ' }
+           .to_return(status: 400, body: '{"message":"The idempotency key is not valid."}')
+
+    response = described_class.call(client, :post, '/emails/1/versions', idempotency_key: 'a b ')
+
+    expect(stub).to have_been_requested
+    expect(response.api_error.status).to eq 400
   end
 
   it 'returns the HTTP::Response with the ApiResponse methods' do

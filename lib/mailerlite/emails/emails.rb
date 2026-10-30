@@ -10,8 +10,8 @@ module MailerLite
   # `MailerLite::EmptyIdError`, and an ID with other characters raises `MailerLite::InvalidIdError`.
   #
   # Each method returns the `HTTP::Response` with the `MailerLite::ApiResponse` methods. The methods do not raise
-  # for a 4xx or 5xx status: use `response.api_error`. A check of an argument raises before the request, and then
-  # the SDK sends no request.
+  # for a 4xx or 5xx status: use `response.api_error`. The SDK checks only the IDs in the URL path, and the settings
+  # Hash of `update_settings`. It sends all other values as you give them, and the API checks them.
   #
   # Each write needs the etag from the last response for the email, and returns a new etag. The etag covers the
   # whole email, so send the writes to one email one after another. If the email changed after you read it, the
@@ -22,7 +22,7 @@ module MailerLite
   # `idempotency_key` to the write, and send it again with the same key and the same arguments. If the first request
   # was a success, the API returns the stored response and does not do the write two times. Then
   # `response.idempotent_replay?` is true. Use a new key for each write. The API keeps a key for 24 hours.
-  # The key must be 1 to 255 printable ASCII characters, without a space at the start or the end.
+  # The key must be 1 to 255 printable ASCII characters. For a key that is not valid, the API returns 400.
   class Emails
     # The error code of a write with an etag that is not the current etag of the email.
     VERSION_CONFLICT = 'version_conflict'
@@ -113,13 +113,10 @@ module MailerLite
     # @param idempotency_key [String, nil] a key to send the write again safely, see "Idempotency keys" in the class
     #   documentation
     # @return [HTTP::Response] the response from the API
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
-    # @raise [MailerLite::EmptyEtagError] if the etag is empty
-    # @raise [TypeError] if an argument has a type that is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if an ID is not valid
     def create_block(email_id:, etag:, type:, editor_content:, placement: nil, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
-      body = block_body(type, editor_content, placement).merge('etag' => Params.etag(etag))
+      body = block_body(type, editor_content, placement).merge('etag' => etag)
       Request.call(client, :post, "/emails/#{email_id}/blocks", json: body, idempotency_key: idempotency_key)
     end
 
@@ -133,14 +130,11 @@ module MailerLite
     # @param idempotency_key [String, nil] a key to send the write again safely, see "Idempotency keys" in the class
     #   documentation
     # @return [HTTP::Response] the response from the API
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
-    # @raise [MailerLite::EmptyEtagError] if the etag is empty
-    # @raise [TypeError] if an argument has a type that is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if an ID is not valid
     def update_block(email_id:, block_id:, etag:, editor_content:, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
       block_id = Params.path_id(block_id, 'block_id')
-      body = { 'editor_content' => Params.require_hash(editor_content, 'editor_content'), 'etag' => Params.etag(etag) }
+      body = { 'editor_content' => editor_content, 'etag' => etag }
       Request.call(client, :patch, "/emails/#{email_id}/blocks/#{block_id}", json: body, idempotency_key: idempotency_key)
     end
 
@@ -153,14 +147,11 @@ module MailerLite
     # @param idempotency_key [String, nil] a key to send the write again safely, see "Idempotency keys" in the class
     #   documentation
     # @return [HTTP::Response] the response from the API
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
-    # @raise [MailerLite::EmptyEtagError] if the etag is empty
-    # @raise [TypeError] if an argument has a type that is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if an ID is not valid
     def delete_block(email_id:, block_id:, etag:, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
       block_id = Params.path_id(block_id, 'block_id')
-      Request.call(client, :delete, "/emails/#{email_id}/blocks/#{block_id}", json: { 'etag' => Params.etag(etag) }, idempotency_key: idempotency_key)
+      Request.call(client, :delete, "/emails/#{email_id}/blocks/#{block_id}", json: { 'etag' => etag }, idempotency_key: idempotency_key)
     end
 
     # Moves a block of the email. Returns the block, its new place in the email, and the new etag of the email.
@@ -172,14 +163,11 @@ module MailerLite
     # @param idempotency_key [String, nil] a key to send the write again safely, see "Idempotency keys" in the class
     #   documentation
     # @return [HTTP::Response] the response from the API
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
-    # @raise [MailerLite::EmptyEtagError] if the etag is empty
-    # @raise [TypeError] if an argument has a type that is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if an ID is not valid
     def move_block(email_id:, block_id:, etag:, placement:, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
       block_id = Params.path_id(block_id, 'block_id')
-      body = { 'placement' => Params.placement(placement), 'etag' => Params.etag(etag) }
+      body = { 'placement' => placement, 'etag' => etag }
       Request.call(client, :post, "/emails/#{email_id}/blocks/#{block_id}/move", json: body, idempotency_key: idempotency_key)
     end
 
@@ -190,8 +178,6 @@ module MailerLite
     # @param editor_content [Hash] the content of the block. Its keys are camelCase, for example `textAlign`.
     # @param placement [Hash, nil] `position` (see `BlockPosition`) and, for `before` and `after`, `block_id`
     # @return [HTTP::Response] the response from the API, with `valid`, `errors` and `schema`
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the `block_id` of the placement is not valid
-    # @raise [TypeError] if an argument has a type that is not valid
     def validate_block(type:, editor_content:, placement: nil)
       Request.call(client, :post, '/emails/blocks/validate', json: block_body(type, editor_content, placement))
     end
@@ -217,14 +203,12 @@ module MailerLite
     # @param idempotency_key [String, nil] a key to send the write again safely, see "Idempotency keys" in the class
     #   documentation
     # @return [HTTP::Response] the response from the API
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the ID is not valid
-    # @raise [MailerLite::EmptyEtagError] if the etag is empty
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if the ID is not valid
     # @raise [ArgumentError] if the settings contain an `etag` key
-    # @raise [TypeError] if an argument has a type that is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
+    # @raise [TypeError] if the settings are not a Hash
     def update_settings(email_id:, etag:, settings:, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
-      body = Params.settings(settings).merge('etag' => Params.etag(etag))
+      body = Params.settings(settings).merge('etag' => etag)
       Request.call(client, :patch, "/emails/#{email_id}/settings", json: body, idempotency_key: idempotency_key)
     end
 
@@ -235,12 +219,10 @@ module MailerLite
     # @param email_id [String, Integer] the ID of the email
     # @param settings [Hash] the settings that you want to send to `update_settings`, without `etag`
     # @return [HTTP::Response] the response from the API, with `valid`, `errors` and `schema`
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the ID is not valid
-    # @raise [ArgumentError] if the settings contain an `etag` key
-    # @raise [TypeError] if an argument has a type that is not valid
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if the ID is not valid
     def validate_settings(email_id:, settings:)
       email_id = Params.path_id(email_id, 'email_id')
-      Request.call(client, :post, "/emails/#{email_id}/settings/validate", json: Params.settings(settings))
+      Request.call(client, :post, "/emails/#{email_id}/settings/validate", json: settings)
     end
 
     # Saves the email as a new template with the name. The API cannot delete templates.
@@ -250,12 +232,10 @@ module MailerLite
     # @param idempotency_key [String, nil] a key to send the write again safely, see "Idempotency keys" in the class
     #   documentation
     # @return [HTTP::Response] the response from the API
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if the ID is not valid
-    # @raise [TypeError] if an argument has a type that is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if the ID is not valid
     def create_template(email_id:, name:, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
-      Request.call(client, :post, "/emails/#{email_id}/templates", json: { 'name' => Params.require_string(name, 'name') }, idempotency_key: idempotency_key)
+      Request.call(client, :post, "/emails/#{email_id}/templates", json: { 'name' => name }, idempotency_key: idempotency_key)
     end
 
     # Returns the saved versions of the email, newest first. `current` marks the version that the email has now.
@@ -279,7 +259,6 @@ module MailerLite
     #   documentation
     # @return [HTTP::Response] the response from the API
     # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if the ID is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
     def create_version(email_id, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
       Request.call(client, :post, "/emails/#{email_id}/versions", idempotency_key: idempotency_key)
@@ -294,24 +273,21 @@ module MailerLite
     # @param idempotency_key [String, nil] a key to send the write again safely, see "Idempotency keys" in the class
     #   documentation
     # @return [HTTP::Response] the response from the API
-    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError] if an ID is not valid
-    # @raise [MailerLite::EmptyEtagError] if the etag is empty
-    # @raise [TypeError] if an argument has a type that is not valid
-    # @raise [MailerLite::InvalidIdempotencyKeyError] if the idempotency key is not valid
+    # @raise [MailerLite::EmptyIdError, MailerLite::InvalidIdError, TypeError] if an ID is not valid
     def restore_version(email_id:, version_id:, etag:, idempotency_key: nil)
       email_id = Params.path_id(email_id, 'email_id')
       version_id = Params.path_id(version_id, 'version_id')
-      Request.call(client, :post, "/emails/#{email_id}/versions/#{version_id}/restore", json: { 'etag' => Params.etag(etag) }, idempotency_key: idempotency_key)
+      Request.call(client, :post, "/emails/#{email_id}/versions/#{version_id}/restore", json: { 'etag' => etag }, idempotency_key: idempotency_key)
     end
 
     private
 
     def block_body(type, editor_content, placement)
       body = {
-        'type' => Params.require_string(type, 'type'),
-        'editor_content' => Params.require_hash(editor_content, 'editor_content')
+        'type' => type,
+        'editor_content' => editor_content
       }
-      body['placement'] = Params.placement(placement) unless placement.nil?
+      body['placement'] = placement unless placement.nil?
       body
     end
   end
