@@ -55,11 +55,32 @@ For more information how to obtain an API key visit the [following link](https:/
     - [List all campaigns](#list-all-campaigns)
     - [Get a campaign](#get-a-campaign)
     - [Create a campaign](#create-a-campaign)
+    - [Create a campaign with the simple editor](#create-a-campaign-with-the-simple-editor)
     - [Update a campaign](#update-a-campaign)
     - [Schedule a campaign](#schedule-a-campaign)
     - [Cancel a campaign](#cancel-a-campaign)
     - [Delete a campaign](#delete-a-campaign)
     - [Get subscribers activity for a campaign](#get-subscribers-activity-for-a-campaign)
+  - [Emails](#emails)
+    - [Get an email](#get-an-email)
+    - [Get the HTML of an email](#get-the-html-of-an-email)
+    - [Get a block](#get-a-block)
+    - [Insert a block](#insert-a-block)
+    - [Update a block](#update-a-block)
+    - [Delete a block](#delete-a-block)
+    - [Move a block](#move-a-block)
+    - [Validate a block](#validate-a-block)
+    - [Update the design settings](#update-the-design-settings)
+    - [Validate the design settings](#validate-the-design-settings)
+    - [Save an email as a template](#save-an-email-as-a-template)
+    - [List the versions of an email](#list-the-versions-of-an-email)
+    - [Save a version of an email](#save-a-version-of-an-email)
+    - [Restore a version of an email](#restore-a-version-of-an-email)
+    - [Retry a write with an idempotency key](#retry-a-write-with-an-idempotency-key)
+  - [Brand styles](#brand-styles)
+    - [Get the brand styles](#get-the-brand-styles)
+  - [Files](#files)
+    - [List all files](#list-all-files)
   - [Forms](#forms)
     - [List all forms](#list-all-forms)
     - [Get a form](#get-a-form)
@@ -480,6 +501,36 @@ campaigns.create(
   )
 ```
 
+### Create a campaign with the simple editor
+
+<a name="create-a-campaign-with-the-simple-editor"></a>
+
+To build the email with the simple editor, set `editor` to `MailerLite::Campaigns::EDITOR_SIMPLE`, and do not send `content`. Then edit the email with [the email methods](#emails).
+
+- `template_id` is optional. It is a shared template of the simple editor that the email starts from. It needs `editor`.
+- All emails of a campaign must have the same `editor` and `template_id`.
+- Only `create` accepts `editor` and `template_id`. `update` does not.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+campaigns = MailerLite::Campaigns.new
+
+response = campaigns.create(
+  name: "Test Campaign",
+  type: "regular",
+  emails: [{
+    subject: "This is a test campaign",
+    from_name: "Test Man",
+    from: "testuser@mailerlite.com",
+    editor: MailerLite::Campaigns::EDITOR_SIMPLE
+  }]
+)
+
+email_id = JSON.parse(response.body)['data']['emails'][0]['id']
+```
+
 ### Update a campaign
 
 <a name="update-a-campaign"></a>
@@ -567,6 +618,399 @@ campaigns = MailerLite::Campaigns.new
 campaign_id = 123456
 
 campaigns.activity(campaign_id)
+```
+
+## Emails
+
+<a name="emails"></a>
+
+These methods edit emails built with the simple editor. To create such an email, [create a campaign with the simple editor](#create-a-campaign-with-the-simple-editor). The ID of the email is in `data.emails[0].id` of the response.
+
+- IDs are strings of digits. You can also give them as integers. An empty ID raises `MailerLite::EmptyIdError`, and an ID that does not contain only digits raises `MailerLite::InvalidIdError`. The SDK sends no request in these cases.
+- The SDK checks only the IDs in the URL path, and the settings of `update_settings`: they must be a Hash without an `etag` key. The SDK sends all other values as you give them, and the API checks them. For a value that is not valid, the API returns `422` with the `errors` for each field.
+- The methods return an `HTTP::Response`, like the other methods. Use `response.code` for the status code, `response.headers` for the headers and `JSON.parse(response.body)` for the body.
+- The methods do not raise an error for a `4xx` or `5xx` status. `response.api_error` is `nil` for a `2xx` status. For other statuses, it is a `MailerLite::ApiError` with `status`, `code`, `etag`, `api_message` and `errors`. You can raise it.
+- Each write needs the etag from the last response for the email, and returns a new etag. The etag covers the whole email, so send the writes to one email one after another.
+- If the email changed after you read it, the write returns `409`, and `response.api_error.code` is `MailerLite::Emails::VERSION_CONFLICT`. Then `response.api_error.etag` is the current etag. Get the email again, and then send the write again with the current etag.
+- The keys of `editor_content` are camelCase, for example `textAlign`. The SDK sends them as you give them.
+
+### Get an email
+
+<a name="get-an-email"></a>
+
+Returns the email with its settings and blocks, and the etag of the email.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.get('123456')
+
+body = JSON.parse(response.body)
+email = body['data']
+etag = body['etag']
+```
+
+### Get the HTML of an email
+
+<a name="get-the-html-of-an-email"></a>
+
+Returns the HTML that the email sends. The API can return a temporary `503` error. If it does, try again later.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.get_html('123456')
+
+html = JSON.parse(response.body)['data']['html'] if response.code == 200
+```
+
+### Get a block
+
+<a name="get-a-block"></a>
+
+Returns the block and its place in the email: `placement` has the IDs of the blocks `after` and `before` it, or `nil`.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.get_block(email_id: '123456', block_id: '57')
+
+block = JSON.parse(response.body)['data']
+```
+
+### Insert a block
+
+<a name="insert-a-block"></a>
+
+Use the block types in `MailerLite::Emails::BlockType`. `editor_content` can be empty. Without `placement`, the API puts the block at the end of the email. The positions are in `MailerLite::Emails::BlockPosition`. The `BEFORE` and `AFTER` positions also need a `block_id`. The SDK sends `placement` as you give it.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+email_id = '123456'
+etag = JSON.parse(emails.get(email_id).body)['etag']
+
+response = emails.create_block(
+  email_id: email_id,
+  etag: etag,
+  type: MailerLite::Emails::BlockType::PARAGRAPH,
+  editor_content: { attrs: { textAlign: 'left' }, content: [{ type: 'text', text: 'Hello' }] },
+  placement: { position: MailerLite::Emails::BlockPosition::AT_START }
+)
+
+body = JSON.parse(response.body)
+block_id = body['data']['id']
+etag = body['etag']
+```
+
+### Update a block
+
+<a name="update-a-block"></a>
+
+The new `editor_content` replaces the whole content of the block. The API removes the keys that you do not send.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.update_block(
+  email_id: '123456',
+  block_id: '57',
+  etag: 'etag-from-the-last-response',
+  editor_content: { attrs: { textAlign: 'center' }, content: [{ type: 'text', text: 'Hello again' }] }
+)
+
+etag = JSON.parse(response.body)['etag']
+```
+
+### Delete a block
+
+<a name="delete-a-block"></a>
+
+Also deletes the blocks in it. The response has only the new etag.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.delete_block(email_id: '123456', block_id: '57', etag: 'etag-from-the-last-response')
+
+etag = JSON.parse(response.body)['etag']
+```
+
+### Move a block
+
+<a name="move-a-block"></a>
+
+The `BEFORE` and `AFTER` positions also need a `block_id`. The SDK sends `placement` as you give it.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.move_block(
+  email_id: '123456',
+  block_id: '57',
+  etag: 'etag-from-the-last-response',
+  placement: { position: MailerLite::Emails::BlockPosition::AFTER, block_id: '12' }
+)
+
+etag = JSON.parse(response.body)['etag']
+```
+
+### Validate a block
+
+<a name="validate-a-block"></a>
+
+Checks a block before you insert it. It needs no email and no etag. An invalid block is not an error: the response has `valid` set to `false` and the `errors` for each field.
+
+The block in this example is not valid, because `sideways` is not a valid `textAlign`. The response has `valid: false` and `errors`.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.validate_block(
+  type: MailerLite::Emails::BlockType::PARAGRAPH,
+  editor_content: { attrs: { textAlign: 'sideways' } }
+)
+
+body = JSON.parse(response.body)
+puts body['errors'] unless body['valid']
+```
+
+### Update the design settings
+
+<a name="update-the-design-settings"></a>
+
+Send only the keys to change, in the shape of `settings` in the email. The groups are `brand`, `layout`, `typography`, `button` and `footer`.
+
+- The SDK sends exactly the keys of the Hash. A key that is not in the Hash does not change.
+- To unset a brand colour, send an empty string. The API stores the value empty, and the email then uses the account value.
+- To unset a footer text, send an empty editor document: `{ editor_content: {} }` or `{ editor_content: { content: [] } }`.
+- Other colours, sizes, `button.border_radius` and `brand.style` cannot be empty. An empty string gives a `422` error.
+- Send all style values as strings, for example `'16'` and not `16`.
+- The API stores each value that you send, also a value that the email inherits from your account. Then the email no longer follows your account for that value.
+- `footer.social_links` replaces the whole list. Keep the `link_id` of each link to keep its click history.
+- `brand.mode` is one of `MailerLite::Emails::BrandMode`. To apply a preset palette, send its `identifier` from the brand styles in `brand.style`.
+- Do not put `etag` in the settings. Use the `etag` argument.
+- If the API removed unsafe values, the response has `rejected` with the keys of these values.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.update_settings(
+  email_id: '123456',
+  etag: 'etag-from-the-last-response',
+  settings: {
+    brand: { mode: MailerLite::Emails::BrandMode::CUSTOM, background_color: '#f4f4f4' },
+    typography: { paragraph: { p1: { size: '18' } } }
+  }
+)
+
+body = JSON.parse(response.body)
+etag = body['etag']
+puts body['rejected']['keys'] if body['rejected']
+```
+
+### Validate the design settings
+
+<a name="validate-the-design-settings"></a>
+
+Checks a change with the rules of the update, and saves nothing. It needs no etag. Invalid settings are not an error: the response has `valid` set to `false` and the `errors` for each field.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.validate_settings(email_id: '123456', settings: { button: { border_radius: '8' } })
+
+body = JSON.parse(response.body)
+puts body['errors'] unless body['valid']
+```
+
+### Save an email as a template
+
+<a name="save-an-email-as-a-template"></a>
+
+Copies the email to a new template. The API cannot delete templates.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.create_template(email_id: '123456', name: 'Monthly newsletter')
+
+template_id = JSON.parse(response.body)['data']['id']
+```
+
+### List the versions of an email
+
+<a name="list-the-versions-of-an-email"></a>
+
+A version is a saved copy of the content and the settings of an email. The list starts with the newest version. `current` marks the version that the email has now.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.list_versions('123456', page: 1, limit: 10)
+
+versions = JSON.parse(response.body)['data']
+```
+
+### Save a version of an email
+
+<a name="save-a-version-of-an-email"></a>
+
+Writes through the API do not save versions. If nothing changed after the last version, the API saves no new version and returns the last version. `response.code` is `201` for a new version and `200` for the last version.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.create_version('123456')
+
+version_id = JSON.parse(response.body)['data']['id']
+is_new = response.code == 201
+```
+
+### Restore a version of an email
+
+<a name="restore-a-version-of-an-email"></a>
+
+Puts the email back to the version, and returns the full email with the new etag. Before the restore, the API saves the current state as a version, so you can undo the restore.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+response = emails.restore_version(email_id: '123456', version_id: '901', etag: 'etag-from-the-last-response')
+
+etag = JSON.parse(response.body)['etag']
+```
+
+### Retry a write with an idempotency key
+
+<a name="retry-a-write-with-an-idempotency-key"></a>
+
+If a write fails with a network error, you do not know if the API did the write. Give the write an `idempotency_key`, and send it again with the same key and the same arguments. If the first request was a success, the API returns the stored response and does not do the write two times. Then `response.idempotent_replay?` is `true`.
+
+- Use a new key for each write. The API keeps a key for 24 hours.
+- The key must be 1 to 255 printable ASCII characters. The SDK sends the key as you give it. For a key that is not valid, the API returns `400`.
+- The same key with different arguments returns `422`. If the first request is still running, the API returns `409` without a `code`.
+- These methods accept a key: `create_block`, `update_block`, `delete_block`, `move_block`, `update_settings`, `create_template`, `create_version` and `restore_version`.
+
+```ruby
+require "mailerlite-ruby"
+require "securerandom"
+
+# Initialize the class
+emails = MailerLite::Emails.new
+
+args = {
+  email_id: '123456',
+  etag: 'etag-from-the-last-response',
+  type: MailerLite::Emails::BlockType::DIVIDER,
+  editor_content: {},
+  idempotency_key: SecureRandom.uuid
+}
+
+begin
+  response = emails.create_block(**args)
+rescue HTTP::ConnectionError, HTTP::TimeoutError
+  # Network error: send the write again with the same key and the same arguments.
+  response = emails.create_block(**args)
+end
+
+error = response.api_error
+raise error if error
+
+puts JSON.parse(response.body)['data']['id'], response.idempotent_replay?
+```
+
+## Brand styles
+
+<a name="brand-styles"></a>
+
+### Get the brand styles
+
+<a name="get-the-brand-styles"></a>
+
+Returns the palettes of your account: `brand` (your brand styles, or `nil` if your account has none), `default` and the `presets`. Match a palette on its `identifier`, not on its `name`. To apply a preset to an email, [update the design settings](#update-the-design-settings) with `{ brand: { style: identifier } }`.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+brand_styles = MailerLite::BrandStyles.new
+
+response = brand_styles.get
+
+identifiers = JSON.parse(response.body)['data']['presets'].map { |preset| preset['identifier'] }
+```
+
+## Files
+
+<a name="files"></a>
+
+### List all files
+
+<a name="list-all-files"></a>
+
+Returns the files of your media library. Use their `url` in image blocks. `width` and `height` are `nil` for files that are not images.
+
+- `filter`: `name` (a part of the file name) and `type` (one of `MailerLite::Files::FileType`).
+- `sort`: one of `MailerLite::Files::FileSort`. The default is newest first.
+- The SDK does not send `nil` values.
+
+```ruby
+require "mailerlite-ruby"
+
+# Initialize the class
+files = MailerLite::Files.new
+
+response = files.list(
+  filter: { name: 'summer sale', type: MailerLite::Files::FileType::IMAGE },
+  sort: MailerLite::Files::FileSort::SIZE_DESC,
+  page: 1,
+  limit: 25
+)
+
+urls = JSON.parse(response.body)['data'].map { |file| file['url'] }
 ```
 
 ## Forms

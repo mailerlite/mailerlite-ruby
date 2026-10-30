@@ -1,0 +1,50 @@
+{
+  "data": {
+    "brand": {
+      "identifier": "account",
+      "name": "Brand styles",
+      "font_family": "Inter, sans-serif",
+      "primary_color": "#2cb191",
+      "secondary_color": "#1f2937",
+      "heading_color": "#111827",
+      "text_color": "#374151",
+      "border_color": "#e5e7eb",
+      "background_color": "#ffffff"
+    },
+    "default": {
+      "identifier": "default-brand",
+      "name": "Default",
+      "font_family": "Inter, sans-serif",
+      "primary_color": "#09c269",
+      "secondary_color": "#000000",
+      "heading_color": "#000000",
+      "text_color": "#000000",
+      "border_color": "#e5e7eb",
+      "background_color": "#ffffff"
+    },
+    "presets": [
+      {
+        "identifier": "preset-business-casual",
+        "name": "Business casual",
+        "font_family": "Georgia, serif",
+        "primary_color": "#1d4ed8",
+        "secondary_color": "#1e3a8a",
+        "heading_color": "#0f172a",
+        "text_color": "#334155",
+        "border_color": "#cbd5e1",
+        "background_color": "#f8fafc"
+      },
+      {
+        "identifier": "preset-retro",
+        "name": "Retro",
+        "font_family": "Courier New, monospace",
+        "primary_color": "#d97706",
+        "secondary_color": "#92400e",
+        "heading_color": "#451a03",
+        "text_color": "#78350f",
+        "border_color": "#fde68a",
+        "background_color": "#fffbeb"
+      }
+    ]
+  }
+}
