@@ -1,3 +1,13 @@
+## [Unreleased]
+- Add `Automations#create`, `#update`, `#delete`, `#copy`, `#enable`, `#disable`, `#test`, `#add_subscribers`, `#readd`, `#add_activity_to_group`, `#cancel_activity` and `#skip_activity_delay`
+- Add the `AutomationTriggers`, `AutomationSteps`, `AutomationEmails`, `AutomationTemplates` and `AutomationReports` classes
+- Add `Subscribers#activity_log` and `Groups#import_subscribers`
+- Add the missing documented params to `Subscribers#fetch`, `Subscribers#create`, `Groups#get_subscribers`, `Segments#list`, `Segments#update` and `Automations#get`
+- `Segments#get_subscribers` takes `cursor`. The API ignores `after`, so it always returned the first page
+- `Groups#get_subscribers` and `Segments#list` send their params in the query string, not in a JSON body on a GET
+- `Automations#get_subscriber_activity` takes `filter[:search]`, sent as `filter[search]`. The old `filter[:keyword]` is now sent as `filter[search]` too; the API rejected `filter[keyword]` with a 400
+- `AutomationReports#step_subscribers` and `#trigger_subscribers` send an Array `filter[:id]` as one comma-separated value
+
 ## [2.0.0] - 2024-12-11
 - *BREAKING CHANGE* - Please check the README file, dotenv is now optional
 - *BREAKING CHANGE* - Updated the minimal required Ruby version from 2.5 to 3.1
