@@ -122,6 +122,14 @@ RSpec.describe MailerLite::Subscribers do
 
       expect(stub).to have_been_requested
     end
+
+    it 'sends Array filter values comma-separated' do
+      stub = stub_api(:get, '/subscribers', query: { 'filter[group]' => '1,2' })
+
+      subscribers.fetch(filter: { group: %w[1 2] })
+
+      expect(stub).to have_been_requested
+    end
   end
 
   describe '#fetch filter order' do
