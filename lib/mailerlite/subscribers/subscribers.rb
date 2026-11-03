@@ -14,18 +14,33 @@ module MailerLite
 
     # Returns a list of subscribers that match the specified filter criteria.
     #
-    # @param filter[:status] [Array] the status of the subscribers to include in the results
+    # @param filter[:status] [String] the status of the subscribers to include in the results
+    # @param filter[:group] [String] the ID of a group, or several IDs separated with commas
+    # @param filter[:automation] [String] the ID of an automation, or several IDs separated with commas
+    # @param filter[:form] [String] the ID of a form, or several IDs separated with commas
+    # @param filter[:site] [String] the ID of a site, or several IDs separated with commas
+    # @param filter[:page] [String] the ID of a landing page, or several IDs separated with commas
+    # @param filter[:import] [String] the ID of an import, or several IDs separated with commas
+    # @param filter[:post] [String] the ID of a blog post, or several IDs separated with commas
     # @param limit [Integer] the maximum number of subscribers to return
-    # @param page [Integer] the page number of the results to return
+    # @param cursor [String] the cursor for the page of results to return
+    # @param sort [String] the field to sort by, prefix with - for descending order
+    # @param include [String] the relations to embed, only groups is supported
+    # @param start_date [String] only subscribers who signed up on or after this date
+    # @param end_date [String] only subscribers who signed up on or before this date
+    # @param with_fields [Boolean] return each custom field with its name, value and type
     # @return [HTTP::Response] the response from the API
-    def fetch(filter:, limit: nil, cursor: nil)
-      params = { 'filter[status]' => filter[:status] }
+    def fetch(filter:, limit: nil, cursor: nil, sort: nil, include: nil, start_date: nil, end_date: nil, with_fields: nil)
+      params = QueryParams.filter(filter, %i[status group automation form site page import post])
 
       params['limit'] = limit if limit
       params['cursor'] = cursor if cursor
-      uri = URI("#{MAILERLITE_API_URL}/subscribers")
-      uri.query = URI.encode_www_form(params.compact)
-      client.http.get(uri)
+      params['sort'] = sort if sort
+      params['include'] = include if include
+      params['start_date'] = start_date if start_date
+      params['end_date'] = end_date if end_date
+      params['with_fields'] = QueryParams.boolean(with_fields)
+      client.http.get(QueryParams.uri("#{MAILERLITE_API_URL}/subscribers", params))
     end
 
     # Creates a new subscriber with the specified details.
@@ -39,8 +54,11 @@ module MailerLite
     # @param opted_in_at [DateTime] the date and time when the subscriber confirmed their subscription
     # @param optin_ip [String] the IP address of the subscriber when they confirmed their subscription
     # @param unsubscribed_at [DateTime] the date and time when the subscriber was unsubscribed
+    # @param resubscribe [Boolean] reactivate the subscriber if they are unsubscribed, bounced or junk
+    # @param double_optin [Boolean] send a confirmation email to the new subscriber
+    # @param notes [Array] notes to add to the subscriber
     # @return [HTTP::Response] the response from the API
-    def create(email:, fields: nil, groups: nil, status: nil, subscribed_at: nil, ip_address: nil, opted_in_at: nil, optin_ip: nil, unsubscribed_at: nil)
+    def create(email:, fields: nil, groups: nil, status: nil, subscribed_at: nil, ip_address: nil, opted_in_at: nil, optin_ip: nil, unsubscribed_at: nil, resubscribe: nil, double_optin: nil, notes: nil)
       params = { 'email' => email }
 
       params['fields'] = fields if fields
@@ -51,6 +69,9 @@ module MailerLite
       params['opted_in_at'] = opted_in_at if opted_in_at
       params['optin_ip'] = optin_ip if optin_ip
       params['unsubscribed_at'] = unsubscribed_at if unsubscribed_at
+      params['resubscribe'] = resubscribe
+      params['double_optin'] = double_optin
+      params['notes'] = notes if notes
 
       client.http.post("#{MAILERLITE_API_URL}/subscribers", json: params.compact)
     end
@@ -90,6 +111,18 @@ module MailerLite
     # @return [HTTP::Response] the response from the API
     def get(subscriber_id)
       client.http.get("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}")
+    end
+
+    # Returns the activity log of the specified subscriber
+    #
+    # @param subscriber_id [String] the ID of the subscriber
+    # @param filter[:log_name] [String] the type of activity to include in the results
+    # @param limit [Integer] the maximum number of entries to return
+    # @param page [Integer] the page number of the results to return
+    # @return [HTTP::Response] the response from the API
+    def activity_log(subscriber_id:, filter: {}, limit: nil, page: nil)
+      params = QueryParams.filter(filter, %i[log_name]).merge('limit' => limit, 'page' => page)
+      client.http.get(QueryParams.uri("#{MAILERLITE_API_URL}/subscribers/#{subscriber_id}/activity-log", params))
     end
 
     # Returns the details of the specified subscribers

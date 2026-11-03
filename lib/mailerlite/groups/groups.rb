@@ -52,15 +52,23 @@ module MailerLite
     # @param group_id [Integer] The id of existing group belonging to the account
     # @param filter[:status] [String] Must be one of the possible statuses: active, unsubscribed, unconfirmed, bounced or junk. Defaults to active.
     # @param limit [Integer] the maximum number of subscribers to return
-    # @param page [Integer] the page number of the results to return
+    # @param cursor [String] the cursor for the page of results to return
+    # @param include [String] the relations to embed, only groups is supported
     # @return [HTTP::Response] the response from the API
-    def get_subscribers(group_id:, filter: {}, limit: nil, cursor: nil, sort: nil)
-      params = {}
-      params['filter[status]'] = filter[:status] if filter.key?(:status)
-      params['limit'] = limit if limit
-      params['sort'] = sort if sort
-      params['cursor'] = cursor if cursor
-      client.http.get("#{MAILERLITE_API_URL}/groups/#{group_id}/subscribers", json: params.compact)
+    def get_subscribers(group_id:, filter: {}, limit: nil, cursor: nil, sort: nil, include: nil)
+      params = QueryParams.filter(filter, %i[status]).merge('limit' => limit, 'sort' => sort, 'cursor' => cursor, 'include' => include)
+      client.http.get(QueryParams.uri("#{MAILERLITE_API_URL}/groups/#{group_id}/subscribers", params))
+    end
+
+    # Imports subscribers into the specified group.
+    # @param group_id [Integer] The id of existing group belonging to the account
+    # @param subscribers [Array] the subscribers to import, each a hash with email, and optional name and fields
+    # @param resubscribe [Boolean] reactivate unsubscribed subscribers, bounced and junk subscribers are not reactivated
+    # @param trigger_automations [Boolean] start the automations the import qualifies for
+    # @return [HTTP::Response] the response from the API
+    def import_subscribers(group_id:, subscribers:, resubscribe: nil, trigger_automations: nil)
+      params = { 'subscribers' => subscribers, 'resubscribe' => resubscribe, 'trigger_automations' => trigger_automations }
+      client.http.post("#{MAILERLITE_API_URL}/groups/#{group_id}/import-subscribers", json: params.compact)
     end
 
     # Assign Subscriber to the specified group.

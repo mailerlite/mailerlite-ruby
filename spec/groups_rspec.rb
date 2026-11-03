@@ -94,4 +94,25 @@ RSpec.describe MailerLite::Groups do
       end
     end
   end
+
+  describe '#get_subscribers query string' do
+    it 'sends the params in the query string with no body' do
+      stub = stub_api(:get, '/groups/1/subscribers', query: { 'filter[status]' => 'active', 'limit' => '10', 'cursor' => 'abc', 'include' => 'groups' })
+
+      groups.get_subscribers(group_id: 1, filter: { status: 'active' }, limit: 10, cursor: 'abc', include: 'groups')
+
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe '#import_subscribers' do
+    it 'sends POST /groups/{group}/import-subscribers with the body' do
+      list = [{ 'email' => 'a@b.com', 'name' => 'Ann', 'fields' => { 'city' => 'Vilnius' } }]
+      stub = stub_api(:post, '/groups/1/import-subscribers', body: { 'subscribers' => list, 'resubscribe' => true, 'trigger_automations' => false })
+
+      groups.import_subscribers(group_id: 1, subscribers: list, resubscribe: true, trigger_automations: false)
+
+      expect(stub).to have_been_requested
+    end
+  end
 end

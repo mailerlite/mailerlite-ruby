@@ -105,4 +105,61 @@ RSpec.describe MailerLite::Subscribers do
       end
     end
   end
+
+  describe '#fetch with every filter' do
+    it 'sends the documented query params' do
+      stub = stub_api(:get, '/subscribers', query: {
+                        'filter[status]' => 'active', 'filter[group]' => '1,2', 'filter[automation]' => '3', 'filter[form]' => '4',
+                        'filter[site]' => '5', 'filter[page]' => '6', 'filter[import]' => '7', 'filter[post]' => '8',
+                        'limit' => '10', 'cursor' => 'abc', 'sort' => '-id', 'include' => 'groups',
+                        'start_date' => '2026-01-01', 'end_date' => '2026-01-31', 'with_fields' => '1'
+                      })
+
+      subscribers.fetch(
+        filter: { status: 'active', group: '1,2', automation: '3', form: '4', site: '5', page: '6', import: '7', post: '8' },
+        limit: 10, cursor: 'abc', sort: '-id', include: 'groups', start_date: '2026-01-01', end_date: '2026-01-31', with_fields: true
+      )
+
+      expect(stub).to have_been_requested
+    end
+
+    it 'sends Array filter values comma-separated' do
+      stub = stub_api(:get, '/subscribers', query: { 'filter[group]' => '1,2' })
+
+      subscribers.fetch(filter: { group: %w[1 2] })
+
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe '#fetch filter order' do
+    it 'sends the filter keys in the order the caller gave them' do
+      uris = capture_raw_uris
+      stub_api(:get, '/subscribers', query: { 'filter[form]' => '4', 'filter[status]' => 'active', 'filter[group]' => '1', 'sort' => 'signup_date' })
+
+      subscribers.fetch(filter: { form: '4', status: 'active', group: '1' }, sort: 'signup_date')
+
+      expect(uris).to eq ["#{MAILERLITE_API_URL}/subscribers?filter%5Bform%5D=4&filter%5Bstatus%5D=active&filter%5Bgroup%5D=1&sort=signup_date"]
+    end
+  end
+
+  describe '#create with the new body fields' do
+    it 'sends resubscribe, double_optin and notes' do
+      stub = stub_api(:post, '/subscribers', body: { 'email' => 'a@b.com', 'resubscribe' => false, 'double_optin' => true, 'notes' => ['VIP'] })
+
+      subscribers.create(email: 'a@b.com', resubscribe: false, double_optin: true, notes: ['VIP'])
+
+      expect(stub).to have_been_requested
+    end
+  end
+
+  describe '#activity_log' do
+    it 'sends GET /subscribers/{subscriber}/activity-log with the query' do
+      stub = stub_api(:get, '/subscribers/1/activity-log', query: { 'filter[log_name]' => 'email_opened', 'limit' => '10', 'page' => '2' })
+
+      subscribers.activity_log(subscriber_id: 1, filter: { log_name: 'email_opened' }, limit: 10, page: 2)
+
+      expect(stub).to have_been_requested
+    end
+  end
 end
