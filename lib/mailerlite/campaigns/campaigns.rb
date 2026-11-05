@@ -212,5 +212,27 @@ module MailerLite
     def languages
       client.http.get("#{MAILERLITE_API_URL}/campaigns/languages")
     end
+
+    # Returns the orders and revenue a campaign earned in one shop
+    #
+    # @param campaign_id [String] the ID of the campaign
+    # @param shop_id [String] the ID of the shop
+    # @return [HTTP::Response] the response from the API
+    def ecommerce_stats(campaign_id:, shop_id:)
+      uri = URI("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}/reports/ecommerce")
+      uri.query = URI.encode_www_form('shop_id' => shop_id)
+      client.http.get(uri)
+    end
+
+    # Returns the orders attributed to a campaign in one shop
+    #
+    # @param campaign_id [String] the ID of the campaign
+    # @param shop_id [String] the ID of the shop
+    # @return [HTTP::Response] the response from the API
+    def ecommerce_orders(campaign_id:, shop_id:, page: nil, limit: nil)
+      uri = URI("#{MAILERLITE_API_URL}/campaigns/#{campaign_id}/reports/ecommerce/orders")
+      uri.query = URI.encode_www_form({ 'shop_id' => shop_id, 'page' => page, 'limit' => limit }.compact)
+      client.http.get(uri)
+    end
   end
 end
