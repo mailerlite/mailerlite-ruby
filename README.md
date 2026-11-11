@@ -514,7 +514,7 @@ campaigns.create(
 
 To build the email with the simple editor, set `editor` to `MailerLite::Campaigns::EDITOR_SIMPLE`, and do not send `content`. Then edit the email with [the email methods](#emails).
 
-- `template_id` is optional. It is a shared template of the simple editor that the email starts from. It needs `editor`.
+- `template_id` is optional. It is the simple editor template that the email starts from: a template from the shared gallery, or a template that you saved from your own email with [`create_template`](#save-an-email-as-a-template) (the `id` in its response). It needs `editor`. Without it, the email starts from the default blank template. The API copies the template into the new email and does not change the template.
 - All emails of a campaign must have the same `editor` and `template_id`.
 - Only `create` accepts `editor` and `template_id`. `update` does not.
 

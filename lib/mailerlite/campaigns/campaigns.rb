@@ -38,8 +38,11 @@ module MailerLite
     # @param language_id [integer] Used to define the language in the unsubscribe template. Must be a valid language id. Defaults to english
     # @param type [String] Must be one of the following: regular, ab, resend. Type resend is only available for accounts on growing or advanced plans
     # @param emails [Array] Must contain 1 email object item. The SDK sends each email as it is. An email can also have these keys:
-    #   - `editor`: the only accepted value is `simple`, which selects the simple editor instead of the drag-and-drop builder. It has to be the same across every email in the payload; a mixed array is rejected. Setting it prohibits `emails.*.content`. Use `EDITOR_SIMPLE`.
-    #   - `template_id`: the template the new email starts from. Allowed only when `editor` is `simple`, accepts only a template from the shared gallery, and also has to be the same across every email.
+    #   - `editor`: set it to `simple` (`EDITOR_SIMPLE`) to create the email in the simple editor. Do not send `content` with it.
+    #     It must be the same on every email of the campaign. It is not available on every plan: for an account on a plan without it, the API returns an error.
+    #   - `template_id`: the simple editor template that the email starts from. It is a template from the shared gallery, or a template that you saved from your own email
+    #     with `Emails#create_template` (the `id` in its response). It is optional, and allowed only when `editor` is `simple`. Without it, the email starts from the
+    #     default blank template. The API copies the template into the new email and does not change the template. It must be the same on every email of the campaign.
     #   Then edit the email with `MailerLite::Emails`. Its ID is in `data.emails[0].id` of the response.
     # @param groups [Array] Must contain valid group ids belonging to the account
     # @param segments [Array] Must contain valid segment ids belonging to the account. If both groups and segments are provided, only segments are used
