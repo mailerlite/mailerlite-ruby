@@ -13,6 +13,7 @@
 - Add `Campaigns::EDITOR_SIMPLE`, and document `editor` and `template_id` for the emails of `Campaigns#create`
 - Add the optional `idempotency_key` argument to the email writes
 - The new methods return an `HTTP::Response` with `api_error` (a `MailerLite::ApiError` with `status`, `code`, `etag`, `errors` and `api_message`) and `idempotent_replay?`. They do not raise for an API error
+- Document `rejected` in the responses of `Emails#create_block`, `#update_block` and `#validate_block`: the keys that the API dropped from the block
 
 ## [2.0.0] - 2024-12-11
 - *BREAKING CHANGE* - Please check the README file, dotenv is now optional

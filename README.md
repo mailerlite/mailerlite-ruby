@@ -700,6 +700,8 @@ block = JSON.parse(response.body)['data']
 
 Use the block types in `MailerLite::Emails::BlockType`. `editor_content` can be empty. Without `placement`, the API puts the block at the end of the email. The positions are in `MailerLite::Emails::BlockPosition`. The `BEFORE` and `AFTER` positions also need a `block_id`. The SDK sends `placement` as you give it.
 
+The API drops the attributes and the `mobile` keys that the block type does not declare, and the write still succeeds. Then the response has `rejected` with a `message` and the `keys` that the API dropped, for example `editor_content.attrs.onclick`. When the API drops nothing, the response has no `rejected`.
+
 ```ruby
 require "mailerlite-ruby"
 
@@ -720,6 +722,7 @@ response = emails.create_block(
 body = JSON.parse(response.body)
 block_id = body['data']['id']
 etag = body['etag']
+puts body['rejected']['keys'] if body['rejected']
 ```
 
 ### Update a block
@@ -727,6 +730,8 @@ etag = body['etag']
 <a name="update-a-block"></a>
 
 The new `editor_content` replaces the whole content of the block. The API removes the keys that you do not send.
+
+The API drops the attributes and the `mobile` keys that the block type does not declare, and the write still succeeds. Then the response has `rejected` with a `message` and the `keys` that the API dropped, for example `editor_content.mobile.onclick`. When the API drops nothing, the response has no `rejected`.
 
 ```ruby
 require "mailerlite-ruby"
@@ -741,7 +746,9 @@ response = emails.update_block(
   editor_content: { attrs: { textAlign: 'center' }, content: [{ type: 'text', text: 'Hello again' }] }
 )
 
-etag = JSON.parse(response.body)['etag']
+body = JSON.parse(response.body)
+etag = body['etag']
+puts body['rejected']['keys'] if body['rejected']
 ```
 
 ### Delete a block
@@ -788,6 +795,8 @@ etag = JSON.parse(response.body)['etag']
 <a name="validate-a-block"></a>
 
 Checks a block before you insert it. It needs no email and no etag. An invalid block is not an error: the response has `valid` set to `false` and the `errors` for each field.
+
+If a valid block has attributes or `mobile` keys that the block type does not declare, the response has `rejected` with a `message` and these `keys`. Insert and update drop these keys. When `valid` is `false`, the response has no `rejected`.
 
 The block in this example is not valid, because `sideways` is not a valid `textAlign`. The response has `valid: false` and `errors`.
 

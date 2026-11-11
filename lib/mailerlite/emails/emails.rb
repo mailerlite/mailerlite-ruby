@@ -104,6 +104,10 @@ module MailerLite
 
     # Inserts a block in the email. Returns the new block and the new etag of the email.
     #
+    # The API drops the attributes and the `mobile` keys that the block type does not declare, and the write still
+    # succeeds. Then the response has `rejected` with a `message` and the `keys` that the API dropped, for example
+    # `editor_content.attrs.onclick`. When the API drops nothing, the response has no `rejected`.
+    #
     # @param email_id [String, Integer] the ID of the email
     # @param etag [String] the etag from the last response for the email
     # @param type [String] the block type, see `BlockType`. You cannot insert `title`.
@@ -122,6 +126,10 @@ module MailerLite
 
     # Updates a block of the email. The new content replaces the whole content of the block: the API removes the
     # keys that you do not send. Returns the block and the new etag of the email.
+    #
+    # The API drops the attributes and the `mobile` keys that the block type does not declare, and the write still
+    # succeeds. Then the response has `rejected` with a `message` and the `keys` that the API dropped, for example
+    # `editor_content.mobile.onclick`. When the API drops nothing, the response has no `rejected`.
     #
     # @param email_id [String, Integer] the ID of the email
     # @param block_id [String, Integer] the ID of the block
@@ -174,10 +182,14 @@ module MailerLite
     # Validates a block before you insert it. It needs no email and no etag. An invalid block is not an error:
     # the response has `valid` set to false and the `errors` for each field.
     #
+    # If a valid block has attributes or `mobile` keys that the block type does not declare, the response has
+    # `rejected` with a `message` and these `keys`. `create_block` and `update_block` drop these keys.
+    # When `valid` is false, the response has no `rejected`.
+    #
     # @param type [String] the block type, see `BlockType`
     # @param editor_content [Hash] the content of the block. Its keys are camelCase, for example `textAlign`.
     # @param placement [Hash, nil] `position` (see `BlockPosition`) and, for `before` and `after`, `block_id`
-    # @return [HTTP::Response] the response from the API, with `valid`, `errors` and `schema`
+    # @return [HTTP::Response] the response from the API, with `valid`, `errors`, `schema` and, in some cases, `rejected`
     def validate_block(type:, editor_content:, placement: nil)
       Request.call(client, :post, '/emails/blocks/validate', json: block_body(type, editor_content, placement))
     end
