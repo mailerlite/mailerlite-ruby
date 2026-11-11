@@ -173,6 +173,21 @@ RSpec.describe MailerLite::Emails do
       expect(placement).to eq(position: 'after', block_id: 57)
     end
 
+    it 'returns the rejected keys when the API drops attributes' do
+      body = '{"type":"paragraph","editor_content":{"attrs":{"onclick":"x"},"content":[{"type":"text","text":"Hi"}]},"etag":"42"}'
+      stub = stub_api(:post, '/emails/123/blocks', body: body, status: 201, response: load_fixture('email_block_created_rejected'))
+
+      response = emails.create_block(email_id: '123', etag: '42', type: 'paragraph',
+                                     editor_content: { attrs: { onclick: 'x' }, content: [{ type: 'text', text: 'Hi' }] })
+
+      expect(stub).to have_been_requested
+      expect(response.code).to eq 201
+      expect(response.api_error).to be_nil
+      data = decoded(response)
+      expect(data['data']['editor_content']).not_to have_key('attrs')
+      expect(data['rejected']).to eq('message' => 'Some attributes were rejected.', 'keys' => ['editor_content.attrs.onclick'])
+    end
+
     it 'sends no placement without a placement, and accepts empty content' do
       stub = stub_api(:post, '/emails/123/blocks', body: '{"type":"divider","editor_content":{},"etag":"42"}',
                                                    status: 201, response: load_fixture('email_block_created'))
@@ -246,6 +261,20 @@ RSpec.describe MailerLite::Emails do
       expect(data['etag']).to eq '44'
       expect(data['data']['editor_content']['content'][0]['text']).to eq 'Hello again'
       expect(data['data']['placement']).to eq('after' => '56', 'before' => '58')
+    end
+
+    it 'returns the rejected keys when the API drops attributes and mobile keys' do
+      body = '{"editor_content":{"content":[{"type":"text","text":"Hello again"}],"mobile":{"onclick":"x"}},"etag":"43"}'
+      stub = stub_api(:patch, '/emails/123/blocks/57', body: body, response: load_fixture('email_block_updated_rejected'))
+
+      response = emails.update_block(email_id: '123', block_id: '57', etag: '43',
+                                     editor_content: { content: [{ type: 'text', text: 'Hello again' }], mobile: { onclick: 'x' } })
+
+      expect(stub).to have_been_requested
+      expect(response.api_error).to be_nil
+      data = decoded(response)
+      expect(data['data']['editor_content']).not_to have_key('mobile')
+      expect(data['rejected']).to eq('message' => 'Some attributes were rejected.', 'keys' => ['editor_content.mobile.onclick'])
     end
 
     it 'checks the IDs and sends no request' do
