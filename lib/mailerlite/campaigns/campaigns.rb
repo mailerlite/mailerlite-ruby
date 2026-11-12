@@ -3,6 +3,9 @@
 module MailerLite
   # This is a class for manipulating the Campaigns from MailerLite API.
   class Campaigns
+    # The value of `editor` in the emails of `create` for the simple editor.
+    EDITOR_SIMPLE = 'simple'
+
     attr_reader :client
 
     # Inits the `Campaigns` class with the specified `client`.
@@ -34,7 +37,13 @@ module MailerLite
     # @param name [String] Maximum string length of 255 characters
     # @param language_id [integer] Used to define the language in the unsubscribe template. Must be a valid language id. Defaults to english
     # @param type [String] Must be one of the following: regular, ab, resend. Type resend is only available for accounts on growing or advanced plans
-    # @param emails [Array] Must contain 1 email object item
+    # @param emails [Array] Must contain 1 email object item. The SDK sends each email as it is. An email can also have these keys:
+    #   - `editor`: set it to `simple` (`EDITOR_SIMPLE`) to create the email in the simple editor. Do not send `content` with it.
+    #     It must be the same on every email of the campaign. It is not available on every plan: for an account on a plan without it, the API returns an error.
+    #   - `template_id`: the simple editor template that the email starts from. It is a template from the shared gallery, or a template that you saved from your own email
+    #     with `Emails#create_template` (the `id` in its response). It is optional, and allowed only when `editor` is `simple`. Without it, the email starts from the
+    #     default blank template. The API copies the template into the new email and does not change the template. It must be the same on every email of the campaign.
+    #   Then edit the email with `MailerLite::Emails`. Its ID is in `data.emails[0].id` of the response.
     # @param groups [Array] Must contain valid group ids belonging to the account
     # @param segments [Array] Must contain valid segment ids belonging to the account. If both groups and segments are provided, only segments are used
     # @param ab_settings [Array<Array>] only if type is ab -  All items of the array are required
@@ -82,6 +91,7 @@ module MailerLite
     end
 
     # Update a new campaign with the specified details.
+    # Only `create` accepts `editor` and `template_id`.
     #
     # @param campaign_id [Integer] the ID of the campaign to update
     # @param name [String] Maximum string length of 255 characters

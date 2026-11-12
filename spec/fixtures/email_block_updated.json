@@ -1,0 +1,9 @@
+{
+  "data": {
+    "id": "57",
+    "type": "paragraph",
+    "editor_content": {"content": [{"text": "Hello again", "type": "text"}]},
+    "placement": {"after": "56", "before": "58"}
+  },
+  "etag": "44"
+}

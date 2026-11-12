@@ -8,6 +8,12 @@
 - `Automations#get_subscriber_activity` takes `filter[:search]`, sent as `filter[search]`. The old `filter[:keyword]` is now sent as `filter[search]` too; the API rejected `filter[keyword]` with a 400
 - `AutomationReports#step_subscribers` and `#trigger_subscribers` send an Array `filter[:id]` as one comma-separated value
 - `Automations#get_subscriber_activity` takes `with_subscribers: true` to include each run's subscriber. It sends `with_subscribers=1` only when true, because the API turns it on for any value
+- Add the `Emails` class for the emails built with the simple editor: get an email, its HTML and its blocks, insert, update, delete, move and validate blocks, update and validate the design settings, save a template, and list, save and restore versions
+- Add `BrandStyles#get` and `Files#list`
+- Add `Campaigns::EDITOR_SIMPLE`, and document `editor` and `template_id` for the emails of `Campaigns#create`
+- Add the optional `idempotency_key` argument to the email writes
+- The new methods return an `HTTP::Response` with `api_error` (a `MailerLite::ApiError` with `status`, `code`, `etag`, `errors` and `api_message`) and `idempotent_replay?`. They do not raise for an API error
+- Document `rejected` in the responses of `Emails#create_block`, `#update_block` and `#validate_block`: the keys that the API dropped from the block
 
 ## [2.0.0] - 2024-12-11
 - *BREAKING CHANGE* - Please check the README file, dotenv is now optional

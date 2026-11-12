@@ -1,0 +1,44 @@
+{
+  "data": [
+    {
+      "id": "301",
+      "type": "image",
+      "name": "summer sale banner.png",
+      "url": "https://storage.example.com/files/summer-sale-banner.png",
+      "size": 48213,
+      "width": 1200,
+      "height": 600,
+      "created_at": "2026-10-20 09:30:00"
+    },
+    {
+      "id": "302",
+      "type": "pdf",
+      "name": "summer sale terms.pdf",
+      "url": "https://storage.example.com/files/summer-sale-terms.pdf",
+      "size": 10240,
+      "width": null,
+      "height": null,
+      "created_at": "2026-10-21 10:00:00"
+    }
+  ],
+  "links": {
+    "first": "https://connect.mailerlite.com/api/files?page=1",
+    "last": "https://connect.mailerlite.com/api/files?page=1",
+    "prev": null,
+    "next": null
+  },
+  "meta": {
+    "current_page": 1,
+    "from": 1,
+    "last_page": 1,
+    "links": [
+      {"url": null, "label": "&laquo; Previous", "page": null, "active": false},
+      {"url": "https://connect.mailerlite.com/api/files?page=1", "label": "1", "page": 1, "active": true},
+      {"url": null, "label": "Next &raquo;", "page": null, "active": false}
+    ],
+    "path": "https://connect.mailerlite.com/api/files",
+    "per_page": 25,
+    "to": 2,
+    "total": 2
+  }
+}

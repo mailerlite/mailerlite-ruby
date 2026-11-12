@@ -1,0 +1,111 @@
+{
+  "data": {
+    "brand": {
+      "mode": "custom",
+      "font_family": "Inter, sans-serif",
+      "background_color": "#f4f4f4",
+      "text_color": "#000000",
+      "border_color": "#e5e7eb"
+    },
+    "layout": {
+      "width_mode": "default",
+      "alignment": "center"
+    },
+    "typography": {
+      "link": {
+        "color": "#2cb191"
+      },
+      "heading": {
+        "font_family": "Inter, sans-serif",
+        "font_weight": "700",
+        "line_height": "150%",
+        "letter_spacing": "0",
+        "h1": {
+          "color": "#000000",
+          "size": "32"
+        },
+        "h2": {
+          "color": "#000000",
+          "size": "24"
+        },
+        "h3": {
+          "color": "#000000",
+          "size": "20"
+        }
+      },
+      "paragraph": {
+        "font_family": "Inter, sans-serif",
+        "font_weight": "400",
+        "line_height": "150%",
+        "letter_spacing": "0",
+        "p1": {
+          "color": "#000000",
+          "size": "16"
+        }
+      }
+    },
+    "button": {
+      "font_family": "Inter, sans-serif",
+      "font_weight": "600",
+      "letter_spacing": "0",
+      "background_color": "#2cb191",
+      "text_color": "#ffffff",
+      "border_radius": "4"
+    },
+    "footer": {
+      "show_preferences": false,
+      "company_name": {
+        "editor_content": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Acme",
+              "marks": [
+                {
+                  "type": "bold"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "address": {
+        "editor_content": {
+          "content": [
+            {
+              "text": "1 Main Street",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "info_text": {
+        "editor_content": {
+          "content": [
+            {
+              "text": "You signed up on our website.",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "unsubscribe_text": "Unsubscribe",
+      "preferences_text": "Update your preferences",
+      "social_links": [
+        {
+          "url": "https://example.com",
+          "type": "website",
+          "label": "Website",
+          "link_id": 7
+        }
+      ]
+    }
+  },
+  "etag": "47",
+  "rejected": {
+    "message": "Some attributes were rejected.",
+    "keys": [
+      "footer.social_links[0].url"
+    ]
+  }
+}
